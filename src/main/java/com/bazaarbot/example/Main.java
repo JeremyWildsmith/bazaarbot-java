@@ -1,4 +1,9 @@
-package com.bazaarbot;
+package com.bazaarbot.example;
+
+import com.bazaarbot.Economy;
+import com.bazaarbot.Market;
+import com.bazaarbot.MarketReport;
+import com.bazaarbot.example.DoranAndParberryEconomy;
 
 import java.util.List;
 import java.util.Scanner;

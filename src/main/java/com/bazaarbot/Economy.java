@@ -41,8 +41,4 @@ public class Economy   implements ISignalBankrupt
 
     public void signalBankrupt(Market m, BasicAgent a) throws Exception {
     }
-
 }
-
-
-//no implemenation -- provide your own in a subclass

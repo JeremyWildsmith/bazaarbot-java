@@ -72,41 +72,6 @@ public class Quick
         return s;
     }
 
-    //        num = Math.floor(num * tens) / tens;
-    //        var str:String = Std.string(num);
-    //        var split = str.split(".");
-    //        if (split.length == 2)
-    //        {
-    //            if (split[1].length < decimals)
-    //            {
-    //                var diff:Int = decimals - split[1].length;
-    //                for (i in 0...diff)
-    //                {
-    //                    str += "0";
-    //                }
-    //            }
-    //            if (decimals > 0)
-    //            {
-    //                str = split[0] + "." + split[1].substr(0, decimals);
-    //            }
-    //            else
-    //            {
-    //                str = split[0];
-    //            }
-    //        }
-    //        else
-    //        {
-    //            if (decimals > 0)
-    //            {
-    //                str += ".";
-    //                for (i in 0...decimals)
-    //                {
-    //                    str += "0";
-    //                }
-    //            }
-    //        }
-    //        return str;
-    //    }
     public static double positionInRange(double value, double min, double max) throws Exception {
         return positionInRange(value, min, max, true);
     }
@@ -133,10 +98,6 @@ public class Quick
         return value;
     }
 
-    //    public static inline function randomInteger(min:Int, max:Int):Int
-    //    {
-    //        return Std.int(Math.random() * cast(1 + max - min, Float)) + min;
-    //    }
     public static double randomRange(double a, double b) throws Exception {
         double r = rnd.nextDouble();
         double min = a < b ? a : b;
@@ -151,22 +112,7 @@ public class Quick
 
         return list;
     }
-    /*
-    public static List<Offer> shuffle(List<Offer>list)
-    {
-        for (int i=0; i<list.size() - 1; i++)
-        {
-            int ii = (list.size() - 1) - i;
-            if (ii > 1)
-            {
-                int j = rnd.nextInt(ii);
-                Offer temp = list.get(j);
-                list.set(j, list.get(ii));
-                list.set(ii, temp);
-            }
-        }
-        return list;
-    }*/
+
 
     public static Comparator<BasicAgent> sortAgentAlpha = (BasicAgent a, BasicAgent b) -> {
         return a.getclassName().compareTo(b.getclassName());
@@ -203,19 +149,3 @@ public class Quick
     }
 
 }
-
-
-//    public static function sortDecreasingPrice(a:Offer, b:Offer):Int
-//    {
-//        //Decreasing means: highest first
-//        if (a.unit_price < b.unit_price) return 1;
-//        if (a.unit_price > b.unit_price) return -1;
-//        return 0;
-//    }
-//    public static function sortIncreasingPrice(a:Offer, b:Offer):Int
-//    {
-//        //Increasing means: lowest first
-//        if (a.unit_price > b.unit_price) return 1;
-//        if (a.unit_price < b.unit_price) return -1;
-//        return 0;
-//    }

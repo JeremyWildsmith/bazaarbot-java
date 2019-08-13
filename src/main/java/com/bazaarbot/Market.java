@@ -345,8 +345,8 @@ public class Market
         _mapAgents = new HashMap<String,AgentData>();
         for (AgentData aData : data.agentTypes)
         {
-            _mapAgents.put(aData.getclassName(), aData);
-            history.profit.register(aData.getclassName());
+            _mapAgents.put(aData.className, aData);
+            history.profit.register(aData.className);
         }
         //Make the agent list
         _agents = new ArrayList<>();

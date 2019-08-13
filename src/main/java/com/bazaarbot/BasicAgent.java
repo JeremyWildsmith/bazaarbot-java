@@ -64,7 +64,7 @@ public class BasicAgent
     private int _lookback = 15;
     public BasicAgent(int id, AgentData data) throws Exception {
         this.id = id;
-        setclassName(data.getclassName());
+        setclassName(data.className);
         setmoney(data.money);
         _inventory = new Inventory();
         _inventory.fromData(data.inventory);

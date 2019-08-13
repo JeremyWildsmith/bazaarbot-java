@@ -2,14 +2,15 @@
 // Translated by CS2J (http://www.cs2j.com): 2019-08-12 9:59:31 PM
 //
 
-package com.bazaarbot;
+package com.bazaarbot.example;
+
+import com.bazaarbot.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class DoranAndParberryEconomy  extends Economy 
+public class DoranAndParberryEconomy  extends Economy
 {
     public DoranAndParberryEconomy() throws Exception {
         Market market = new Market("default",this);
@@ -136,17 +137,7 @@ public class DoranAndParberryEconomy  extends Economy
         return data;
     }
 
-    //var assembly = Assembly.GetExecutingAssembly();
-    //var resourceName = "EconomySim.settings.txt";
-    //string[] names = assembly.GetManifestResourceNames();
-    //using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-    //using (StreamReader reader = new StreamReader(stream))
-    //{
-    //    string result = reader.ReadToEnd();
-    //    MarketData data = JsonConvert.DeserializeObject<MarketData>(result);
-    //    return data;
-    //}
-    //return null;
+    @Override
     public void signalBankrupt(Market m, BasicAgent a) throws Exception {
         replaceAgent(m,a);
     }
@@ -171,25 +162,6 @@ public class DoranAndParberryEconomy  extends Economy
         market.replaceAgent(agent, newAgent);
     }
 
-    /**
-    	     * Get the average amount of a given good that a given agent class has
-    	     * @param	className
-    	     * @param	good
-    	     * @return
-    	     */
-    /*
-    	    public function getAgentClassAverageInventory(className:String, good:String):Float
-    	    {
-    		    var list = _agents.filter(function(a:BasicAgent):Bool { return a.className == className; } );
-    		    var amount:Float = 0;
-    		    for (agent in list)
-    		    {
-    			    amount += agent.queryInventory(good);
-    		    }
-    		    amount /= list.length;
-    		    return amount;
-    	    }
-    	    */
     /**
     	     * Find the agent class that produces the most of a given good
     	     * @param	good

@@ -11,22 +11,15 @@ package com.bazaarbot;
  */
 public class AgentData   
 {
-    private String __className;
-    public String getclassName() {
-        return __className;
-    }
-
-    public void setclassName(String value) {
-        __className = value;
-    }
-
+    public String className;
     public double money;
     public InventoryData inventory;
     public String logicName;
     public Logic logic;
     public Integer lookBack;
+
     public AgentData(String className, double money, String logicName) throws Exception {
-        this.setclassName(className);
+        this.className = className;
         this.money = money;
         this.logicName = logicName;
     }
