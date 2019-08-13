@@ -14,6 +14,4 @@ This engine consists of various "Agents" trading commodities, with emergent free
 
 The eventual goal is to create an open-source "Economics engine" for games and simulations, much like contemporary open-source "Physics engines."
 
-Based on "[Emergent Economies for Role Playing Games](http://larc.unt.edu/techreports/LARC-2010-03.pdf)" by Jonathon Doran and Ian Parberry.
-
-Source: [Procedural Content Generation](http://larc.unt.edu/ian/research/content/)
+Based on "[Emergent Economies for Role Playing Games](https://www.semanticscholar.org/paper/Emergent-Economies-for-Role-Playing-Games-Doran-Parberry/e9330d06ec6a830aa1dd2cd9e6bc38daa95db6dd)" by Jonathon Doran and Ian Parberry.
