@@ -11,43 +11,9 @@ public class BasicAgent
 {
     public int id;
     //unique integer identifier
-    private String __className;
-    public String getclassName() {
-        return __className;
-    }
-
-    public void setclassName(String value) {
-        __className = value;
-    }
-
-    //string identifier, "famer", "woodcutter", etc.
-    private double __money;
-    public double getmoney() {
-        return __money;
-    }
-
-    public void setmoney(double value) {
-        __money = value;
-    }
-
-    public double getSpace() throws Exception {
-        return _inventory.getEmptySpace();
-    }
-
-    private double __nProduct;
-    public double getnProduct() {
-        return __nProduct;
-    }
-
-    public void setnProduct(double value) {
-        __nProduct = value;
-    }
-
-    //public var moneyLastRound(default, null):double;
-    //public var profit(get, null):double;
-    //public var inventorySpace(get, null):double;
-    //public var inventoryFull(get, null):Bool;
-    //public var destroyed(default, null):Bool;
+    private String className;
+    private double money;
+    private double nProduct;
     public boolean destroyed;
     //dfs stub  needed?
     public double moneyLastRound;
@@ -55,17 +21,19 @@ public class BasicAgent
     public double profit;
     //dfs stub needed?
     public double trackcosts;
-    /********PRIVATE************/
     private Logic _logic;
     protected Inventory _inventory;
     protected HashMap<String, List<Double>> _observedTradingRange;
     private double _profit = 0;
     //profit from last round
     private int _lookback = 15;
+
+
+
     public BasicAgent(int id, AgentData data) throws Exception {
         this.id = id;
-        setclassName(data.className);
-        setmoney(data.money);
+        setClassName(data.className);
+        setMoney(data.money);
         _inventory = new Inventory();
         _inventory.fromData(data.inventory);
         _logic = data.logic;
@@ -147,7 +115,7 @@ public class BasicAgent
     public void consumeInventory(String good, double delta) throws Exception {
         if (good.compareTo("money") == 0)
         {
-            setmoney(getmoney() + delta);
+            setMoney(getMoney() + delta);
             if (delta < 0)
                 trackcosts += (-delta);
              
@@ -164,7 +132,7 @@ public class BasicAgent
     public void changeInventory(String good, double delta, double unit_cost) throws Exception {
         if (good.compareTo("money") == 0)
         {
-            setmoney(getmoney() + delta);
+            setMoney(getMoney() + delta);
         }
         else
         {
@@ -172,18 +140,7 @@ public class BasicAgent
         } 
     }
 
-    /********PRIVATE************/
-    private double get_inventorySpace() throws Exception {
-        return _inventory.getEmptySpace();
-    }
 
-    public boolean get_inventoryFull() throws Exception {
-        return _inventory.getEmptySpace() == 0;
-    }
-
-    public double get_profit() throws Exception {
-        return getmoney() - moneyLastRound;
-    }
 
     protected double determineSaleQuantity(Market bazaar, String commodity_) throws Exception {
         Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
@@ -242,6 +199,34 @@ public class BasicAgent
 
     public final void updatePriceModel(Market market, String buy, String good, boolean b) throws Exception {
         updatePriceModel(market, buy, good, b, 0);
+    }
+
+    public boolean isInventoryFull() {
+        return _inventory.getEmptySpace() == 0;
+    }
+
+    public double get_profit() {
+        return getMoney() - moneyLastRound;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String value) {
+        className = value;
+    }
+
+    public double getMoney() {
+        return money;
+    }
+
+    public void setMoney(double value) {
+        money = value;
+    }
+
+    public void setnProduct(double value) {
+        nProduct = value;
     }
 }
 

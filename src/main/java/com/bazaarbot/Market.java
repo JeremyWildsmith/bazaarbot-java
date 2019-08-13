@@ -60,7 +60,7 @@ public class Market
         {
             for (BasicAgent agent : _agents)
             {
-                agent.moneyLastRound = agent.getmoney();
+                agent.moneyLastRound = agent.getMoney();
                 agent.simulate(this);
                 for (String commodity : _goodTypes)
                 {
@@ -74,7 +74,7 @@ public class Market
             List<BasicAgent> del = new ArrayList<BasicAgent>();
             for (BasicAgent agent : _agents)
             {
-                if (agent.getmoney() <= 0)
+                if (agent.getMoney() <= 0)
                     del.add(agent);
                  
             }
@@ -296,10 +296,10 @@ public class Market
             double money = 0;
             for (BasicAgent a : list)
             {
-                if (a.getclassName().compareTo(key) == 0)
+                if (a.getClassName().compareTo(key) == 0)
                 {
                     count++;
-                    money += a.getmoney();
+                    money += a.getMoney();
                     for (int lic = 0;lic < _goodTypes.size();lic++)
                     {
                         inventory.add(lic, inventory.get(lic) + a.queryInventory(_goodTypes.get(lic)));
@@ -482,7 +482,7 @@ public class Market
         {
             BasicAgent a = ag.get(i);
             //get current agent
-            curr_class = a.getclassName();
+            curr_class = a.getClassName();
             //check its class
             if (curr_class.compareTo(last_class) != 0)
             {
@@ -518,8 +518,8 @@ public class Market
     private void transferMoney(double amount, int seller_id, int buyer_id) throws Exception {
         BasicAgent seller = _agents.get(seller_id);
         BasicAgent  buyer = _agents.get(buyer_id);
-        seller.setmoney(seller.getmoney() + amount);
-        buyer.setmoney(buyer.getmoney() - amount);
+        seller.setMoney(seller.getMoney() + amount);
+        buyer.setMoney(buyer.getMoney() - amount);
     }
 
 }

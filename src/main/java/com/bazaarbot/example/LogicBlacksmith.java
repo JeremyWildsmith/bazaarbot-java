@@ -31,7 +31,7 @@ public class LogicBlacksmith  extends Logic
         {
             //fined $2 for being idle
             //consume(agent, "money", 2);
-            if (!has_food && agent.get_inventoryFull())
+            if (!has_food && agent.isInventoryFull())
             {
             }
              

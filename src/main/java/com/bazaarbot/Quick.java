@@ -115,7 +115,7 @@ public class Quick
 
 
     public static Comparator<BasicAgent> sortAgentAlpha = (BasicAgent a, BasicAgent b) -> {
-        return a.getclassName().compareTo(b.getclassName());
+        return a.getClassName().compareTo(b.getClassName());
     };
 
     public static int sortAgentId(BasicAgent a, BasicAgent b) throws Exception {

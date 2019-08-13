@@ -117,7 +117,7 @@ public class Inventory
         }
     }
 
-    public void setSizes(List<String> sizes, List<Double> amounts) throws Exception {
+    public void setSizes(List<String> sizes, List<Double> amounts) {
         for (int i = 0;i < sizes.size();i++)
         {
             _sizes.put(sizes.get(i), amounts.get(i));
@@ -129,7 +129,7 @@ public class Inventory
     	     * @param	good string id of commodity
     	     * @return
     	     */
-    public double query(String good) throws Exception {
+    public double query(String good) {
         if (_stuff.containsKey(good))
         {
             return _stuff.get(good).x;
@@ -138,7 +138,7 @@ public class Inventory
         return 0;
     }
 
-    public double query_cost(String good) throws Exception {
+    public double query_cost(String good) {
         if (_stuff.containsKey(good))
         {
             return _stuff.get(good).y;
@@ -147,7 +147,7 @@ public class Inventory
         return 0;
     }
 
-    public double ideal(String good) throws Exception {
+    public double ideal(String good) {
         if (_ideal.containsKey(good))
         {
             return _ideal.get(good);
@@ -156,11 +156,11 @@ public class Inventory
         return 0;
     }
 
-    public double getEmptySpace() throws Exception {
+    public double getEmptySpace() {
         return maxSize - getUsedSpace();
     }
 
-    public double getUsedSpace() throws Exception {
+    public double getUsedSpace() {
         double space_used = 0;
         for (String key : _stuff.keySet())
         {
@@ -172,7 +172,7 @@ public class Inventory
         return space_used;
     }
 
-    public double getCapacityFor(String good) throws Exception {
+    public double getCapacityFor(String good) {
         if (_sizes.containsKey(good))
         {
             return _sizes.get(good);

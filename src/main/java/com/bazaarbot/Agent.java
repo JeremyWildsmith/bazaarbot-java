@@ -12,7 +12,6 @@ import java.util.List;
      */
 public class Agent  extends BasicAgent 
 {
-    public static double MIN_PRICE = 0.01;
     //lowest possible price
     public Agent(int id, AgentData data) throws Exception {
         super(id, data);
