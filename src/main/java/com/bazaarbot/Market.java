@@ -50,7 +50,6 @@ public class Market
     public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) throws Exception {
         newAgent.id = oldAgent.id;
         _agents.set(oldAgent.id, newAgent);
-        oldAgent.destroy();
         newAgent.init(this);
     }
 
@@ -289,7 +288,7 @@ public class Market
             mr.strListAgent += key + "\n";
             Double profit = history.profit.average(key,rounds);
             mr.strListAgentProfit += Quick.numStr(profit,2) + "\n";
-            double test_profit = 0;
+
             List<BasicAgent> list = _agents;
 
             int count = 0;
@@ -393,7 +392,7 @@ public class Market
             //while both books are non-empty
             Offer buyer = bids.get(0);
             Offer seller = asks.get(0);
-            Double quantity_traded = (double)Math.min(seller.units,buyer.units);
+            Double quantity_traded = Math.min(seller.units,buyer.units);
             Double clearing_price = seller.unit_price;
             //Quick.avgf(seller.unit_price, buyer.unit_price);
             //if (buyer.unit_price < seller.unit_price)
@@ -463,7 +462,7 @@ public class Market
         history.trades.add(good,unitsTraded);
         if (unitsTraded > 0)
         {
-            avgPrice = moneyTraded / (double)unitsTraded;
+            avgPrice = moneyTraded / unitsTraded;
             history.prices.add(good,avgPrice);
         }
         else

@@ -68,7 +68,7 @@ public class Quick
              * @return
              */
     public static String numStr(double num, int decimals) throws Exception {
-        String s = String.format("%." + String.valueOf(decimals) + "f", num);
+        String s = String.format("%." + decimals + "f", num);
         return s;
     }
 

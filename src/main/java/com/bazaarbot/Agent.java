@@ -36,7 +36,6 @@ public class Agent  extends BasicAgent
         //asks are fair prices:  costs + small profit
         Double quantity_to_sell = _inventory.query(commodity_);
         //put asks out for all inventory
-        setnProduct(quantity_to_sell);
         if (quantity_to_sell > 0)
         {
             return new Offer(id,commodity_,quantity_to_sell,ask_price);

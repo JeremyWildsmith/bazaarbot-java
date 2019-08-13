@@ -13,18 +13,13 @@ public class BasicAgent
     //unique integer identifier
     private String className;
     private double money;
-    private double nProduct;
-    public boolean destroyed;
     //dfs stub  needed?
     public double moneyLastRound;
-    //dfs stub needed?
-    public double profit;
     //dfs stub needed?
     public double trackcosts;
     private Logic _logic;
     protected Inventory _inventory;
     protected HashMap<String, List<Double>> _observedTradingRange;
-    private double _profit = 0;
     //profit from last round
     private int _lookback = 15;
 
@@ -43,23 +38,10 @@ public class BasicAgent
         }
         else
         {
-            _lookback = (int)data.lookBack;
+            _lookback = data.lookBack;
         } 
         _observedTradingRange = new HashMap<String, List<Double>>();
         trackcosts = 0;
-    }
-
-    public void destroy() throws Exception {
-        destroyed = true;
-        _inventory.destroy();
-        for (String key : _observedTradingRange.keySet())
-        {
-            List<Double> list = _observedTradingRange.get(key);
-            list.clear();
-        }
-        _observedTradingRange.clear();
-        _observedTradingRange = null;
-        _logic = null;
     }
 
     public void init(Market market) throws Exception {
@@ -85,21 +67,17 @@ public class BasicAgent
     public void generateOffers(Market bazaar, String good) throws Exception {
     }
 
-    //no implemenation -- provide your own in a subclass
     public void updatePriceModel(Market bazaar, String act, String good, boolean success, double unitPrice) throws Exception {
     }
 
-    //no implementation -- provide your own in a subclass
     public Offer createBid(Market bazaar, String good, double limit) throws Exception {
         return null;
     }
 
-    //no implementation -- provide your own in a subclass
     public Offer createAsk(Market bazaar, String commodity_, double limit_) throws Exception {
         return null;
     }
 
-    //no implementation -- provide your own in a subclass
     public double queryInventory(String good) throws Exception {
         return _inventory.query(good);
     }
@@ -223,10 +201,6 @@ public class BasicAgent
 
     public void setMoney(double value) {
         money = value;
-    }
-
-    public void setnProduct(double value) {
-        nProduct = value;
     }
 }
 
