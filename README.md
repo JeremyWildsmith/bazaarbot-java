@@ -3,6 +3,7 @@ bazaarBot - Java
 
 This is a translation of the original bazaarbot module to Java with some minor changes / fixes ( https://raw.githubusercontent.com/larsiusprime/bazaarBot )
 
+I will probably continue to make changes / refactor or expand this code as I integrate it with my current game, Project Station 13.
 
 bazaarBot - Original Description
 =========
