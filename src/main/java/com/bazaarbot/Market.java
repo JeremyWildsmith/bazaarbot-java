@@ -515,7 +515,8 @@ public class Market
         buyer.changeInventory(good, units, clearing_price);
     }
 
-    private void transferMoney(double amount, int seller_id, int buyer_id) throws Exception {        BasicAgent seller = _agents.get(seller_id);
+    private void transferMoney(double amount, int seller_id, int buyer_id) throws Exception {
+        BasicAgent seller = _agents.get(seller_id);
         BasicAgent  buyer = _agents.get(buyer_id);
         seller.setmoney(seller.getmoney() + amount);
         buyer.setmoney(buyer.getmoney() - amount);

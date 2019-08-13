@@ -29,12 +29,14 @@ public class DoranAndParberryEconomy  extends Economy
         goods.add(new Good("metal",1.0));
         goods.add(new Good("tools",1.0));
         goods.add(new Good("work",0.1));
+
         agentTypes.add(new AgentData("farmer",100,"farmer"));
         agentTypes.add(new AgentData("miner",100,"miner"));
         agentTypes.add(new AgentData("refiner",100,"refiner"));
         agentTypes.add(new AgentData("woodcutter",100,"woodcutter"));
         agentTypes.add(new AgentData("blacksmith",100,"blacksmith"));
         agentTypes.add(new AgentData("worker",10,"worker"));
+
         InventoryData ii;
 
         //farmer
@@ -120,6 +122,7 @@ public class DoranAndParberryEconomy  extends Economy
 
         ii = new InventoryData(20, ideal, start,null);
         agentTypes.get(5).inventory = ii;
+
         int idc = 0;
         for (int iagent = 0;iagent < agentTypes.size();iagent++)
         {

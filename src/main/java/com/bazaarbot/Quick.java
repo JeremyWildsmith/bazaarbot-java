@@ -145,12 +145,28 @@ public class Quick
         return r * range + min;
     }
 
-    public static List<Offer> shuffle(List<Offer> list) throws Exception {
-        ArrayList<Offer> r = new ArrayList<>(list);
-        Collections.shuffle(r);
 
-        return r;
+    public static List<Offer> shuffle(List<Offer> list) throws Exception {
+        Collections.shuffle(list);
+
+        return list;
     }
+    /*
+    public static List<Offer> shuffle(List<Offer>list)
+    {
+        for (int i=0; i<list.size() - 1; i++)
+        {
+            int ii = (list.size() - 1) - i;
+            if (ii > 1)
+            {
+                int j = rnd.nextInt(ii);
+                Offer temp = list.get(j);
+                list.set(j, list.get(ii));
+                list.set(ii, temp);
+            }
+        }
+        return list;
+    }*/
 
     public static Comparator<BasicAgent> sortAgentAlpha = (BasicAgent a, BasicAgent b) -> {
         return a.getclassName().compareTo(b.getclassName());
