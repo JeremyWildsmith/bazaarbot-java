@@ -13,6 +13,10 @@ public class Inventory
 {
     public double maxSize = 0;
 
+    // En-route items, expecting via contract
+    // Key: commodity_it, val: amount, original_cost
+    private HashMap<String,Point> _expecting;
+
     // key:commodity_id, val:amount, original_cost
     private HashMap<String,Point> _stuff;
 
@@ -26,6 +30,7 @@ public class Inventory
         _sizes = new HashMap<String,Double>();
         _stuff = new HashMap<String,Point>();
         _ideal = new HashMap<String,Double>();
+        _expecting = new HashMap<String,Point>();
         maxSize = 0;
     }
 
@@ -81,7 +86,21 @@ public class Inventory
         {
             return _stuff.get(good).x;
         }
-         
+
+        return 0;
+    }
+
+    /**
+     * Returns how much of this expected
+     * @param	good string id of commodity
+     * @return
+     */
+    public double queryExpecting(String good) {
+        if (_expecting.containsKey(good))
+        {
+            return _expecting.get(good).x;
+        }
+
         return 0;
     }
 
@@ -124,13 +143,14 @@ public class Inventory
      * @param	good string id of commodity
      * @param	delta amount added
      */
-    public double change(String good, double delta, double unit_cost) throws Exception {
+    public double change(String good, double delta, double unit_cost) {
         Point result = new Point(0,0);
         if (_stuff.containsKey(good))
         {
             Point amount = _stuff.get(good);
             if (unit_cost > 0)
             {
+                //If we did not have any previous inventory for this item
                 if (amount.x <= 0)
                 {
                     result.x = delta;
@@ -138,6 +158,7 @@ public class Inventory
                 }
                 else
                 {
+                    //original_price = Average the two costs
                     result.y = (amount.x * amount.y + delta * unit_cost) / (amount.x + delta);
                     result.x = amount.x + delta;
                 } 
@@ -161,6 +182,53 @@ public class Inventory
         }
          
         _stuff.put(good, result);
+        return result.y;
+    }
+
+    /**
+     * Change the amount of the expected commodity by delta
+     * @param	good string id of commodity
+     * @param	delta amount added
+     */
+    public double changeExpecting(String good, double delta, double unit_cost) {
+        Point result = new Point(0,0);
+        if (_stuff.containsKey(good))
+        {
+            Point amount = _expecting.get(good);
+            if (unit_cost > 0)
+            {
+                //If we did not have any previous inventory for this item
+                if (amount.x <= 0)
+                {
+                    result.x = delta;
+                    result.y = unit_cost;
+                }
+                else
+                {
+                    //original_price = Average the two costs
+                    result.y = (amount.x * amount.y + delta * unit_cost) / (amount.x + delta);
+                    result.x = amount.x + delta;
+                }
+            }
+            else
+            {
+                result.x = amount.x + delta;
+                result.y = amount.y;
+            }
+        }
+        else
+        {
+            //just copy from old value?
+            result.x = delta;
+            result.y = unit_cost;
+        }
+        if (result.x < 0)
+        {
+            result.x = 0;
+            result.y = 0;
+        }
+
+        _expecting.put(good, result);
         return result.y;
     }
 
@@ -195,7 +263,8 @@ public class Inventory
             return 0;
         }
          
-        Double amt = query(good);
+        Double amt = query(good) + queryExpecting(good);
+
         double ideal = 0;
         if (_ideal.containsKey(good))
             ideal = _ideal.get(good);

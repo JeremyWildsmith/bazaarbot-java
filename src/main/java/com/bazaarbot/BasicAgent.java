@@ -107,7 +107,7 @@ public class BasicAgent
         } 
     }
 
-    public void changeInventory(String good, double delta, double unit_cost) throws Exception {
+    public void changeInventory(String good, double delta, double unit_cost) {
         if (good.compareTo("money") == 0)
         {
             setMoney(getMoney() + delta);

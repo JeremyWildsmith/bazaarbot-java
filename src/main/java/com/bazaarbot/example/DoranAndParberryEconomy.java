@@ -13,7 +13,7 @@ import java.util.List;
 public class DoranAndParberryEconomy  extends Economy
 {
     public DoranAndParberryEconomy() throws Exception {
-        Market market = new Market("default",this);
+        Market market = new Market("default",this, new DefaultContractResolver());
         MarketData data = getMarketData();
         market.init(data);
         // market.init(MarketData.fromJSON(Json.parse(Assets.getText("assets/settings.json")), getAgent));

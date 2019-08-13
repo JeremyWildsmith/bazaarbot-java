@@ -23,7 +23,10 @@ public class Market
     public TradeBook _book;
     private HashMap<String,AgentData> _mapAgents;
     private HashMap<String,Good> _mapGoods;
-    public Market(String name, ISignalBankrupt isb) throws Exception {
+
+    private final IContractResolver _contractResolver;
+
+    public Market(String name, ISignalBankrupt isb, IContractResolver contractResolver) throws Exception {
         this.name = name;
         history = new History();
         _book = new TradeBook();
@@ -32,6 +35,7 @@ public class Market
         _mapGoods = new HashMap<String,Good>();
         _mapAgents = new HashMap<String,AgentData>();
         signalBankrupt = isb;
+        _contractResolver = contractResolver;
     }
 
     //new TypedSignal<Market->BasicAgent->Void>();
@@ -507,11 +511,11 @@ public class Market
 
     //sort by id so everything works again
     //_agents.Sort(Quick.sortAgentId);
-    private void transferGood(String good, double units, int seller_id, int buyer_id, double clearing_price) throws Exception {
+    private void transferGood(String good, double units, int seller_id, int buyer_id, double clearing_price) {
+
         BasicAgent seller = _agents.get(seller_id);
-        BasicAgent buyer = _agents.get(buyer_id);
-        seller.changeInventory(good, -units, 0);
-        buyer.changeInventory(good, units, clearing_price);
+        BasicAgent  buyer = _agents.get(buyer_id);
+        _contractResolver.newContract(seller, buyer, good, units, clearing_price);
     }
 
     private void transferMoney(double amount, int seller_id, int buyer_id) throws Exception {
@@ -520,7 +524,6 @@ public class Market
         seller.setMoney(seller.getMoney() + amount);
         buyer.setMoney(buyer.getMoney() - amount);
     }
-
 }
 
 
