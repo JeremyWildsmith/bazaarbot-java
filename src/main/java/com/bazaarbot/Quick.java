@@ -9,11 +9,11 @@ import java.util.*;
 public class Quick   
 {
     public static Random rnd = new Random();
-    public static double avgf(double a, double b) throws Exception {
+    public static double avgf(double a, double b) {
         return (a + b) / 2;
     }
 
-    public static double listAvgf(List<Double> list) throws Exception {
+    public static double listAvgf(List<Double> list) {
         double avg = 0;
         for (int j = 0;j < list.size();j++)
         {
@@ -23,7 +23,7 @@ public class Quick
         return avg;
     }
 
-    public static double minArr(List<Double> a, int window) throws Exception {
+    public static double minArr(List<Double> a, int window) {
         double min = 99999999;
         //Math.POSITIVE_INFINITY;
         if (window > a.size())
@@ -41,7 +41,7 @@ public class Quick
         return min;
     }
 
-    public static double maxArr(List<Double> a, int window) throws Exception {
+    public static double maxArr(List<Double> a, int window) {
         double max = -9999999;
         /**
         * Math.NEGATIVE_INFINITY;
@@ -67,16 +67,16 @@ public class Quick
              * @param	decimals
              * @return
              */
-    public static String numStr(double num, int decimals) throws Exception {
+    public static String numStr(double num, int decimals) {
         String s = String.format("%." + decimals + "f", num);
         return s;
     }
 
-    public static double positionInRange(double value, double min, double max) throws Exception {
+    public static double positionInRange(double value, double min, double max) {
         return positionInRange(value, min, max, true);
     }
 
-    public static double positionInRange(double value, double min, double max, boolean clamp) throws Exception {
+    public static double positionInRange(double value, double min, double max, boolean clamp) {
         value -= min;
         max -= min;
         min = 0;
@@ -98,7 +98,7 @@ public class Quick
         return value;
     }
 
-    public static double randomRange(double a, double b) throws Exception {
+    public static double randomRange(double a, double b) {
         double r = rnd.nextDouble();
         double min = a < b ? a : b;
         double max = a < b ? b : a;
@@ -107,7 +107,7 @@ public class Quick
     }
 
 
-    public static List<Offer> shuffle(List<Offer> list) throws Exception {
+    public static List<Offer> shuffle(List<Offer> list) {
         Collections.shuffle(list);
 
         return list;
@@ -118,7 +118,7 @@ public class Quick
         return a.getClassName().compareTo(b.getClassName());
     };
 
-    public static int sortAgentId(BasicAgent a, BasicAgent b) throws Exception {
+    public static int sortAgentId(BasicAgent a, BasicAgent b) {
         if (a.id < b.id)
             return -1;
          
@@ -138,7 +138,7 @@ public class Quick
         return 0;
     };
 
-    public static int sortOfferDecending(Offer a, Offer b) throws Exception {
+    public static int sortOfferDecending(Offer a, Offer b) {
         if (a.unit_price > b.unit_price)
             return -1;
          

@@ -26,7 +26,7 @@ public class Market
 
     private final IContractResolver _contractResolver;
 
-    public Market(String name, ISignalBankrupt isb, IContractResolver contractResolver) throws Exception {
+    public Market(String name, MarketData marketData, ISignalBankrupt isb, IContractResolver contractResolver) {
         this.name = name;
         history = new History();
         _book = new TradeBook();
@@ -36,29 +36,24 @@ public class Market
         _mapAgents = new HashMap<String,AgentData>();
         signalBankrupt = isb;
         _contractResolver = contractResolver;
+        fromData(marketData);
     }
 
-    //new TypedSignal<Market->BasicAgent->Void>();
-    public void init(MarketData data) throws Exception {
-        fromData(data);
-    }
-
-    public int numTypesOfGood() throws Exception {
+    public int numTypesOfGood() {
         return _goodTypes.size();
     }
 
-    public int numAgents() throws Exception {
+    public int numAgents() {
         return _agents.size();
     }
 
-    public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) throws Exception {
+    public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) {
         newAgent.id = oldAgent.id;
         _agents.set(oldAgent.id, newAgent);
-        newAgent.init(this);
     }
 
     //@:access(bazaarbot.agent.BasicAgent)    //dfs stub ????
-    public void simulate(int rounds) throws Exception {
+    public void simulate(int rounds) {
         for (int round = 0;round < rounds;round++)
         {
             for (BasicAgent agent : _agents)
@@ -91,11 +86,11 @@ public class Market
         }
     }
 
-    public void ask(Offer offer) throws Exception {
+    public void ask(Offer offer) {
         _book.ask(offer);
     }
 
-    public void bid(Offer offer) throws Exception {
+    public void bid(Offer offer) {
         _book.bid(offer);
     }
 
@@ -105,7 +100,7 @@ public class Market
     	     * @param	range number of rounds to look back
     	     * @return
     	     */
-    public double getAverageHistoricalPrice(String good, int range) throws Exception {
+    public double getAverageHistoricalPrice(String good, int range) {
         return history.prices.average(good,range);
     }
 
@@ -115,7 +110,7 @@ public class Market
     	     * @param	range number of rounds to look back
     	     * @return
     	     */
-    public String getHottestGood(double minimum, int range) throws Exception {
+    public String getHottestGood(double minimum, int range) {
         String best_market = "";
         double best_ratio = -99999;
         for (String good : _goodTypes)
@@ -143,7 +138,7 @@ public class Market
     }
 
 
-    public String getHottestGood() throws Exception {
+    public String getHottestGood() {
         return getHottestGood(1.5, 10);
     }
 
@@ -153,7 +148,7 @@ public class Market
     	     * @param	exclude goods to exclude
     	     * @return
     	     */
-    public String getCheapestGood(int range, List<String> exclude) throws Exception {
+    public String getCheapestGood(int range, List<String> exclude) {
         double best_price = -9999999;
         // Math.POSITIVE_INFINITY;
         String best_good = "";
@@ -180,7 +175,7 @@ public class Market
     	     * @param	exclude goods to exclude
     	     * @return
     	     */
-    public String getDearestGood(int range, List<String> exclude) throws Exception {
+    public String getDearestGood(int range, List<String> exclude) {
         double best_price = 0;
         String best_good = "";
         for (String g : _goodTypes)
@@ -205,7 +200,7 @@ public class Market
     	     * @param	range
     	     * @return
     	     */
-    public String getMostProfitableAgentClass(int range) throws Exception {
+    public String getMostProfitableAgentClass(int range) {
         double best = -999999;
         // Math.NEGATIVE_INFINITY;
         String bestClass = "";
@@ -222,15 +217,15 @@ public class Market
         return bestClass;
     }
 
-    public final String getMostProfitableAgentClass() throws Exception {
+    public final String getMostProfitableAgentClass() {
         return getMostProfitableAgentClass(10);
     }
 
-    public AgentData getAgentClass(String className) throws Exception {
+    public AgentData getAgentClass(String className) {
         return _mapAgents.get(className);
     }
 
-    public List<String> getAgentClassNames() throws Exception {
+    public List<String> getAgentClassNames() {
         List<String> agentData = new ArrayList<String>();
         for (String key : _mapAgents.keySet())
         {
@@ -239,15 +234,15 @@ public class Market
         return agentData;
     }
 
-    public List<String> getGoods() throws Exception {
+    public List<String> getGoods() {
         return new ArrayList<String>(_goodTypes);
     }
 
-    public List<String> getGoods_unsafe() throws Exception {
+    public List<String> getGoods_unsafe() {
         return _goodTypes;
     }
 
-    public Good getGoodEntry(String str) throws Exception {
+    public Good getGoodEntry(String str) {
         if (_mapGoods.containsKey(str))
         {
             return _mapGoods.get(str).copy();
@@ -257,7 +252,7 @@ public class Market
     }
 
     /********REPORT**********/
-    public MarketReport get_marketReport(int rounds) throws Exception {
+    public MarketReport get_marketReport(int rounds) {
         MarketReport mr = new MarketReport();
         mr.strListGood = "Commodities\n\n";
         mr.strListGoodPrices = "Price\n\n";
@@ -323,7 +318,7 @@ public class Market
     }
 
     /********PRIVATE*********/
-    private void fromData(MarketData data) throws Exception {
+    private void fromData(MarketData data) {
         for (Good g : data.goods)
         {
             //Create commodity index
@@ -357,13 +352,12 @@ public class Market
         for (BasicAgent agent : data.agents)
         {
             agent.id = agentIndex;
-            agent.init(this);
             _agents.add(agent);
             agentIndex++;
         }
     }
 
-    private void resolveOffers(String good) throws Exception {
+    private void resolveOffers(String good) {
         List<Offer> bids = _book.bids.get(good);
         List<Offer> asks = _book.asks.get(good);
         bids = Quick.shuffle(bids);
@@ -518,7 +512,7 @@ public class Market
         _contractResolver.newContract(seller, buyer, good, units, clearing_price);
     }
 
-    private void transferMoney(double amount, int seller_id, int buyer_id) throws Exception {
+    private void transferMoney(double amount, int seller_id, int buyer_id) {
         BasicAgent seller = _agents.get(seller_id);
         BasicAgent  buyer = _agents.get(buyer_id);
         seller.setMoney(seller.getMoney() + amount);

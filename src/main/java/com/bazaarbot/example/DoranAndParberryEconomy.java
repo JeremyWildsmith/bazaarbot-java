@@ -12,15 +12,12 @@ import java.util.List;
 
 public class DoranAndParberryEconomy  extends Economy
 {
-    public DoranAndParberryEconomy() throws Exception {
-        Market market = new Market("default",this, new DefaultContractResolver());
-        MarketData data = getMarketData();
-        market.init(data);
-        // market.init(MarketData.fromJSON(Json.parse(Assets.getText("assets/settings.json")), getAgent));
+    public DoranAndParberryEconomy() {
+        Market market = new Market("default", getMarketData(), this, new DefaultContractResolver());
         addMarket(market);
     }
 
-    private MarketData getMarketData() throws Exception {
+    private MarketData getMarketData() {
         List<Good> goods = new ArrayList<>();
         List<AgentData> agentTypes = new ArrayList<AgentData>();
         List<BasicAgent> agents = new ArrayList<BasicAgent>();
@@ -138,11 +135,11 @@ public class DoranAndParberryEconomy  extends Economy
     }
 
     @Override
-    public void signalBankrupt(Market m, BasicAgent a) throws Exception {
+    public void signalBankrupt(Market m, BasicAgent a) {
         replaceAgent(m,a);
     }
 
-    private void replaceAgent(Market market, BasicAgent agent) throws Exception {
+    private void replaceAgent(Market market, BasicAgent agent) {
         String bestClass = market.getMostProfitableAgentClass();
         //Special case to deal with very high demand-to-supply ratios
         //This will make them favor entering an underserved market over
@@ -167,7 +164,7 @@ public class DoranAndParberryEconomy  extends Economy
     	     * @param	good
     	     * @return
     	     */
-    public String getAgentClassThatMakesMost(String good) throws Exception {
+    public String getAgentClassThatMakesMost(String good) {
         String res = "";
         if (good.compareTo("food") == 0)
         {
@@ -224,12 +221,12 @@ public class DoranAndParberryEconomy  extends Economy
     //    data.logic = new LogicScript(data.logicName+".hs");
     //    return new Agent(0, data);
     //}
-    private BasicAgent getAgent(AgentData data) throws Exception {
+    private BasicAgent getAgent(AgentData data) {
         data.logic = getLogic(data.logicName);
         return new Agent(0,data);
     }
 
-    private Logic getLogic(String str) throws Exception {
+    private Logic getLogic(String str) {
         String __dummyScrutVar0 = str;
         if (__dummyScrutVar0.equals("blacksmith"))
         {

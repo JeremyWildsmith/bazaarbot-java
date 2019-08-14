@@ -24,7 +24,7 @@ public class Main {
         System.out.println(row);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         Economy economy = new DoranAndParberryEconomy();

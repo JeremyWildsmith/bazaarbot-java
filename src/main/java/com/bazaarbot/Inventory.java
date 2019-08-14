@@ -26,7 +26,7 @@ public class Inventory
     // how much space each thing takes up
     private HashMap<String,Double> _sizes;
 
-    public Inventory() throws Exception {
+    public Inventory() {
         _sizes = new HashMap<String,Double>();
         _stuff = new HashMap<String,Point>();
         _ideal = new HashMap<String,Double>();
@@ -34,7 +34,7 @@ public class Inventory
         maxSize = 0;
     }
 
-    public void fromData(InventoryData data) throws Exception {
+    public void fromData(InventoryData data) {
         List<String> sizes = new ArrayList<String>();
         List<Point> amountsp = new ArrayList<Point>();
         for (String key : data.start.keySet())
@@ -238,7 +238,7 @@ public class Inventory
      * @param	good string id of commodity
      * @return
      */
-    public double surplus(String good) throws Exception {
+    public double surplus(String good) {
         Double amt = query(good);
         double ideal = 0;
         if (_ideal.containsKey(good))
@@ -257,7 +257,7 @@ public class Inventory
      * @param	good
      * @return
      */
-    public double shortage(String good) throws Exception {
+    public double shortage(String good) {
         if (!_stuff.containsKey(good))
         {
             return 0;

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BasicAgent   
+public abstract class BasicAgent
 {
     public int id;
     //unique integer identifier
@@ -19,13 +19,13 @@ public class BasicAgent
     public double trackcosts;
     private Logic _logic;
     protected Inventory _inventory;
-    protected HashMap<String, List<Double>> _observedTradingRange;
+    protected HashMap<String, PriceBelief> goodsPriceBelief = new HashMap<>();
     //profit from last round
     private int _lookback = 15;
 
 
 
-    public BasicAgent(int id, AgentData data) throws Exception {
+    public BasicAgent(int id, AgentData data) {
         this.id = id;
         setClassName(data.className);
         setMoney(data.money);
@@ -39,50 +39,24 @@ public class BasicAgent
         else
         {
             _lookback = data.lookBack;
-        } 
-        _observedTradingRange = new HashMap<String, List<Double>>();
+        }
         trackcosts = 0;
     }
 
-    public void init(Market market) throws Exception {
-        List<String> listGoods = market.getGoods_unsafe();
-        for (String str : listGoods)
-        {
-            //List<String>
-            List<Double> trades = new ArrayList<Double>();
-            int price = 2;
-            // market.getAverageHistoricalPrice(str, _lookback);
-            trades.add(price * 1.0);
-            trades.add(price * 3.0);
-            //push two fake trades to generate a range
-            //set initial price belief & observed trading range
-            _observedTradingRange.put(str, trades);
-        }
-    }
-
-    public void simulate(Market market) throws Exception {
+    public void simulate(Market market) {
         _logic.perform(this,market);
     }
 
-    public void generateOffers(Market bazaar, String good) throws Exception {
-    }
+    public abstract void generateOffers(Market bazaar, String good);
+    public abstract void updatePriceModel(Market bazaar, String act, String good, boolean success, double unitPrice);
+    public abstract Offer createBid(Market bazaar, String good, double limit);
+    public abstract Offer createAsk(Market bazaar, String commodity_, double limit_);
 
-    public void updatePriceModel(Market bazaar, String act, String good, boolean success, double unitPrice) throws Exception {
-    }
-
-    public Offer createBid(Market bazaar, String good, double limit) throws Exception {
-        return null;
-    }
-
-    public Offer createAsk(Market bazaar, String commodity_, double limit_) throws Exception {
-        return null;
-    }
-
-    public double queryInventory(String good) throws Exception {
+    public final double queryInventory(String good) {
         return _inventory.query(good);
     }
 
-    public void produceInventory(String good, double delta) throws Exception {
+    public final void produceInventory(String good, double delta) {
         if (trackcosts < 1)
             trackcosts = 1;
          
@@ -90,7 +64,7 @@ public class BasicAgent
         trackcosts = 0;
     }
 
-    public void consumeInventory(String good, double delta) throws Exception {
+    public final void consumeInventory(String good, double delta) {
         if (good.compareTo("money") == 0)
         {
             setMoney(getMoney() + delta);
@@ -107,7 +81,7 @@ public class BasicAgent
         } 
     }
 
-    public void changeInventory(String good, double delta, double unit_cost) {
+    public final void changeInventory(String good, double delta, double unit_cost) {
         if (good.compareTo("money") == 0)
         {
             setMoney(getMoney() + delta);
@@ -118,9 +92,7 @@ public class BasicAgent
         } 
     }
 
-
-
-    protected double determineSaleQuantity(Market bazaar, String commodity_) throws Exception {
+    protected double determineSaleQuantity(Market bazaar, String commodity_) {
         Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
         //double
         Point trading_range = observeTradingRange(commodity_,10);
@@ -144,7 +116,7 @@ public class BasicAgent
         return 0;
     }
 
-    protected double determinePurchaseQuantity(Market bazaar, String commodity_) throws Exception {
+    protected double determinePurchaseQuantity(Market bazaar, String commodity_) {
         Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
         //double
         Point trading_range = observeTradingRange(commodity_,10);
@@ -168,14 +140,14 @@ public class BasicAgent
         return 0;
     }
 
-    private Point observeTradingRange(String good, int window) throws Exception {
-        List<Double> a = _observedTradingRange.get(good);
-        //List<double>
-        Point pt = new Point(Quick.minArr(a,window),Quick.maxArr(a,window));
-        return pt;
+    private Point observeTradingRange(String good, int window) {
+        if(!goodsPriceBelief.containsKey(good))
+            goodsPriceBelief.put(good, new PriceBelief());
+
+        return goodsPriceBelief.get(good).observe(window);
     }
 
-    public final void updatePriceModel(Market market, String buy, String good, boolean b) throws Exception {
+    public final void updatePriceModel(Market market, String buy, String good, boolean b) {
         updatePriceModel(market, buy, good, b, 0);
     }
 

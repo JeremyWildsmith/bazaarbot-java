@@ -13,11 +13,12 @@ import java.util.List;
 public class Agent  extends BasicAgent 
 {
     //lowest possible price
-    public Agent(int id, AgentData data) throws Exception {
+    public Agent(int id, AgentData data) {
         super(id, data);
     }
 
-    public Offer createBid(Market bazaar, String good, double limit) throws Exception {
+    @Override
+    public Offer createBid(Market bazaar, String good, double limit) {
         int bidPrice = 0;
         // determinePriceOf(good);  bids are now made "at market", no price determination needed
         Double ideal = determinePurchaseQuantity(bazaar,good);
@@ -31,7 +32,8 @@ public class Agent  extends BasicAgent
         return null;
     }
 
-    public Offer createAsk(Market bazaar, String commodity_, double limit_) throws Exception {
+    @Override
+    public Offer createAsk(Market bazaar, String commodity_, double limit_) {
         Double ask_price = _inventory.query_cost(commodity_) * 1.02;
         //asks are fair prices:  costs + small profit
         Double quantity_to_sell = _inventory.query(commodity_);
@@ -44,7 +46,8 @@ public class Agent  extends BasicAgent
         return null;
     }
 
-    public void generateOffers(Market bazaar, String commodity) throws Exception {
+    @Override
+    public void generateOffers(Market bazaar, String commodity) {
         Offer offer;
         double surplus = _inventory.surplus(commodity);
         if (surplus >= 1)
@@ -90,16 +93,12 @@ public class Agent  extends BasicAgent
         } 
     }
 
-    public void updatePriceModel(Market bazaar, String act, String good, boolean success, double unitPrice) throws Exception {
-        List<Double> observed_trades;
-        if (success)
-        {
-            //Add this to my list of observed trades
-            observed_trades = _observedTradingRange.get(good);
-            observed_trades.add(unitPrice);
-        }
-         
-        Double public_mean_price = bazaar.getAverageHistoricalPrice(good,1);
+    @Override
+    public void updatePriceModel(Market bazaar, String act, String good, boolean success, double unitPrice) {
+        if(!goodsPriceBelief.containsKey(good))
+            goodsPriceBelief.put(good, new PriceBelief());
+
+        goodsPriceBelief.get(good).addTransaction(unitPrice, success);
     }
 
 }

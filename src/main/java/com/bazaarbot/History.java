@@ -11,7 +11,7 @@ public class History
     public HistoryLog bids;
     public HistoryLog trades;
     public HistoryLog profit;
-    public History() throws Exception {
+    public History() {
         prices = new HistoryLog(EconNoun.Price);
         asks = new HistoryLog(EconNoun.Ask);
         bids = new HistoryLog(EconNoun.Bid);
@@ -19,7 +19,7 @@ public class History
         profit = new HistoryLog(EconNoun.Profit);
     }
 
-    public void register(String good) throws Exception {
+    public void register(String good) {
         prices.register(good);
         asks.register(good);
         bids.register(good);

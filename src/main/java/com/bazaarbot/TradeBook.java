@@ -17,17 +17,17 @@ public class TradeBook
     public HashMap<String, List<Offer>> bids;
     public HashMap<String,List<Offer>> asks;
 
-    public TradeBook() throws Exception {
+    public TradeBook() {
         bids = new HashMap<String,List<Offer>>();
         asks = new HashMap<String,List<Offer>>();
     }
 
-    public void register(String name) throws Exception {
+    public void register(String name) {
         asks.put(name, new ArrayList<Offer>());
         bids.put(name, new ArrayList<Offer>());
     }
 
-    public boolean bid(Offer offer) throws Exception {
+    public boolean bid(Offer offer) {
         if (!bids.containsKey(offer.good))
             return false;
          
@@ -35,7 +35,7 @@ public class TradeBook
         return true;
     }
 
-    public boolean ask(Offer offer) throws Exception {
+    public boolean ask(Offer offer) {
         if (!bids.containsKey(offer.good))
             return false;
          

@@ -11,7 +11,7 @@ import com.bazaarbot.Market;
 //make_room_for(agent, "food", 2);
 public class LogicWoodcutter  extends Logic
 {
-    public void perform(BasicAgent agent, Market market) throws Exception {
+    public void perform(BasicAgent agent, Market market) {
         Double food = agent.queryInventory("food");
         Double tools = agent.queryInventory("tools");
         Double wood = agent.queryInventory("wood");

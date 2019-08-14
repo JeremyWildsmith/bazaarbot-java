@@ -10,11 +10,11 @@ import java.util.List;
 public class Economy   implements ISignalBankrupt
 {
     private List<Market> _markets;
-    public Economy() throws Exception {
+    public Economy() {
         _markets = new ArrayList<Market>();
     }
 
-    public void addMarket(Market m) throws Exception {
+    public void addMarket(Market m) {
         if (!_markets.contains(m))
         {
             _markets.add(m);
@@ -22,7 +22,7 @@ public class Economy   implements ISignalBankrupt
          
     }
 
-    public Market getMarket(String name) throws Exception {
+    public Market getMarket(String name) {
         for (Market m : _markets)
         {
             if (m.name.compareTo(name) == 0)
@@ -32,13 +32,13 @@ public class Economy   implements ISignalBankrupt
         return null;
     }
 
-    public void simulate(int rounds) throws Exception {
+    public void simulate(int rounds) {
         for (Market m : _markets)
         {
             m.simulate(rounds);
         }
     }
 
-    public void signalBankrupt(Market m, BasicAgent a) throws Exception {
+    public void signalBankrupt(Market m, BasicAgent a) {
     }
 }

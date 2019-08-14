@@ -11,7 +11,7 @@ import com.bazaarbot.Market;
 //}
 public class LogicBlacksmith  extends Logic
 {
-    public void perform(BasicAgent agent, Market market) throws Exception {
+    public void perform(BasicAgent agent, Market market) {
         Double food = agent.queryInventory("food");
         Double metal = agent.queryInventory("metal");
         Double tools = agent.queryInventory("tools");

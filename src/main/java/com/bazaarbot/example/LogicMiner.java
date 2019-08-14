@@ -12,7 +12,7 @@ import com.bazaarbot.Market;
 //consume(agent, "money", 2);
 public class LogicMiner  extends Logic
 {
-    public void perform(BasicAgent agent, Market market) throws Exception {
+    public void perform(BasicAgent agent, Market market) {
         Double food = agent.queryInventory("food");
         Double tools = agent.queryInventory("tools");
         Double ore = agent.queryInventory("ore");

@@ -12,7 +12,7 @@ public class HistoryLog
 {
     EconNoun type = EconNoun.Price;
     HashMap<String,ArrayList<Double>> log;
-    public HistoryLog(EconNoun type) throws Exception {
+    public HistoryLog(EconNoun type) {
         this.type = type;
         log = new HashMap<String, ArrayList<Double>>();
     }
@@ -22,7 +22,7 @@ public class HistoryLog
     	     * @param	name
     	     * @param	amount
     	     */
-    public void add(String name, double amount) throws Exception {
+    public void add(String name, double amount) {
         if (log.containsKey(name))
         {
             List<Double> list = log.get(name);
@@ -35,7 +35,7 @@ public class HistoryLog
     	     * Register a new category list in this log
     	     * @param	name
     	     */
-    public void register(String name) throws Exception {
+    public void register(String name) {
         if (!log.containsKey(name))
         {
             log.put(name, new ArrayList<Double>());
@@ -49,7 +49,7 @@ public class HistoryLog
     	     * @param	range how far to look back
     	     * @return
     	     */
-    public double average(String name, int range) throws Exception {
+    public double average(String name, int range) {
         if (log.containsKey(name))
         {
             List<Double> list = log.get(name);

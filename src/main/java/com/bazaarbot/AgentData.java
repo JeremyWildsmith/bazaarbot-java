@@ -18,7 +18,7 @@ public class AgentData
     public Logic logic;
     public Integer lookBack;
 
-    public AgentData(String className, double money, String logicName) throws Exception {
+    public AgentData(String className, double money, String logicName) {
         this.className = className;
         this.money = money;
         this.logicName = logicName;

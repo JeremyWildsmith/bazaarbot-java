@@ -6,7 +6,7 @@ package com.bazaarbot;
 
 public interface ISignalBankrupt
 {
-    void signalBankrupt(Market m, BasicAgent agent) throws Exception ;
+    void signalBankrupt(Market m, BasicAgent agent);
 }
 
 

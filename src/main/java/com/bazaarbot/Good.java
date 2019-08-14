@@ -10,12 +10,12 @@ public class Good
     //string id of good
     public double size = 1.0;
     //inventory size taken up
-    public Good(String id_, double size_) throws Exception {
+    public Good(String id_, double size_) {
         id = id_;
         size = size_;
     }
 
-    public Good copy() throws Exception {
+    public Good copy() {
         return new Good(id,size);
     }
 

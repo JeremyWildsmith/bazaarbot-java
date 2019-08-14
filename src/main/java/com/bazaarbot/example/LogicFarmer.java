@@ -11,7 +11,7 @@ import com.bazaarbot.Market;
 //make_room_for(agent, "food", 2); stub todo needed?
 public class LogicFarmer  extends Logic
 {
-    public void perform(BasicAgent agent, Market market) throws Exception {
+    public void perform(BasicAgent agent, Market market) {
         Double wood = agent.queryInventory("wood");
         Double tools = agent.queryInventory("tools");
         Double food = agent.queryInventory("food");
