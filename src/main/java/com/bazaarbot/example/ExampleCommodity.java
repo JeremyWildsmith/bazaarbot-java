@@ -3,7 +3,6 @@ package com.bazaarbot.example;
 import com.bazaarbot.ICommodity;
 
 public enum ExampleCommodity implements ICommodity {
-    tools("tools", 1.0),
     Food("food", 1.0),
     Tools("tools", 1.0),
     Wood("wood", 0.0),
