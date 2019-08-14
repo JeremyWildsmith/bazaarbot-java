@@ -360,13 +360,35 @@ public class Market
         }
     }
 
+    private static void sortOffers(List<Offer> offers) {
+        offers.sort((Offer a, Offer b) -> {
+            if (a.unit_price < b.unit_price)
+                return -1;
+
+            if (a.unit_price > b.unit_price)
+                return 1;
+
+            return 0;
+        });
+    }
+
+    private static double listAvgf(List<Double> list) {
+        double avg = 0;
+        for (int j = 0;j < list.size();j++)
+        {
+            avg += list.get(j);
+        }
+        avg /= list.size();
+        return avg;
+    }
+
     private void resolveOffers(ICommodity good) {
         List<Offer> bids = _book.bids.get(good);
         List<Offer> asks = _book.asks.get(good);
         Collections.shuffle(bids, rng);
         Collections.shuffle(asks, rng);
         //bids.Sort(Utils.sortOfferDecending); //highest buying price first
-        asks.sort(Utils.sortOfferAcending);
+        sortOffers(asks);
         //lowest selling price first
         int successfulTrades = 0;
         //# of successful trades this round
@@ -491,7 +513,7 @@ public class Market
                 {
                     //do we have a list built up?
                     //log last class' profit
-                    history.profit.add(last_class, Utils.listAvgf(list));
+                    history.profit.add(last_class, listAvgf(list));
                 }
                  
                 list = new ArrayList<Double>();
@@ -503,7 +525,7 @@ public class Market
         }
         //push profit onto list
         //add the last class too
-        history.profit.add(last_class, Utils.listAvgf(list));
+        history.profit.add(last_class, listAvgf(list));
     }
 
     //sort by id so everything works again

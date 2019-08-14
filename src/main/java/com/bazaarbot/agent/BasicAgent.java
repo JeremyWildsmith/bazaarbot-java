@@ -96,13 +96,13 @@ public abstract class BasicAgent
     }
 
     protected double determineSaleQuantity(Market bazaar, ICommodity commodity_) {
-        Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
+        double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
         //double
-        Point trading_range = observeTradingRange(commodity_,10);
+        PriceRange trading_range = observeTradingRange(commodity_,10);
         //point
-        if (trading_range != null && mean > 0)
+        if (mean > 0)
         {
-            double favorability = Utils.positionInRange(mean, trading_range.x, trading_range.y);
+            double favorability = trading_range.positionInRange(mean);
             //double
             //position_in_range: high means price is at a high point
             double amount_to_sell = Math.round(favorability * _inventory.surplus(commodity_));
@@ -122,11 +122,11 @@ public abstract class BasicAgent
     protected double determinePurchaseQuantity(Market bazaar, ICommodity commodity_) {
         Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
         //double
-        Point trading_range = observeTradingRange(commodity_,10);
+        PriceRange trading_range = observeTradingRange(commodity_,10);
         //Point
         if (trading_range != null)
         {
-            double favorability = Utils.positionInRange(mean, trading_range.x, trading_range.y);
+            double favorability = trading_range.positionInRange(mean);
             //double
             favorability = 1 - favorability;
             //do 1 - favorability to see how close we are to the low end
@@ -143,7 +143,7 @@ public abstract class BasicAgent
         return 0;
     }
 
-    private Point observeTradingRange(ICommodity good, int window) {
+    private PriceRange observeTradingRange(ICommodity good, int window) {
         if(!goodsPriceBelief.containsKey(good))
             goodsPriceBelief.put(good, new PriceBelief());
 
