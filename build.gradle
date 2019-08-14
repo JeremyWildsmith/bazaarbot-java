@@ -5,6 +5,7 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'application'
 }
 
 repositories {
@@ -17,6 +18,7 @@ repositories {
 group = 'com.bazaarbot'
 version = '1.0-SNAPSHOT'
 sourceCompatibility = '1.9'
+mainClassName = "com.bazaarbot.example.Main"
 
 publishing {
     publications {
@@ -24,4 +26,12 @@ publishing {
             from(components.java)
         }
     }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
+
+test {
+    useJUnit()
 }

@@ -5,6 +5,8 @@ import com.bazaarbot.market.Market;
 import com.bazaarbot.market.MarketReport;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -26,7 +28,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Economy economy = new DoranAndParberryEconomy();
+        Economy economy = new DoranAndParberryEconomy(new Random(1234));
         Market market = economy.getMarket("default");
 
         //dataGridView2.DataSource = res.arrStrListInventory;
@@ -43,8 +45,12 @@ public class Main {
             format_row(res.strListGoodAsks);
 
             List<String> inventory = res.getarrStrListInventory();
-            scanner.nextLine();
 
+            try {
+                scanner.nextLine();
+            } catch (NoSuchElementException e) {
+                break;
+            }
             rounds += 1;
         }
     }

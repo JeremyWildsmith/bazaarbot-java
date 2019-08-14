@@ -11,11 +11,6 @@ import java.util.*;
 
 public class Utils
 {
-    public static Random rnd = new Random();
-    public static double avgf(double a, double b) {
-        return (a + b) / 2;
-    }
-
     public static double listAvgf(List<Double> list) {
         double avg = 0;
         for (int j = 0;j < list.size();j++)
@@ -59,20 +54,9 @@ public class Utils
             {
                 max = f;
             }
-             
+
         }
         return max;
-    }
-
-    /**
-             * Turns a number into a string with the specified number of decimal points
-             * @param	num
-             * @param	decimals
-             * @return
-             */
-    public static String numStr(double num, int decimals) {
-        String s = String.format("%." + decimals + "f", num);
-        return s;
     }
 
     public static double positionInRange(double value, double min, double max) {
@@ -101,36 +85,6 @@ public class Utils
         return value;
     }
 
-    public static double randomRange(double a, double b) {
-        double r = rnd.nextDouble();
-        double min = a < b ? a : b;
-        double max = a < b ? b : a;
-        double range = max - min;
-        return r * range + min;
-    }
-
-
-    public static List<Offer> shuffle(List<Offer> list) {
-        Collections.shuffle(list);
-
-        return list;
-    }
-
-
-    public static Comparator<BasicAgent> sortAgentAlpha = (BasicAgent a, BasicAgent b) -> {
-        return a.getClassName().compareTo(b.getClassName());
-    };
-
-    public static int sortAgentId(BasicAgent a, BasicAgent b) {
-        if (a.id < b.id)
-            return -1;
-         
-        if (a.id > b.id)
-            return 1;
-         
-        return 0;
-    }
-
     public static Comparator<Offer> sortOfferAcending = (Offer a, Offer b) -> {
         if (a.unit_price < b.unit_price)
             return -1;
@@ -140,15 +94,5 @@ public class Utils
          
         return 0;
     };
-
-    public static int sortOfferDecending(Offer a, Offer b) {
-        if (a.unit_price > b.unit_price)
-            return -1;
-         
-        if (a.unit_price < b.unit_price)
-            return 1;
-         
-        return 0;
-    }
 
 }

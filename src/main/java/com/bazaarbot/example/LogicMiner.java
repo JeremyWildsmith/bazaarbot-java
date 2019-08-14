@@ -8,10 +8,19 @@ import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
+import java.util.Random;
+
 //fined $2 for being idle
 //consume(agent, "money", 2);
 public class LogicMiner  extends Logic
 {
+    public LogicMiner(Random rnd) {
+        super(rnd);
+    }
+
+    public LogicMiner() {
+    }
+
     public void perform(BasicAgent agent, Market market) {
         Double food = agent.queryInventory(ExampleCommodity.Food);
         Double tools = agent.queryInventory(ExampleCommodity.Tools);

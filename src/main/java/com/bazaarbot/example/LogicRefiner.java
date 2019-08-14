@@ -8,9 +8,18 @@ import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
+import java.util.Random;
+
 //make_room_for(agent,"food",2);
 public class LogicRefiner  extends Logic
 {
+    public LogicRefiner(Random rnd) {
+        super(rnd);
+    }
+
+    public LogicRefiner() {
+    }
+
     public void perform(BasicAgent agent, Market market) {
         Double food = agent.queryInventory(ExampleCommodity.Food);
         Double tools = agent.queryInventory(ExampleCommodity.Tools);
