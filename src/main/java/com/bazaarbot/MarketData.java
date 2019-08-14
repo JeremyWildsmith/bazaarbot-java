@@ -8,11 +8,11 @@ import java.util.List;
 
 public class MarketData   
 {
-    public List<Good> goods;
+    public List<ICommodity> goods;
     public List<AgentData> agentTypes;
     public List<BasicAgent> agents;
 
-    public MarketData(List<Good> goods, List<AgentData> agentTypes, List<BasicAgent> agents) {
+    public MarketData(List<ICommodity> goods, List<AgentData> agentTypes, List<BasicAgent> agents) {
         this.goods = goods;
         this.agentTypes = agentTypes;
         this.agents = agents;

@@ -7,7 +7,7 @@ package com.bazaarbot;
 
 public class Offer   
 {
-    public String good;
+    public ICommodity good;
     //the thing offered
     public double units;
     //how many units
@@ -15,7 +15,7 @@ public class Offer
     //price per unit
     public int agent_id;
     //who offered this
-    public Offer(int agent_id_, String commodity_, double units_, double unit_price_) {
+    public Offer(int agent_id_, ICommodity commodity_, double units_, double unit_price_) {
         agent_id = agent_id_;
         good = commodity_;
         units = units_;

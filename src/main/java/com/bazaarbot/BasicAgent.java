@@ -19,7 +19,7 @@ public abstract class BasicAgent
     public double trackcosts;
     private Logic _logic;
     protected Inventory _inventory;
-    protected HashMap<String, PriceBelief> goodsPriceBelief = new HashMap<>();
+    protected HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
     //profit from last round
     private int _lookback = 15;
 
@@ -47,16 +47,16 @@ public abstract class BasicAgent
         _logic.perform(this,market);
     }
 
-    public abstract void generateOffers(Market bazaar, String good);
-    public abstract void updatePriceModel(Market bazaar, String act, String good, boolean success, double unitPrice);
-    public abstract Offer createBid(Market bazaar, String good, double limit);
-    public abstract Offer createAsk(Market bazaar, String commodity_, double limit_);
+    public abstract void generateOffers(Market bazaar, ICommodity good);
+    public abstract void updatePriceModel(Market bazaar, String act, ICommodity good, boolean success, double unitPrice);
+    public abstract Offer createBid(Market bazaar, ICommodity good, double limit);
+    public abstract Offer createAsk(Market bazaar, ICommodity commodity_, double limit_);
 
-    public final double queryInventory(String good) {
+    public final double queryInventory(ICommodity good) {
         return _inventory.query(good);
     }
 
-    public final void produceInventory(String good, double delta) {
+    public final void produceInventory(ICommodity good, double delta) {
         if (trackcosts < 1)
             trackcosts = 1;
          
@@ -64,8 +64,8 @@ public abstract class BasicAgent
         trackcosts = 0;
     }
 
-    public final void consumeInventory(String good, double delta) {
-        if (good.compareTo("money") == 0)
+    public final void consumeInventory(ICommodity good, double delta) {
+        if (good.getName().compareTo("money") == 0)
         {
             setMoney(getMoney() + delta);
             if (delta < 0)
@@ -81,8 +81,8 @@ public abstract class BasicAgent
         } 
     }
 
-    public final void changeInventory(String good, double delta, double unit_cost) {
-        if (good.compareTo("money") == 0)
+    public final void changeInventory(ICommodity good, double delta, double unit_cost) {
+        if (good.getName().compareTo("money") == 0)
         {
             setMoney(getMoney() + delta);
         }
@@ -92,7 +92,7 @@ public abstract class BasicAgent
         } 
     }
 
-    protected double determineSaleQuantity(Market bazaar, String commodity_) {
+    protected double determineSaleQuantity(Market bazaar, ICommodity commodity_) {
         Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
         //double
         Point trading_range = observeTradingRange(commodity_,10);
@@ -116,7 +116,7 @@ public abstract class BasicAgent
         return 0;
     }
 
-    protected double determinePurchaseQuantity(Market bazaar, String commodity_) {
+    protected double determinePurchaseQuantity(Market bazaar, ICommodity commodity_) {
         Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
         //double
         Point trading_range = observeTradingRange(commodity_,10);
@@ -140,14 +140,14 @@ public abstract class BasicAgent
         return 0;
     }
 
-    private Point observeTradingRange(String good, int window) {
+    private Point observeTradingRange(ICommodity good, int window) {
         if(!goodsPriceBelief.containsKey(good))
             goodsPriceBelief.put(good, new PriceBelief());
 
         return goodsPriceBelief.get(good).observe(window);
     }
 
-    public final void updatePriceModel(Market market, String buy, String good, boolean b) {
+    public final void updatePriceModel(Market market, String buy, ICommodity good, boolean b) {
         updatePriceModel(market, buy, good, b, 0);
     }
 

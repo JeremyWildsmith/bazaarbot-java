@@ -4,27 +4,23 @@
 
 package com.bazaarbot;
 
-import com.github.martincooper.datatable.DataColumn;
-import com.github.martincooper.datatable.DataTable;
-import com.github.martincooper.datatable.DataTableBuilder;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class TradeBook   
 {
-    public HashMap<String, List<Offer>> bids;
-    public HashMap<String,List<Offer>> asks;
+    public HashMap<ICommodity, List<Offer>> bids;
+    public HashMap<ICommodity, List<Offer>> asks;
 
     public TradeBook() {
-        bids = new HashMap<String,List<Offer>>();
-        asks = new HashMap<String,List<Offer>>();
+        bids = new HashMap<>();
+        asks = new HashMap<>();
     }
 
-    public void register(String name) {
-        asks.put(name, new ArrayList<Offer>());
-        bids.put(name, new ArrayList<Offer>());
+    public void register(ICommodity name) {
+        asks.put(name, new ArrayList<>());
+        bids.put(name, new ArrayList<>());
     }
 
     public boolean bid(Offer offer) {

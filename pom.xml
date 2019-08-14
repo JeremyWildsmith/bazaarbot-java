@@ -14,10 +14,5 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.github.martincooper</groupId>
-            <artifactId>java-datatable</artifactId>
-            <version>0.9.0</version>
-        </dependency>
     </dependencies>
 </project>

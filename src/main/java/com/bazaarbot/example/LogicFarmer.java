@@ -8,15 +8,15 @@ import com.bazaarbot.BasicAgent;
 import com.bazaarbot.Logic;
 import com.bazaarbot.Market;
 
-//make_room_for(agent, "food", 2); stub todo needed?
+//make_room_for(agent, ExampleCommodity.Food, 2); stub todo needed?
 public class LogicFarmer  extends Logic
 {
     public void perform(BasicAgent agent, Market market) {
-        Double wood = agent.queryInventory("wood");
-        Double tools = agent.queryInventory("tools");
-        Double food = agent.queryInventory("food");
+        Double wood = agent.queryInventory(ExampleCommodity.Wood);
+        Double tools = agent.queryInventory(ExampleCommodity.Tools);
+        Double food = agent.queryInventory(ExampleCommodity.Food);
         Boolean need_food = food < 10;
-        Double work = agent.queryInventory("work");
+        Double work = agent.queryInventory(ExampleCommodity.Work);
         Boolean has_wood = wood >= 1;
         Boolean has_tools = tools >= 1;
         Boolean has_work = work >= 1;
@@ -26,23 +26,23 @@ public class LogicFarmer  extends Logic
             if (has_wood && has_tools && has_work)
             {
                 //produce 4 food, consume 1 wood, break tools with 10% chance
-                consume(agent,"wood",1,1);
-                consume(agent,"tools",1,0.1);
-                consume(agent,"work",1,1);
-                produce(agent,"food",6,1);
+                consume(agent,ExampleCommodity.Wood,1,1);
+                consume(agent,ExampleCommodity.Tools,1,0.1);
+                consume(agent,ExampleCommodity.Work,1,1);
+                produce(agent,ExampleCommodity.Food,6,1);
             }
             else if (has_wood && !has_tools && has_work)
             {
                 //produce 2 food, consume 1 wood
-                consume(agent,"wood",1,1);
-                consume(agent,"work",1,1);
-                produce(agent,"food",3,1);
+                consume(agent,ExampleCommodity.Wood,1,1);
+                consume(agent,ExampleCommodity.Work,1,1);
+                produce(agent,ExampleCommodity.Food,3,1);
             }
             else
             {
                 //no wood
                 //produce 1 food,
-                produce(agent,"food",1,1);
+                produce(agent,ExampleCommodity.Food,1,1);
             }  
         }
         else

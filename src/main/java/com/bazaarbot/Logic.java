@@ -12,7 +12,7 @@ public abstract class Logic
      */
     public abstract void perform(BasicAgent agent, Market market);
 
-    protected void produce(BasicAgent agent, String commodity, double amount, double chance) {
+    protected void produce(BasicAgent agent, ICommodity commodity, double amount, double chance) {
         if (chance >= 1.0 || Quick.rnd.nextDouble() < chance)
         {
             agent.produceInventory(commodity,amount);
@@ -20,11 +20,11 @@ public abstract class Logic
          
     }
 
-    protected final void produce(BasicAgent agent, String commodity, double amount) {
+    protected final void produce(BasicAgent agent, ICommodity commodity, double amount) {
         produce(agent, commodity, amount, 1.0);
     }
 
-    protected void consume(BasicAgent agent, String commodity, double amount, double chance) {
+    protected void consume(BasicAgent agent, ICommodity commodity, double amount, double chance) {
         if (chance >= 1.0 || Quick.rnd.nextDouble() < chance)
         {
             agent.consumeInventory(commodity,-amount);
@@ -32,7 +32,7 @@ public abstract class Logic
          
     }
 
-    protected final void consume(BasicAgent agent, String commodity, double amount) {
+    protected final void consume(BasicAgent agent, ICommodity commodity, double amount) {
         consume(agent, commodity, amount, 1.0);
     }
 }

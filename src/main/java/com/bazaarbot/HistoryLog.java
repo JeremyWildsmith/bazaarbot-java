@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class HistoryLog   
+public class HistoryLog<T>
 {
-    EconNoun type = EconNoun.Price;
-    HashMap<String,ArrayList<Double>> log;
+    private EconNoun type = EconNoun.Price;
+    private HashMap<T, ArrayList<Double>> log;
+
     public HistoryLog(EconNoun type) {
         this.type = type;
-        log = new HashMap<String, ArrayList<Double>>();
+        log = new HashMap<>();
     }
 
     /**
@@ -22,7 +23,7 @@ public class HistoryLog
     	     * @param	name
     	     * @param	amount
     	     */
-    public void add(String name, double amount) {
+    public void add(T name, double amount) {
         if (log.containsKey(name))
         {
             List<Double> list = log.get(name);
@@ -35,21 +36,21 @@ public class HistoryLog
     	     * Register a new category list in this log
     	     * @param	name
     	     */
-    public void register(String name) {
+    public void register(T name) {
         if (!log.containsKey(name))
         {
-            log.put(name, new ArrayList<Double>());
+            log.put(name, new ArrayList<>());
         }
          
     }
 
     /**
-    	     * Returns the average amount of the given category, looking backwards over a specified range
-    	     * @param	name the category of thing
-    	     * @param	range how far to look back
-    	     * @return
-    	     */
-    public double average(String name, int range) {
+     * Returns the average amount of the given category, looking backwards over a specified range
+     * @param	name the category of thing
+     * @param	range how far to look back
+     * @return
+     */
+    public double average(T name, int range) {
         if (log.containsKey(name))
         {
             List<Double> list = log.get(name);

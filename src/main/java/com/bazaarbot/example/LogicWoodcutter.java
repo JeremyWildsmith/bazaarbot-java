@@ -12,29 +12,29 @@ import com.bazaarbot.Market;
 public class LogicWoodcutter  extends Logic
 {
     public void perform(BasicAgent agent, Market market) {
-        Double food = agent.queryInventory("food");
-        Double tools = agent.queryInventory("tools");
-        Double wood = agent.queryInventory("wood");
+        Double food = agent.queryInventory(ExampleCommodity.Food);
+        Double tools = agent.queryInventory(ExampleCommodity.Tools);
+        Double wood = agent.queryInventory(ExampleCommodity.Wood);
         Boolean need_wood = wood < 4;
         Boolean has_food = food >= 1;
         Boolean has_tools = tools >= 1;
         //consume(agent, "money", 0.5);//cost of living/business
-        consume(agent, "food", 1);
+        consume(agent, ExampleCommodity.Food, 1);
         //cost of living
         if (has_food && need_wood)
         {
             if (has_tools)
             {
                 //produce 2 wood, consume 1 food, break tools with 10% chance
-                consume(agent, "food", 1);
-                consume(agent,"tools",1,0.1);
-                produce(agent, "wood", 2);
+                consume(agent, ExampleCommodity.Food, 1);
+                consume(agent,ExampleCommodity.Tools,1,0.1);
+                produce(agent, ExampleCommodity.Wood, 2);
             }
             else
             {
                 //produce 1 wood, consume 1 food
-                consume(agent, "food", 1);
-                produce(agent, "wood", 1);
+                consume(agent, ExampleCommodity.Food, 1);
+                produce(agent, ExampleCommodity.Wood, 1);
             } 
         }
         else

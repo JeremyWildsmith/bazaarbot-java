@@ -12,20 +12,20 @@ import com.bazaarbot.Market;
 public class LogicBlacksmith  extends Logic
 {
     public void perform(BasicAgent agent, Market market) {
-        Double food = agent.queryInventory("food");
-        Double metal = agent.queryInventory("metal");
-        Double tools = agent.queryInventory("tools");
+        Double food = agent.queryInventory(ExampleCommodity.Food);
+        Double metal = agent.queryInventory(ExampleCommodity.Metal);
+        Double tools = agent.queryInventory(ExampleCommodity.Tools);
         Boolean need_tools = tools < 4;
         Boolean has_food = food >= 1;
         Boolean has_metal = metal >= 1;
         //consume(agent, "money", 0.5);//cost of living/business
-        consume(agent, "food", 1);
+        consume(agent, ExampleCommodity.Food, 1);
         //cost of living
         if (has_food && has_metal & need_tools)
         {
             //convert all metal into tools
-            consume(agent, "metal", metal);
-            produce(agent, "tools", metal);
+            consume(agent, ExampleCommodity.Metal, metal);
+            produce(agent, ExampleCommodity.Tools, metal);
         }
         else
         {

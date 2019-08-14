@@ -12,15 +12,15 @@ import com.bazaarbot.Market;
 public class LogicWorker  extends Logic
 {
     public void perform(BasicAgent agent, Market market) {
-        Double food = agent.queryInventory("food");
+        Double food = agent.queryInventory(ExampleCommodity.Food);
         Boolean has_food = food >= 1;
-        Double work = agent.queryInventory("work");
+        Double work = agent.queryInventory(ExampleCommodity.Work);
         Boolean need_work = work < 1;
-        consume(agent, "food", 1);
+        consume(agent, ExampleCommodity.Food, 1);
         //consume(agent, "money", 0.5);//cost of living/business
         if (need_work)
         {
-            produce(agent, "work", 1);
+            produce(agent, ExampleCommodity.Work, 1);
         }
          
     }

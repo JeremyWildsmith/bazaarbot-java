@@ -17,12 +17,11 @@ public class Market
     public ISignalBankrupt signalBankrupt;
     /********PRIVATE*********/
     private int _roundNum = 0;
-    private List<String> _goodTypes;
+    private List<ICommodity> _goodTypes;
     //list of string ids for all the legal commodities
     public List<BasicAgent> _agents = new ArrayList<>();
     public TradeBook _book;
-    private HashMap<String,AgentData> _mapAgents;
-    private HashMap<String,Good> _mapGoods;
+    private HashMap<String, AgentData> _mapAgents;
 
     private final IContractResolver _contractResolver;
 
@@ -32,8 +31,7 @@ public class Market
         _book = new TradeBook();
         _goodTypes = new ArrayList<>();
         _agents = new ArrayList<>();
-        _mapGoods = new HashMap<String,Good>();
-        _mapAgents = new HashMap<String,AgentData>();
+        _mapAgents = new HashMap<>();
         signalBankrupt = isb;
         _contractResolver = contractResolver;
         fromData(marketData);
@@ -60,12 +58,12 @@ public class Market
             {
                 agent.moneyLastRound = agent.getMoney();
                 agent.simulate(this);
-                for (String commodity : _goodTypes)
+                for (ICommodity commodity : _goodTypes)
                 {
                     agent.generateOffers(this, commodity);
                 }
             }
-            for (String commodity : _goodTypes)
+            for (ICommodity commodity : _goodTypes)
             {
                 resolveOffers(commodity);
             }
@@ -95,25 +93,26 @@ public class Market
     }
 
     /**
-    	     * Returns the historical mean price of the given commodity over the last X rounds
-    	     * @param	good string id of commodity
-    	     * @param	range number of rounds to look back
-    	     * @return
-    	     */
-    public double getAverageHistoricalPrice(String good, int range) {
+     * Returns the historical mean price of the given commodity over the last X rounds
+     * @param	good string id of commodity
+     * @param	range number of rounds to look back
+     * @return
+     */
+    public double getAverageHistoricalPrice(ICommodity good, int range) {
         return history.prices.average(good,range);
     }
 
     /**
-    	     * Get the good with the highest demand/supply ratio over time
-    	     * @param   minimum the minimum demand/supply ratio to consider an opportunity
-    	     * @param	range number of rounds to look back
-    	     * @return
-    	     */
-    public String getHottestGood(double minimum, int range) {
-        String best_market = "";
+     * Get the good with the highest demand/supply ratio over time
+     * @param   minimum the minimum demand/supply ratio to consider an opportunity
+     * @param	range number of rounds to look back
+     * @return
+     */
+    public ICommodity getHottestGood(double minimum, int range) {
+        ICommodity best_market = null;
+
         double best_ratio = -99999;
-        for (String good : _goodTypes)
+        for (ICommodity good : _goodTypes)
         {
             // Math.NEGATIVE_INFINITY;
             Double asks = history.asks.average(good,range);
@@ -134,11 +133,12 @@ public class Market
             }
              
         }
+
         return best_market;
     }
 
 
-    public String getHottestGood() {
+    public ICommodity getHottestGood() {
         return getHottestGood(1.5, 10);
     }
 
@@ -148,11 +148,11 @@ public class Market
     	     * @param	exclude goods to exclude
     	     * @return
     	     */
-    public String getCheapestGood(int range, List<String> exclude) {
+    public ICommodity getCheapestGood(int range, List<ICommodity> exclude) {
         double best_price = -9999999;
         // Math.POSITIVE_INFINITY;
-        String best_good = "";
-        for (String g : _goodTypes)
+        ICommodity best_good = null;
+        for (ICommodity g : _goodTypes)
         {
             if (exclude == null || !exclude.contains(g))
             {
@@ -166,19 +166,20 @@ public class Market
             }
              
         }
+
         return best_good;
     }
 
     /**
-    	     * Returns the good that has the highest average price over the given range of time
-    	     * @param	range how many rounds to look back
-    	     * @param	exclude goods to exclude
-    	     * @return
-    	     */
-    public String getDearestGood(int range, List<String> exclude) {
+     * Returns the good that has the highest average price over the given range of time
+     * @param	range how many rounds to look back
+     * @param	exclude goods to exclude
+     * @return
+     */
+    public ICommodity getDearestGood(int range, List<ICommodity> exclude) {
         double best_price = 0;
-        String best_good = "";
-        for (String g : _goodTypes)
+        ICommodity best_good = null;
+        for (ICommodity g : _goodTypes)
         {
             if (exclude == null || !exclude.contains(g))
             {
@@ -206,7 +207,7 @@ public class Market
         String bestClass = "";
         for (String className : _mapAgents.keySet())
         {
-            double val = history.profit.average(className,range);
+            double val = history.profit.average(className, range);
             if (val > best)
             {
                 bestClass = className;
@@ -234,21 +235,12 @@ public class Market
         return agentData;
     }
 
-    public List<String> getGoods() {
-        return new ArrayList<String>(_goodTypes);
+    public List<ICommodity> getGoods() {
+        return new ArrayList<>(_goodTypes);
     }
 
-    public List<String> getGoods_unsafe() {
+    public List<ICommodity> getGoods_unsafe() {
         return _goodTypes;
-    }
-
-    public Good getGoodEntry(String str) {
-        if (_mapGoods.containsKey(str))
-        {
-            return _mapGoods.get(str).copy();
-        }
-         
-        return null;
     }
 
     /********REPORT**********/
@@ -264,7 +256,7 @@ public class Market
         mr.strListAgentProfit = "Profit\n\n";
         mr.strListAgentMoney = "Money\n\n";
         mr.setarrStrListInventory(new ArrayList<String>());
-        for (String commodity : _goodTypes)
+        for (ICommodity commodity : _goodTypes)
         {
             mr.strListGood += commodity + "\n";
             Double price = history.prices.average(commodity,rounds);
@@ -280,7 +272,7 @@ public class Market
         for (String key : _mapAgents.keySet())
         {
             List<Double> inventory = new ArrayList<Double>();
-            for (String str : _goodTypes)
+            for (ICommodity str : _goodTypes)
             {
                 inventory.add(0.0);
             }
@@ -319,28 +311,29 @@ public class Market
 
     /********PRIVATE*********/
     private void fromData(MarketData data) {
-        for (Good g : data.goods)
+        for (ICommodity g : data.goods)
         {
             //Create commodity index
-            _goodTypes.add(g.id);
-            _mapGoods.put(g.id, new Good(g.id,g.size));
+            _goodTypes.add(g);
+
             double v = 1.0;
-            if (g.id.compareTo("metal") == 0)
+            if (g.getName().compareTo("metal") == 0)
                 v = 2.0;
              
-            if (g.id.compareTo("tools") == 0)
+            if (g.getName().compareTo("tools") == 0)
                 v = 3.0;
              
-            history.register(g.id);
-            history.prices.add(g.id,v);
+            history.registerCommodity(g);
+            history.prices.add(g,v);
             //start the bidding at $1!
-            history.asks.add(g.id,v);
+            history.asks.add(g,v);
             //start history charts with 1 fake buy/sell bid
-            history.bids.add(g.id,v);
-            history.trades.add(g.id,v);
-            _book.register(g.id);
+            history.bids.add(g,v);
+            history.trades.add(g,v);
+            _book.register(g);
         }
-        _mapAgents = new HashMap<String,AgentData>();
+        _mapAgents = new HashMap<>();
+
         for (AgentData aData : data.agentTypes)
         {
             _mapAgents.put(aData.className, aData);
@@ -357,7 +350,7 @@ public class Market
         }
     }
 
-    private void resolveOffers(String good) {
+    private void resolveOffers(ICommodity good) {
         List<Offer> bids = _book.bids.get(good);
         List<Offer> asks = _book.asks.get(good);
         bids = Quick.shuffle(bids);
@@ -505,7 +498,7 @@ public class Market
 
     //sort by id so everything works again
     //_agents.Sort(Quick.sortAgentId);
-    private void transferGood(String good, double units, int seller_id, int buyer_id, double clearing_price) {
+    private void transferGood(ICommodity good, double units, int seller_id, int buyer_id, double clearing_price) {
 
         BasicAgent seller = _agents.get(seller_id);
         BasicAgent  buyer = _agents.get(buyer_id);

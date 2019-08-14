@@ -18,7 +18,7 @@ public class Agent  extends BasicAgent
     }
 
     @Override
-    public Offer createBid(Market bazaar, String good, double limit) {
+    public Offer createBid(Market bazaar, ICommodity good, double limit) {
         int bidPrice = 0;
         // determinePriceOf(good);  bids are now made "at market", no price determination needed
         Double ideal = determinePurchaseQuantity(bazaar,good);
@@ -33,7 +33,7 @@ public class Agent  extends BasicAgent
     }
 
     @Override
-    public Offer createAsk(Market bazaar, String commodity_, double limit_) {
+    public Offer createAsk(Market bazaar, ICommodity commodity_, double limit_) {
         Double ask_price = _inventory.query_cost(commodity_) * 1.02;
         //asks are fair prices:  costs + small profit
         Double quantity_to_sell = _inventory.query(commodity_);
@@ -47,7 +47,7 @@ public class Agent  extends BasicAgent
     }
 
     @Override
-    public void generateOffers(Market bazaar, String commodity) {
+    public void generateOffers(Market bazaar, ICommodity commodity) {
         Offer offer;
         double surplus = _inventory.surplus(commodity);
         if (surplus >= 1)
@@ -63,11 +63,10 @@ public class Agent  extends BasicAgent
         {
             Double shortage = _inventory.shortage(commodity);
             Double space = _inventory.getEmptySpace();
-            Double unit_size = _inventory.getCapacityFor(commodity);
-            if (shortage > 0 && space >= unit_size)
+            if (shortage > 0 && space > 0)
             {
                 double limit = 0;
-                if ((shortage * unit_size) <= space)
+                if ((shortage) <= space)
                 {
                     //enough space for ideal order
                     limit = shortage;
@@ -94,7 +93,7 @@ public class Agent  extends BasicAgent
     }
 
     @Override
-    public void updatePriceModel(Market bazaar, String act, String good, boolean success, double unitPrice) {
+    public void updatePriceModel(Market bazaar, String act, ICommodity good, boolean success, double unitPrice) {
         if(!goodsPriceBelief.containsKey(good))
             goodsPriceBelief.put(good, new PriceBelief());
 

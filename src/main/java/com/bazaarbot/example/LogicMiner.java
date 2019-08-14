@@ -13,29 +13,29 @@ import com.bazaarbot.Market;
 public class LogicMiner  extends Logic
 {
     public void perform(BasicAgent agent, Market market) {
-        Double food = agent.queryInventory("food");
-        Double tools = agent.queryInventory("tools");
-        Double ore = agent.queryInventory("ore");
+        Double food = agent.queryInventory(ExampleCommodity.Food);
+        Double tools = agent.queryInventory(ExampleCommodity.Tools);
+        Double ore = agent.queryInventory(ExampleCommodity.Ore);
         Boolean need_ore = ore < 4;
         Boolean has_food = food >= 1;
         Boolean has_tools = tools >= 1;
         //consume(agent, "money", 0.5);//cost of living/business
-        consume(agent, "food", 1);
+        consume(agent, ExampleCommodity.Food, 1);
         //cost of living
         if (has_food && need_ore)
         {
             if (has_tools)
             {
                 //produce 4 ore, consume 1 food, break tools with 10% chance
-                consume(agent, "food", 1);
-                consume(agent,"tools",1,0.1);
-                produce(agent, "ore", 4);
+                consume(agent, ExampleCommodity.Food, 1);
+                consume(agent,ExampleCommodity.Tools,1,0.1);
+                produce(agent, ExampleCommodity.Ore, 4);
             }
             else
             {
                 //produce 2 ore, consume 1 food
-                consume(agent, "food", 1);
-                produce(agent, "ore", 2);
+                consume(agent, ExampleCommodity.Food, 1);
+                produce(agent, ExampleCommodity.Ore, 2);
             } 
         }
         else

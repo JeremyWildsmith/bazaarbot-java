@@ -15,29 +15,25 @@ public class Inventory
 
     // En-route items, expecting via contract
     // Key: commodity_it, val: amount, original_cost
-    private HashMap<String,Point> _expecting;
+    private HashMap<ICommodity, Point> _expecting;
 
     // key:commodity_id, val:amount, original_cost
-    private HashMap<String,Point> _stuff;
+    private HashMap<ICommodity, Point> _stuff;
 
     // ideal counts for each thing
-    private HashMap<String,Double> _ideal;
-
-    // how much space each thing takes up
-    private HashMap<String,Double> _sizes;
+    private HashMap<ICommodity, Double> _ideal;
 
     public Inventory() {
-        _sizes = new HashMap<String,Double>();
-        _stuff = new HashMap<String,Point>();
-        _ideal = new HashMap<String,Double>();
-        _expecting = new HashMap<String,Point>();
+        _stuff = new HashMap<>();
+        _ideal = new HashMap<>();
+        _expecting = new HashMap<>();
         maxSize = 0;
     }
 
     public void fromData(InventoryData data) {
-        List<String> sizes = new ArrayList<String>();
+        List<ICommodity> sizes = new ArrayList<>();
         List<Point> amountsp = new ArrayList<Point>();
-        for (String key : data.start.keySet())
+        for (ICommodity key : data.start.keySet())
         {
             sizes.add(key);
             amountsp.add(new Point(data.start.get(key),0));
@@ -48,22 +44,10 @@ public class Inventory
             _stuff.put(sizes.get(i), amountsp.get(i));
         }
 
-        sizes = new ArrayList<>();
-        List<Double> amounts = new ArrayList<Double>();
-        for (String key : data.size.keySet())
-        {
-            sizes.add(key);
-            amounts.add(data.size.get(key));
-        }
-
-        for (int i = 0;i < sizes.size();i++)
-        {
-            _sizes.put(sizes.get(i), amounts.get(i));
-        }
 
         sizes = new ArrayList<>();
-        amounts = new ArrayList<>();
-        for (String key : data.ideal.keySet())
+        List<Double> amounts = new ArrayList<>();
+        for (ICommodity key : data.ideal.keySet())
         {
             sizes.add(key);
             amounts.add(data.ideal.get(key));
@@ -73,6 +57,7 @@ public class Inventory
                 _ideal.put(sizes.get(i), amounts.get(i));
             }
         }
+
         maxSize = data.maxSize;
     }
 
@@ -81,7 +66,7 @@ public class Inventory
      * @param	good string id of commodity
      * @return
      */
-    public double query(String good) {
+    public double query(ICommodity good) {
         if (_stuff.containsKey(good))
         {
             return _stuff.get(good).x;
@@ -95,7 +80,7 @@ public class Inventory
      * @param	good string id of commodity
      * @return
      */
-    public double queryExpecting(String good) {
+    public double queryExpecting(ICommodity good) {
         if (_expecting.containsKey(good))
         {
             return _expecting.get(good).x;
@@ -104,7 +89,7 @@ public class Inventory
         return 0;
     }
 
-    public double query_cost(String good) {
+    public double query_cost(ICommodity good) {
         if (_stuff.containsKey(good))
         {
             return _stuff.get(good).y;
@@ -119,23 +104,11 @@ public class Inventory
 
     public double getUsedSpace() {
         double space_used = 0;
-        for (String key : _stuff.keySet())
+        for (ICommodity key : _stuff.keySet())
         {
-            if (!_sizes.containsKey(key))
-                continue;
-             
-            space_used += _stuff.get(key).x * _sizes.get(key);
+            space_used += _stuff.get(key).x * key.getSpace();
         }
         return space_used;
-    }
-
-    public double getCapacityFor(String good) {
-        if (_sizes.containsKey(good))
-        {
-            return _sizes.get(good);
-        }
-         
-        return -1;
     }
 
     /**
@@ -143,7 +116,7 @@ public class Inventory
      * @param	good string id of commodity
      * @param	delta amount added
      */
-    public double change(String good, double delta, double unit_cost) {
+    public double change(ICommodity good, double delta, double unit_cost) {
         Point result = new Point(0,0);
         if (_stuff.containsKey(good))
         {
@@ -190,7 +163,7 @@ public class Inventory
      * @param	good string id of commodity
      * @param	delta amount added
      */
-    public double changeExpecting(String good, double delta, double unit_cost) {
+    public double changeExpecting(ICommodity good, double delta, double unit_cost) {
         Point result = new Point(0,0);
         if (_stuff.containsKey(good))
         {
@@ -238,7 +211,7 @@ public class Inventory
      * @param	good string id of commodity
      * @return
      */
-    public double surplus(String good) {
+    public double surplus(ICommodity good) {
         Double amt = query(good);
         double ideal = 0;
         if (_ideal.containsKey(good))
@@ -257,7 +230,7 @@ public class Inventory
      * @param	good
      * @return
      */
-    public double shortage(String good) {
+    public double shortage(ICommodity good) {
         if (!_stuff.containsKey(good))
         {
             return 0;

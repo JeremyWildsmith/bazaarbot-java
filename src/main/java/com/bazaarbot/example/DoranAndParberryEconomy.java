@@ -7,6 +7,7 @@ package com.bazaarbot.example;
 import com.bazaarbot.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -18,15 +19,8 @@ public class DoranAndParberryEconomy  extends Economy
     }
 
     private MarketData getMarketData() {
-        List<Good> goods = new ArrayList<>();
         List<AgentData> agentTypes = new ArrayList<AgentData>();
         List<BasicAgent> agents = new ArrayList<BasicAgent>();
-        goods.add(new Good("food",0.5));
-        goods.add(new Good("wood",1.0));
-        goods.add(new Good("ore",1.0));
-        goods.add(new Good("metal",1.0));
-        goods.add(new Good("tools",1.0));
-        goods.add(new Good("work",0.1));
 
         agentTypes.add(new AgentData("farmer",100,"farmer"));
         agentTypes.add(new AgentData("miner",100,"miner"));
@@ -38,87 +32,80 @@ public class DoranAndParberryEconomy  extends Economy
         InventoryData ii;
 
         //farmer
-        HashMap<String, Double> ideal = new HashMap<>();
-        HashMap<String, Double> start = new HashMap<>();
-        HashMap<String, Double> size = new HashMap<>();
-        ideal.put("food", 0.0);
-        ideal.put("tools", 1.0);
-        ideal.put("wood", 3.0);
-        ideal.put("work", 3.0);
-        start.put("food", 1.0);
-        start.put("tools", 1.0);
-        start.put("wood", 0.0);
-        start.put("work", 0.0);
-        size = null;
-        ii = new InventoryData(20, ideal, start,null);
+        HashMap<ICommodity, Double> ideal = new HashMap<>();
+        HashMap<ICommodity, Double> start = new HashMap<>();
+        ideal.put(ExampleCommodity.Food, 0.0);
+        ideal.put(ExampleCommodity.Tools, 1.0);
+        ideal.put(ExampleCommodity.Wood, 3.0);
+        ideal.put(ExampleCommodity.Work, 3.0);
+        start.put(ExampleCommodity.Food, 1.0);
+        start.put(ExampleCommodity.Tools, 1.0);
+        start.put(ExampleCommodity.Wood, 0.0);
+        start.put(ExampleCommodity.Work, 0.0);
+        ii = new InventoryData(20, ideal, start);
         agentTypes.get(0).inventory = ii;
 
         //miner
         ideal = new HashMap<>();
         start = new HashMap<>();
-        size = new HashMap<>();
-        ideal.put("food", 3.0);
-        ideal.put("tools", 1.0);
-        ideal.put("ore", 0.0);
-        start.put("food", 1.0);
-        start.put("tools", 1.0);
-        start.put("ore", 0.0);
+        ideal.put(ExampleCommodity.Food, 3.0);
+        ideal.put(ExampleCommodity.Tools, 1.0);
+        ideal.put(ExampleCommodity.Ore, 0.0);
+        start.put(ExampleCommodity.Food, 1.0);
+        start.put(ExampleCommodity.Tools, 1.0);
+        start.put(ExampleCommodity.Ore, 0.0);
 
-        ii = new InventoryData(20, ideal, start,null);
+        ii = new InventoryData(20, ideal, start);
         agentTypes.get(1).inventory = ii;
 
 
         //refiner
         ideal = new HashMap<>();
         start = new HashMap<>();
-        size = new HashMap<>();
-        ideal.put("food", 3.0);
-        ideal.put("tools", 1.0);
-        ideal.put("ore", 5.0);
-        start.put("food", 1.0);
-        start.put("tools", 1.0);
-        start.put("ore", 0.0);
+        ideal.put(ExampleCommodity.Food, 3.0);
+        ideal.put(ExampleCommodity.Tools, 1.0);
+        ideal.put(ExampleCommodity.Ore, 5.0);
+        start.put(ExampleCommodity.Food, 1.0);
+        start.put(ExampleCommodity.Tools, 1.0);
+        start.put(ExampleCommodity.Ore, 0.0);
 
-        ii = new InventoryData(20, ideal, start,null);
+        ii = new InventoryData(20, ideal, start);
         agentTypes.get(2).inventory = ii;
 
 
         //woodcutter
         ideal = new HashMap<>();
         start = new HashMap<>();
-        size = new HashMap<>();
-        ideal.put("food", 3.0);
-        ideal.put("tools", 1.0);
-        ideal.put("wood", 0.0);
-        start.put("food", 1.0);
-        start.put("tools", 1.0);
-        start.put("wood", 0.0);
+        ideal.put(ExampleCommodity.Food, 3.0);
+        ideal.put(ExampleCommodity.Tools, 1.0);
+        ideal.put(ExampleCommodity.Wood, 0.0);
+        start.put(ExampleCommodity.Food, 1.0);
+        start.put(ExampleCommodity.Tools, 1.0);
+        start.put(ExampleCommodity.Wood, 0.0);
 
-        ii = new InventoryData(20, ideal, start,null);
+        ii = new InventoryData(20, ideal, start);
         agentTypes.get(3).inventory = ii;
         //blacksmith
         ideal = new HashMap<>();
         start = new HashMap<>();
-        size = new HashMap<>();
-        ideal.put("food", 3.0);
-        ideal.put("tools", 1.0);
-        ideal.put("metal", 5.0);
-        start.put("food", 1.0);
-        start.put("tools", 0.0);
-        start.put("metal", 0.0);
-        start.put("ore", 0.0);
+        ideal.put(ExampleCommodity.Food, 3.0);
+        ideal.put(ExampleCommodity.Tools, 1.0);
+        ideal.put(ExampleCommodity.Metal, 5.0);
+        start.put(ExampleCommodity.Food, 1.0);
+        start.put(ExampleCommodity.Tools, 0.0);
+        start.put(ExampleCommodity.Metal, 0.0);
+        start.put(ExampleCommodity.Ore, 0.0);
 
-        ii = new InventoryData(20, ideal, start, null);
+        ii = new InventoryData(20, ideal, start);
         agentTypes.get(4).inventory = ii;
 
         //worker
         ideal = new HashMap<>();
         start = new HashMap<>();
-        size = new HashMap<>();
-        ideal.put("food", 3.0);
-        start.put("food", 1.0);
+        ideal.put(ExampleCommodity.Food, 3.0);
+        start.put(ExampleCommodity.Food, 1.0);
 
-        ii = new InventoryData(20, ideal, start,null);
+        ii = new InventoryData(20, ideal, start);
         agentTypes.get(5).inventory = ii;
 
         int idc = 0;
@@ -130,7 +117,7 @@ public class DoranAndParberryEconomy  extends Economy
                 agents.get(agents.size() - 1).id = idc++;
             }
         }
-        MarketData data = new MarketData(goods,agentTypes,agents);
+        MarketData data = new MarketData(Arrays.asList(ExampleCommodity.values()), agentTypes,agents);
         return data;
     }
 
@@ -144,8 +131,8 @@ public class DoranAndParberryEconomy  extends Economy
         //Special case to deal with very high demand-to-supply ratios
         //This will make them favor entering an underserved market over
         //Just picking the most profitable class
-        String bestGood = market.getHottestGood();
-        if (!bestGood.isEmpty())
+        ICommodity bestGood = market.getHottestGood();
+        if (bestGood != null)
         {
             String bestGoodClass = getAgentClassThatMakesMost(bestGood);
             if (!bestGoodClass.isEmpty())
@@ -164,7 +151,8 @@ public class DoranAndParberryEconomy  extends Economy
     	     * @param	good
     	     * @return
     	     */
-    public String getAgentClassThatMakesMost(String good) {
+    public String getAgentClassThatMakesMost(ICommodity good) {
+        throw new RuntimeException("Not Implemented.");/*
         String res = "";
         if (good.compareTo("food") == 0)
         {
@@ -191,7 +179,7 @@ public class DoranAndParberryEconomy  extends Economy
             res = "worker";
         }
               
-        return res;
+        return res;*/
     }
 
     /**
