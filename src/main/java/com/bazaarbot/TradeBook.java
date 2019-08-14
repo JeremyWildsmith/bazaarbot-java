@@ -4,6 +4,8 @@
 
 package com.bazaarbot;
 
+import com.bazaarbot.market.Offer;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

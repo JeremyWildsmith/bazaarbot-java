@@ -2,10 +2,13 @@
 // Translated by CS2J (http://www.cs2j.com): 2019-08-12 9:59:30 PM
 //
 
-package com.bazaarbot;
-import java.util.ArrayList;
+package com.bazaarbot.agent;
+import com.bazaarbot.*;
+import com.bazaarbot.inventory.Inventory;
+import com.bazaarbot.market.Market;
+import com.bazaarbot.market.Offer;
+
 import java.util.HashMap;
-import java.util.List;
 
 public abstract class BasicAgent
 {
@@ -27,18 +30,18 @@ public abstract class BasicAgent
 
     public BasicAgent(int id, AgentData data) {
         this.id = id;
-        setClassName(data.className);
-        setMoney(data.money);
+        setClassName(data.getClassName());
+        setMoney(data.getMoney());
         _inventory = new Inventory();
-        _inventory.fromData(data.inventory);
-        _logic = data.logic;
-        if (data.lookBack == null)
+        _inventory.fromData(data.getInventory());
+        _logic = data.getLogic();
+        if (data.getLookBack() == null)
         {
             _lookback = 15;
         }
         else
         {
-            _lookback = data.lookBack;
+            _lookback = data.getLookBack();
         }
         trackcosts = 0;
     }
@@ -99,7 +102,7 @@ public abstract class BasicAgent
         //point
         if (trading_range != null && mean > 0)
         {
-            double favorability = Quick.positionInRange(mean, trading_range.x, trading_range.y);
+            double favorability = Utils.positionInRange(mean, trading_range.x, trading_range.y);
             //double
             //position_in_range: high means price is at a high point
             double amount_to_sell = Math.round(favorability * _inventory.surplus(commodity_));
@@ -123,7 +126,7 @@ public abstract class BasicAgent
         //Point
         if (trading_range != null)
         {
-            double favorability = Quick.positionInRange(mean, trading_range.x, trading_range.y);
+            double favorability = Utils.positionInRange(mean, trading_range.x, trading_range.y);
             //double
             favorability = 1 - favorability;
             //do 1 - favorability to see how close we are to the low end

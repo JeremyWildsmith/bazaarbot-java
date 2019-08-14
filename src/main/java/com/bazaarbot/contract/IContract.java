@@ -1,4 +1,4 @@
-package com.bazaarbot;
+package com.bazaarbot.contract;
 
 import java.util.Map;
 

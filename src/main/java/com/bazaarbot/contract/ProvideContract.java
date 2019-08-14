@@ -1,6 +1,8 @@
-package com.bazaarbot;
+package com.bazaarbot.contract;
 
-import java.util.HashMap;
+import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.contract.IContract;
+
 import java.util.Map;
 
 public class ProvideContract implements IContract {

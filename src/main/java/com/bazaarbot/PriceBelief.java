@@ -19,7 +19,7 @@ public final class PriceBelief {
     }
 
     public Point observe(int window) {
-        return new Point(Quick.minArr(observed,window),Quick.maxArr(observed,window));
+        return new Point(Utils.minArr(observed,window), Utils.maxArr(observed,window));
     }
 
     public void addTransaction(double unitPrice, boolean success) {

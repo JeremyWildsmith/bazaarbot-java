@@ -2,10 +2,12 @@
 // Translated by CS2J (http://www.cs2j.com): 2019-08-12 9:59:31 PM
 //
 
-package com.bazaarbot;
+package com.bazaarbot.market;
 
 
-public class Offer   
+import com.bazaarbot.ICommodity;
+
+public class Offer
 {
     public ICommodity good;
     //the thing offered
