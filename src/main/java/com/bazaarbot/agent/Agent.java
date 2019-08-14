@@ -2,9 +2,12 @@
 // Translated by CS2J (http://www.cs2j.com): 2019-08-12 9:59:30 PM
 //
 
-package com.bazaarbot;
+package com.bazaarbot.agent;
 
-import java.util.List;
+import com.bazaarbot.ICommodity;
+import com.bazaarbot.market.Market;
+import com.bazaarbot.market.Offer;
+import com.bazaarbot.PriceBelief;
 
 /**
      * An agent that performs the basic logic from the Doran & Parberry article
@@ -34,9 +37,9 @@ public class Agent  extends BasicAgent
 
     @Override
     public Offer createAsk(Market bazaar, ICommodity commodity_, double limit_) {
-        Double ask_price = _inventory.query_cost(commodity_) * 1.02;
+        double ask_price = _inventory.query_cost(commodity_) * 1.02;
         //asks are fair prices:  costs + small profit
-        Double quantity_to_sell = _inventory.query(commodity_);
+        double quantity_to_sell = _inventory.query(commodity_);
         //put asks out for all inventory
         if (quantity_to_sell > 0)
         {

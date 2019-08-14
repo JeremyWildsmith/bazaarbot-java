@@ -1,4 +1,7 @@
-package com.bazaarbot;
+package com.bazaarbot.contract;
+
+import com.bazaarbot.ICommodity;
+import com.bazaarbot.agent.BasicAgent;
 
 public class DefaultContractResolver implements IContractResolver {
     @Override

@@ -2,7 +2,13 @@
 // Translated by CS2J (http://www.cs2j.com): 2019-08-12 9:59:31 PM
 //
 
-package com.bazaarbot;
+package com.bazaarbot.market;
+
+import com.bazaarbot.*;
+import com.bazaarbot.agent.AgentData;
+import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.contract.IContractResolver;
+import com.bazaarbot.history.History;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -260,7 +266,7 @@ public class Market
         {
             mr.strListGood += commodity + "\n";
             Double price = history.prices.average(commodity,rounds);
-            mr.strListGoodPrices += Quick.numStr(price,2) + "\n";
+            mr.strListGoodPrices += Utils.numStr(price,2) + "\n";
             Double asks = history.asks.average(commodity,rounds);
             mr.strListGoodAsks += ((asks.intValue())+"\n");
             Double bids = history.bids.average(commodity,rounds);
@@ -278,7 +284,7 @@ public class Market
             }
             mr.strListAgent += key + "\n";
             Double profit = history.profit.average(key,rounds);
-            mr.strListAgentProfit += Quick.numStr(profit,2) + "\n";
+            mr.strListAgentProfit += Utils.numStr(profit,2) + "\n";
 
             List<BasicAgent> list = _agents;
 
@@ -301,10 +307,10 @@ public class Market
             for (int lic = 0;lic < _goodTypes.size();lic++)
             {
                 inventory.add(lic, inventory.get(lic) / count);
-                mr.getarrStrListInventory().add(lic, mr.getarrStrListInventory().get(lic) + (Quick.numStr(inventory.get(lic),1) + "\n"));
+                mr.getarrStrListInventory().add(lic, mr.getarrStrListInventory().get(lic) + (Utils.numStr(inventory.get(lic),1) + "\n"));
             }
-            mr.strListAgentCount += Quick.numStr(count,0) + "\n";
-            mr.strListAgentMoney += Quick.numStr(money,0) + "\n";
+            mr.strListAgentCount += Utils.numStr(count,0) + "\n";
+            mr.strListAgentMoney += Utils.numStr(money,0) + "\n";
         }
         return mr;
     }
@@ -336,8 +342,8 @@ public class Market
 
         for (AgentData aData : data.agentTypes)
         {
-            _mapAgents.put(aData.className, aData);
-            history.profit.register(aData.className);
+            _mapAgents.put(aData.getClassName(), aData);
+            history.profit.register(aData.getClassName());
         }
         //Make the agent list
         _agents = new ArrayList<>();
@@ -353,10 +359,10 @@ public class Market
     private void resolveOffers(ICommodity good) {
         List<Offer> bids = _book.bids.get(good);
         List<Offer> asks = _book.asks.get(good);
-        bids = Quick.shuffle(bids);
-        asks = Quick.shuffle(asks);
-        //bids.Sort(Quick.sortOfferDecending); //highest buying price first
-        asks.sort(Quick.sortOfferAcending);
+        bids = Utils.shuffle(bids);
+        asks = Utils.shuffle(asks);
+        //bids.Sort(Utils.sortOfferDecending); //highest buying price first
+        asks.sort(Utils.sortOfferAcending);
         //lowest selling price first
         int successfulTrades = 0;
         //# of successful trades this round
@@ -385,7 +391,7 @@ public class Market
             Offer seller = asks.get(0);
             Double quantity_traded = Math.min(seller.units,buyer.units);
             Double clearing_price = seller.unit_price;
-            //Quick.avgf(seller.unit_price, buyer.unit_price);
+            //Utils.avgf(seller.unit_price, buyer.unit_price);
             //if (buyer.unit_price < seller.unit_price)
             //    break;
             if (quantity_traded > 0)
@@ -463,7 +469,7 @@ public class Market
             avgPrice = history.prices.average(good,1);
         } 
         List<BasicAgent> ag = new ArrayList<>(_agents);//.<BasicAgent>ToList();
-        ag.sort(Quick.sortAgentAlpha);
+        ag.sort(Utils.sortAgentAlpha);
         String curr_class = "";
         String last_class = "";
         List<Double> list = null;
@@ -481,7 +487,7 @@ public class Market
                 {
                     //do we have a list built up?
                     //log last class' profit
-                    history.profit.add(last_class,Quick.listAvgf(list));
+                    history.profit.add(last_class, Utils.listAvgf(list));
                 }
                  
                 list = new ArrayList<Double>();
@@ -493,11 +499,11 @@ public class Market
         }
         //push profit onto list
         //add the last class too
-        history.profit.add(last_class,Quick.listAvgf(list));
+        history.profit.add(last_class, Utils.listAvgf(list));
     }
 
     //sort by id so everything works again
-    //_agents.Sort(Quick.sortAgentId);
+    //_agents.Sort(Utils.sortAgentId);
     private void transferGood(ICommodity good, double units, int seller_id, int buyer_id, double clearing_price) {
 
         BasicAgent seller = _agents.get(seller_id);

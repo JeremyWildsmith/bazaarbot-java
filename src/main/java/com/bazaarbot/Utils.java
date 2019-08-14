@@ -4,9 +4,12 @@
 
 package com.bazaarbot;
 
+import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.market.Offer;
+
 import java.util.*;
 
-public class Quick   
+public class Utils
 {
     public static Random rnd = new Random();
     public static double avgf(double a, double b) {

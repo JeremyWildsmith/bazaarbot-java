@@ -4,6 +4,9 @@
 
 package com.bazaarbot;
 
+import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.market.Market;
+
 public abstract class Logic
 {
     /**
@@ -13,7 +16,7 @@ public abstract class Logic
     public abstract void perform(BasicAgent agent, Market market);
 
     protected void produce(BasicAgent agent, ICommodity commodity, double amount, double chance) {
-        if (chance >= 1.0 || Quick.rnd.nextDouble() < chance)
+        if (chance >= 1.0 || Utils.rnd.nextDouble() < chance)
         {
             agent.produceInventory(commodity,amount);
         }
@@ -25,7 +28,7 @@ public abstract class Logic
     }
 
     protected void consume(BasicAgent agent, ICommodity commodity, double amount, double chance) {
-        if (chance >= 1.0 || Quick.rnd.nextDouble() < chance)
+        if (chance >= 1.0 || Utils.rnd.nextDouble() < chance)
         {
             agent.consumeInventory(commodity,-amount);
         }

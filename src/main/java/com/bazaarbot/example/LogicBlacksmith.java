@@ -4,9 +4,9 @@
 
 package com.bazaarbot.example;
 
-import com.bazaarbot.BasicAgent;
+import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.Logic;
-import com.bazaarbot.Market;
+import com.bazaarbot.market.Market;
 
 //}
 public class LogicBlacksmith  extends Logic

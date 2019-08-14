@@ -4,9 +4,9 @@
 
 package com.bazaarbot.example;
 
-import com.bazaarbot.BasicAgent;
+import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.Logic;
-import com.bazaarbot.Market;
+import com.bazaarbot.market.Market;
 
 //make_room_for(agent, ExampleCommodity.Food, 2); stub todo needed?
 public class LogicFarmer  extends Logic

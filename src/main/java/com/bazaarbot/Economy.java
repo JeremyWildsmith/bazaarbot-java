@@ -4,6 +4,10 @@
 
 package com.bazaarbot;
 
+import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.market.ISignalBankrupt;
+import com.bazaarbot.market.Market;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -5,6 +5,13 @@
 package com.bazaarbot.example;
 
 import com.bazaarbot.*;
+import com.bazaarbot.agent.Agent;
+import com.bazaarbot.agent.AgentData;
+import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.contract.DefaultContractResolver;
+import com.bazaarbot.inventory.InventoryData;
+import com.bazaarbot.market.Market;
+import com.bazaarbot.market.MarketData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +50,7 @@ public class DoranAndParberryEconomy  extends Economy
         start.put(ExampleCommodity.Wood, 0.0);
         start.put(ExampleCommodity.Work, 0.0);
         ii = new InventoryData(20, ideal, start);
-        agentTypes.get(0).inventory = ii;
+        agentTypes.get(0).setInventory(ii);
 
         //miner
         ideal = new HashMap<>();
@@ -56,7 +63,7 @@ public class DoranAndParberryEconomy  extends Economy
         start.put(ExampleCommodity.Ore, 0.0);
 
         ii = new InventoryData(20, ideal, start);
-        agentTypes.get(1).inventory = ii;
+        agentTypes.get(1).setInventory(ii);
 
 
         //refiner
@@ -70,7 +77,7 @@ public class DoranAndParberryEconomy  extends Economy
         start.put(ExampleCommodity.Ore, 0.0);
 
         ii = new InventoryData(20, ideal, start);
-        agentTypes.get(2).inventory = ii;
+        agentTypes.get(2).setInventory(ii);
 
 
         //woodcutter
@@ -84,7 +91,7 @@ public class DoranAndParberryEconomy  extends Economy
         start.put(ExampleCommodity.Wood, 0.0);
 
         ii = new InventoryData(20, ideal, start);
-        agentTypes.get(3).inventory = ii;
+        agentTypes.get(3).setInventory(ii);
         //blacksmith
         ideal = new HashMap<>();
         start = new HashMap<>();
@@ -97,7 +104,7 @@ public class DoranAndParberryEconomy  extends Economy
         start.put(ExampleCommodity.Ore, 0.0);
 
         ii = new InventoryData(20, ideal, start);
-        agentTypes.get(4).inventory = ii;
+        agentTypes.get(4).setInventory(ii);
 
         //worker
         ideal = new HashMap<>();
@@ -106,7 +113,7 @@ public class DoranAndParberryEconomy  extends Economy
         start.put(ExampleCommodity.Food, 1.0);
 
         ii = new InventoryData(20, ideal, start);
-        agentTypes.get(5).inventory = ii;
+        agentTypes.get(5).setInventory(ii);
 
         int idc = 0;
         for (int iagent = 0;iagent < agentTypes.size();iagent++)
@@ -210,7 +217,7 @@ public class DoranAndParberryEconomy  extends Economy
     //    return new Agent(0, data);
     //}
     private BasicAgent getAgent(AgentData data) {
-        data.logic = getLogic(data.logicName);
+        data.setLogic(getLogic(data.getLogicName()));
         return new Agent(0,data);
     }
 
