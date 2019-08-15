@@ -4,7 +4,9 @@
 
 package com.bazaarbot.agent;
 
-import com.bazaarbot.*;
+import com.bazaarbot.ICommodity;
+import com.bazaarbot.PriceBelief;
+import com.bazaarbot.PriceRange;
 import com.bazaarbot.inventory.Inventory;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
@@ -24,17 +26,11 @@ public abstract class BasicAgent {
     private double moneyLastRound;
     private double moneySpent;
 
-    private int lookBack = 15;
-
-
     public BasicAgent(AgentData data) {
         this.agentName = data.getAgentClassName();
         this.moneyAvailable = data.getMoney();
         this.inventory.fromData(data.getInventory());
         this.agentSimulation = data.getAgentSimulation();
-        if (data.getLookBack() != null) {
-            lookBack = data.getLookBack();
-        }
     }
 
     public void simulate(Market market) {
@@ -78,48 +74,40 @@ public abstract class BasicAgent {
         }
     }
 
-    protected double determineSaleQuantity(Market bazaar, ICommodity commodity) {
-        double mean = bazaar.getAverageHistoricalPrice(commodity, lookBack);
-        //double
-        PriceRange trading_range = observeTradingRange(commodity, 10);
-        //point
-        if (mean > 0) {
-            double favorability = trading_range.positionInRange(mean);
-            //double
-            //position_in_range: high means price is at a high point
-            double amount_to_sell = Math.round(favorability * inventory.surplus(commodity));
-            //double
-            amount_to_sell = inventory.query(commodity);
-            if (amount_to_sell < 1) {
-                amount_to_sell = 1;
-            }
-
-            return amount_to_sell;
+    protected double determineSaleQuantity(int observeWindow, double averageHistoricalPrice, ICommodity commodity) {
+        if (averageHistoricalPrice <= 0) {
+            return 0;
+        }
+        PriceRange tradingRange = observeTradingRange(commodity, observeWindow);
+        double favorability = tradingRange.positionInRange(averageHistoricalPrice);
+        //position_in_range: high means price is at a high point
+        //TODO: What is going on here?
+        double amountToSell = Math.round(favorability * inventory.surplus(commodity));
+        //double amount_to_sell = inventory.query(commodity);
+        if (amountToSell < 1) {
+            amountToSell = 1;
         }
 
-        return 0;
+        return amountToSell;
     }
 
-    protected double determinePurchaseQuantity(Market bazaar, ICommodity commodity) {
-        Double mean = bazaar.getAverageHistoricalPrice(commodity, lookBack);
-        //double
-        PriceRange tradingRange = observeTradingRange(commodity, 10);
-        //Point
-        if (tradingRange != null) {
-            double favorability = tradingRange.positionInRange(mean);
-            //double
-            favorability = 1 - favorability;
-            //do 1 - favorability to see how close we are to the low end
-            double amount_to_buy = Math.round(favorability * inventory.shortage(commodity));
-            //double
-            if (amount_to_buy < 1) {
-                amount_to_buy = 1;
-            }
 
-            return amount_to_buy;
+    protected double determinePurchaseQuantity(int observeWindow, double averageHistoricalPrice, ICommodity commodity) {
+        if (averageHistoricalPrice <= 0) {
+            return 0;
+        }
+        PriceRange tradingRange = observeTradingRange(commodity, observeWindow);
+        double favorability = tradingRange.positionInRange(averageHistoricalPrice);
+        //double
+        favorability = 1 - favorability;
+        //do 1 - favorability to see how close we are to the low end
+        double amountToBuy = Math.round(favorability * inventory.shortage(commodity));
+        //double
+        if (amountToBuy < 1) {
+            amountToBuy = 1;
         }
 
-        return 0;
+        return amountToBuy;
     }
 
     private PriceRange observeTradingRange(ICommodity good, int window) {
@@ -167,14 +155,6 @@ public abstract class BasicAgent {
 
     public HashMap<ICommodity, PriceBelief> getGoodsPriceBelief() {
         return goodsPriceBelief;
-    }
-
-    public int getLookBack() {
-        return lookBack;
-    }
-
-    public void setLookBack(int lookBack) {
-        this.lookBack = lookBack;
     }
 }
 

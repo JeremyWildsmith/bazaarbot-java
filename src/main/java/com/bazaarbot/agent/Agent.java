@@ -5,9 +5,9 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.PriceBelief;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
-import com.bazaarbot.PriceBelief;
 
 /**
  * An agent that performs the basic logic from the Doran & Parberry article
@@ -20,11 +20,14 @@ public class Agent extends BasicAgent {
         super(data);
     }
 
+    private static final int OBSERVE_WINDOW = 10;
+    private static final int LOOKBACK_RANGE = 15;
+
     @Override
-    public Offer createBid(Market bazaar, ICommodity good, double limit) {
+    public Offer createBid(Market market, ICommodity good, double limit) {
         int bidPrice = 0;
         // determinePriceOf(good);  bids are now made "at market", no price determination needed
-        double ideal = determinePurchaseQuantity(bazaar, good);
+        double ideal = determinePurchaseQuantity(OBSERVE_WINDOW, market.getAverageHistoricalPrice(good, LOOKBACK_RANGE), good);
         //can't buy more than limit
         double quantityToBuy = ideal > limit ? limit : ideal;
         if (quantityToBuy > 0) {
