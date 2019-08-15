@@ -61,7 +61,7 @@ public class Market {
     public void simulate(int rounds) {
         for (int round = 0; round < rounds; round++) {
             for (BasicAgent agent : agents) {
-                agent.setMoneyLastRound(agent.getMoney());
+                agent.setMoneyLastRound(agent.getMoneyAvailable());
                 agent.simulate(this);
                 for (ICommodity commodity : goodTypes) {
                     agent.generateOffers(this, commodity);
@@ -70,16 +70,10 @@ public class Market {
             for (ICommodity commodity : goodTypes) {
                 resolveOffers(commodity);
             }
-            List<BasicAgent> del = new ArrayList<>();
             for (BasicAgent agent : agents) {
-                if (agent.getMoney() <= 0)
-                    del.add(agent);
+                if (agent.getMoneyAvailable() <= 0)
+                    signalBankrupt.signalBankrupt(this, agent);
 
-            }
-            while (del.size() > 0) {
-                signalBankrupt.signalBankrupt(this, del.get(0));
-                //signalBankrupt.dispatch(this, agent);
-                del.remove(0);
             }
             roundNum++;
         }
@@ -417,8 +411,8 @@ public class Market {
     private void transferMoney(double amount, int sellerId, int buyerId) {
         BasicAgent seller = agents.get(sellerId);
         BasicAgent buyer = agents.get(buyerId);
-        seller.setMoney(seller.getMoney() + amount);
-        buyer.setMoney(buyer.getMoney() - amount);
+        seller.setMoneyAvailable(seller.getMoneyAvailable() + amount);
+        buyer.setMoneyAvailable(buyer.getMoneyAvailable() - amount);
     }
 
     public String getName() {

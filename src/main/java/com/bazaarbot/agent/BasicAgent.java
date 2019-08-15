@@ -16,7 +16,7 @@ public abstract class BasicAgent {
     private final int id = UUID.randomUUID().hashCode();
     //unique integer identifier
     private final String agentName;
-    private double money;
+    private double moneyAvailable;
     //dfs stub  needed?
     private double moneyLastRound;
     //dfs stub needed?
@@ -30,8 +30,8 @@ public abstract class BasicAgent {
 
     public BasicAgent(AgentData data) {
         this.agentName = data.getAgentClassName();
-        setMoney(data.getMoney());
-        inventory.fromData(data.getInventory());
+        this.moneyAvailable = data.getMoney();
+        this.inventory.fromData(data.getInventory());
         logic = data.getLogic();
         if (data.getLookBack() != null) {
             lookBack = data.getLookBack();
@@ -66,7 +66,7 @@ public abstract class BasicAgent {
 
     public final void consumeInventory(ICommodity good, double delta) {
         if (good.getName().compareTo("money") == 0) {
-            setMoney(getMoney() + delta);
+            this.moneyAvailable += delta;
             if (delta < 0)
                 trackCosts += (-delta);
 
@@ -78,11 +78,11 @@ public abstract class BasicAgent {
         }
     }
 
-    public final void changeInventory(ICommodity good, double delta, double unit_cost) {
+    public final void changeInventory(ICommodity good, double delta, double unitCost) {
         if (good.getName().compareTo("money") == 0) {
-            setMoney(getMoney() + delta);
+            this.moneyAvailable += delta;
         } else {
-            inventory.change(good, delta, unit_cost);
+            inventory.change(good, delta, unitCost);
         }
     }
 
@@ -142,7 +142,7 @@ public abstract class BasicAgent {
     }
 
     public AgentSnapshot getSnapshot() {
-        return new AgentSnapshot(getAgentName(), getMoney(), new Inventory(inventory));
+        return new AgentSnapshot(getAgentName(), getMoneyAvailable(), new Inventory(inventory));
     }
 
     public boolean isInventoryFull() {
@@ -150,19 +150,19 @@ public abstract class BasicAgent {
     }
 
     public double getProfit() {
-        return getMoney() - moneyLastRound;
+        return getMoneyAvailable() - moneyLastRound;
     }
 
     public String getAgentName() {
         return agentName;
     }
 
-    public double getMoney() {
-        return money;
+    public double getMoneyAvailable() {
+        return moneyAvailable;
     }
 
-    public void setMoney(double value) {
-        money = value;
+    public void setMoneyAvailable(double value) {
+        moneyAvailable = value;
     }
 
     public int getId() {
