@@ -12,7 +12,6 @@ import java.util.HashMap;
 
 public abstract class BasicAgent
 {
-    public int id;
     //unique integer identifier
     private String className;
     private double money;
@@ -28,8 +27,7 @@ public abstract class BasicAgent
 
 
 
-    public BasicAgent(int id, AgentData data) {
-        this.id = id;
+    public BasicAgent(AgentData data) {
         setClassName(data.getClassName());
         setMoney(data.getMoney());
         _inventory = new Inventory();

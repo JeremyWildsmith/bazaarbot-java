@@ -16,8 +16,8 @@ import com.bazaarbot.PriceBelief;
 public class Agent  extends BasicAgent 
 {
     //lowest possible price
-    public Agent(int id, AgentData data) {
-        super(id, data);
+    public Agent(AgentData data) {
+        super(data);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class Agent  extends BasicAgent
         double quantityToBuy = ideal > limit ? limit : ideal;
         if (quantityToBuy > 0)
         {
-            return new Offer(id,good,quantityToBuy,bidPrice);
+            return new Offer(this,good,quantityToBuy,bidPrice);
         }
          
         return null;
@@ -43,7 +43,7 @@ public class Agent  extends BasicAgent
         //put asks out for all inventory
         if (quantity_to_sell > 0)
         {
-            return new Offer(id,commodity_,quantity_to_sell,ask_price);
+            return new Offer(this, commodity_, quantity_to_sell, ask_price);
         }
          
         return null;
