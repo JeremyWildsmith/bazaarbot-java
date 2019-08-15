@@ -8,9 +8,18 @@ import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
+import java.util.Random;
+
 //make_room_for(agent, "food", 2);
 public class LogicWorker  extends Logic
 {
+    public LogicWorker(Random rnd) {
+        super(rnd);
+    }
+
+    public LogicWorker() {
+    }
+
     public void perform(BasicAgent agent, Market market) {
         Double food = agent.queryInventory(ExampleCommodity.Food);
         Boolean has_food = food >= 1;

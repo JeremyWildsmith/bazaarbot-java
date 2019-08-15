@@ -13,15 +13,19 @@ import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.MarketData;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class DoranAndParberryEconomy  extends Economy
 {
+    private final Random rng;
+
     public DoranAndParberryEconomy() {
-        Market market = new Market("default", getMarketData(), this, new DefaultContractResolver());
+        this(new Random());
+    }
+
+    public DoranAndParberryEconomy(Random rng) {
+        this.rng = rng;
+        Market market = new Market("default", getMarketData(), this, new DefaultContractResolver(), rng);
         addMarket(market);
     }
 
@@ -225,27 +229,27 @@ public class DoranAndParberryEconomy  extends Economy
         String __dummyScrutVar0 = str;
         if (__dummyScrutVar0.equals("blacksmith"))
         {
-            return new LogicBlacksmith();
+            return new LogicBlacksmith(rng);
         }
         else if (__dummyScrutVar0.equals("farmer"))
         {
-            return new LogicFarmer();
+            return new LogicFarmer(rng);
         }
         else if (__dummyScrutVar0.equals("miner"))
         {
-            return new LogicMiner();
+            return new LogicMiner(rng);
         }
         else if (__dummyScrutVar0.equals("refiner"))
         {
-            return new LogicRefiner();
+            return new LogicRefiner(rng);
         }
         else if (__dummyScrutVar0.equals("woodcutter"))
         {
-            return new LogicWoodcutter();
+            return new LogicWoodcutter(rng);
         }
         else if (__dummyScrutVar0.equals("worker"))
         {
-            return new LogicWorker();
+            return new LogicWorker(rng);
         }
               
         return null;

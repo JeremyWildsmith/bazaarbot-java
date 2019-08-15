@@ -8,9 +8,18 @@ import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
+import java.util.Random;
+
 //make_room_for(agent, ExampleCommodity.Food, 2); stub todo needed?
 public class LogicFarmer  extends Logic
 {
+    public LogicFarmer(Random rnd) {
+        super(rnd);
+    }
+
+    public LogicFarmer() {
+    }
+
     public void perform(BasicAgent agent, Market market) {
         Double wood = agent.queryInventory(ExampleCommodity.Wood);
         Double tools = agent.queryInventory(ExampleCommodity.Tools);

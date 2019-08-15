@@ -8,9 +8,18 @@ import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
+import java.util.Random;
+
 //}
 public class LogicBlacksmith  extends Logic
 {
+    public LogicBlacksmith(Random rnd) {
+        super(rnd);
+    }
+
+    public LogicBlacksmith() {
+    }
+
     public void perform(BasicAgent agent, Market market) {
         Double food = agent.queryInventory(ExampleCommodity.Food);
         Double metal = agent.queryInventory(ExampleCommodity.Metal);
