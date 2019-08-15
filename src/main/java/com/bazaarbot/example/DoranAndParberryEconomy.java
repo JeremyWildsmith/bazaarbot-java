@@ -125,7 +125,7 @@ public class DoranAndParberryEconomy  extends Economy
             for (int i = 0;i < 5;i++)
             {
                 agents.add(getAgent(agentTypes.get(iagent)));
-                agents.get(agents.size() - 1).id = idc++;
+                agents.get(agents.size() - 1).setId(idc++);
             }
         }
         MarketData data = new MarketData(Arrays.asList(ExampleCommodity.values()), agentTypes,agents);

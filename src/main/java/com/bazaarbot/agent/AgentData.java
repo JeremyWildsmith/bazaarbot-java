@@ -10,10 +10,10 @@ import com.bazaarbot.Logic;
 /**
  * The most fundamental agent class, and has as little implementation as possible.
  * In most cases you should start by extending Agent instead of this.
+ *
  * @author larsiusprime
  */
-public class AgentData   
-{
+public class AgentData {
     private String className;
     private double money;
     private InventoryData inventory;
