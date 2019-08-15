@@ -4,13 +4,11 @@
 
 package com.bazaarbot.history;
 
-import com.bazaarbot.EconNoun;
 import com.bazaarbot.ICommodity;
 
 import java.util.*;
 
-public class History
-{
+public class History {
     public HistoryLog<ICommodity> prices;
     public HistoryLog<ICommodity> asks;
     public HistoryLog<ICommodity> bids;
@@ -49,8 +47,8 @@ public class History
         sources.add(bids);
         sources.add(trades);
 
-        for(HistoryLog<ICommodity> l : sources) {
-            Collections.addAll(result, l.getSubjects(new ICommodity[0]));
+        for (HistoryLog<ICommodity> historyItem : sources) {
+            Collections.addAll(result, historyItem.getSubjects(new ICommodity[0]));
         }
 
         return result.toArray(new ICommodity[0]);
