@@ -9,8 +9,7 @@ import com.bazaarbot.market.Market;
 
 import java.util.Random;
 
-public abstract class Logic
-{
+public abstract class Logic {
     private final Random rnd;
 
     public Logic(Random rnd) {
@@ -23,16 +22,16 @@ public abstract class Logic
 
     /**
      * Perform this logic on the given agent
-     * @param	agent
+     *
+     * @param    agent
      */
     public abstract void perform(BasicAgent agent, Market market);
 
     protected void produce(BasicAgent agent, ICommodity commodity, double amount, double chance) {
-        if (chance >= 1.0 || rnd.nextDouble() < chance)
-        {
-            agent.produceInventory(commodity,amount);
+        if (chance >= 1.0 || rnd.nextDouble() < chance) {
+            agent.produceInventory(commodity, amount);
         }
-         
+
     }
 
     protected final void produce(BasicAgent agent, ICommodity commodity, double amount) {
@@ -40,11 +39,10 @@ public abstract class Logic
     }
 
     protected void consume(BasicAgent agent, ICommodity commodity, double amount, double chance) {
-        if (chance >= 1.0 || rnd.nextDouble() < chance)
-        {
-            agent.consumeInventory(commodity,-amount);
+        if (chance >= 1.0 || rnd.nextDouble() < chance) {
+            agent.consumeInventory(commodity, -amount);
         }
-         
+
     }
 
     protected final void consume(BasicAgent agent, ICommodity commodity, double amount) {

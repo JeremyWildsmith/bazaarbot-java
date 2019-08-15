@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TradeBook   
-{
+public class TradeBook {
     public HashMap<ICommodity, List<Offer>> bids;
     public HashMap<ICommodity, List<Offer>> asks;
 
@@ -28,7 +27,7 @@ public class TradeBook
     public boolean bid(Offer offer) {
         if (!bids.containsKey(offer.getGood()))
             return false;
-         
+
         bids.get(offer.getGood()).add(offer);
         return true;
     }
@@ -36,7 +35,7 @@ public class TradeBook
     public boolean ask(Offer offer) {
         if (!bids.containsKey(offer.getGood()))
             return false;
-         
+
         asks.get(offer.getGood()).add(offer);
         return true;
     }
