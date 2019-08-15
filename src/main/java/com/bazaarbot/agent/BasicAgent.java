@@ -17,14 +17,11 @@ public abstract class BasicAgent {
     //unique integer identifier
     private final String agentName;
     private double moneyAvailable;
-    //dfs stub  needed?
     private double moneyLastRound;
-    //dfs stub needed?
-    private double trackCosts;
+    private double moneySpent;
     private Logic logic;
     private final Inventory inventory = new Inventory();
     private final HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
-    //profit from last round
     private int lookBack = 15;
 
 
@@ -36,7 +33,6 @@ public abstract class BasicAgent {
         if (data.getLookBack() != null) {
             lookBack = data.getLookBack();
         }
-        trackCosts = 0;
     }
 
     public void simulate(Market market) {
@@ -56,34 +52,27 @@ public abstract class BasicAgent {
         return inventory.query(good);
     }
 
-    public final void produceInventory(ICommodity good, double delta) {
-        if (trackCosts < 1)
-            trackCosts = 1;
-
-        //FIXME: Not used variable?
-        //double curunitcost = inventory.change(good, delta, trackCosts / delta);
-        trackCosts = 0;
+    public final void addInventoryItem(ICommodity good, double amount) {
+        inventory.add(good, amount, (moneySpent >= 1 ? moneySpent : 1) / amount);
     }
 
-    public final void consumeInventory(ICommodity good, double delta) {
+    public final void consumeInventoryItem(ICommodity good, double amount) {
         if (good.getName().compareTo("money") == 0) {
-            this.moneyAvailable += delta;
-            if (delta < 0)
-                trackCosts += (-delta);
-
+            this.moneyAvailable += amount;
+            if (amount < 0)
+                moneySpent += (-amount);
         } else {
-            double curunitcost = inventory.change(good, delta, 0);
-            if (delta < 0)
-                trackCosts += (-delta) * curunitcost;
-
+            double price = inventory.change(good, amount, 0);
+            if (amount < 0)
+                moneySpent += (-amount) * price;
         }
     }
 
-    public final void changeInventory(ICommodity good, double delta, double unitCost) {
+    public final void changeInventory(ICommodity good, double amount, double unitCost) {
         if (good.getName().compareTo("money") == 0) {
-            this.moneyAvailable += delta;
+            this.moneyAvailable += amount;
         } else {
-            inventory.change(good, delta, unitCost);
+            inventory.change(good, amount, unitCost);
         }
     }
 
@@ -168,14 +157,6 @@ public abstract class BasicAgent {
 
     public int getId() {
         return id;
-    }
-
-    public double getTrackCosts() {
-        return trackCosts;
-    }
-
-    public void setTrackCosts(double trackCosts) {
-        this.trackCosts = trackCosts;
     }
 
     public Logic getLogic() {

@@ -29,7 +29,7 @@ public abstract class Logic {
 
     protected void produce(BasicAgent agent, ICommodity commodity, double amount, double chance) {
         if (chance >= 1.0 || rnd.nextDouble() < chance) {
-            agent.produceInventory(commodity, amount);
+            agent.addInventoryItem(commodity, amount);
         }
 
     }
@@ -40,7 +40,7 @@ public abstract class Logic {
 
     protected void consume(BasicAgent agent, ICommodity commodity, double amount, double chance) {
         if (chance >= 1.0 || rnd.nextDouble() < chance) {
-            agent.consumeInventory(commodity, -amount);
+            agent.consumeInventoryItem(commodity, -amount);
         }
 
     }

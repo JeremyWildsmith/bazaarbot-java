@@ -107,40 +107,42 @@ public class Inventory {
         return spaceUsed;
     }
 
+    public void add(ICommodity good, double amount, double unitCost) {
+        // No item provided
+        if (amount < 0 || good == null) {
+            return;
+        }
+        stuff.put(good, new InventoryEntry(amount, unitCost));
+    }
+
     /**
      * Change the amount of the given commodity by delta
      *
      * @param good  string id of commodity
-     * @param delta amount added
+     * @param amount amount added
      */
-    public double change(ICommodity good, double delta, double unitCost) {
+    public double change(ICommodity good, double amount, double unitCost) {
+        // No item in inventory
+        if (!stuff.containsKey(good)) {
+            return 0;
+        }
         double resultAmount;
         double resultPrice;
 
-        if (stuff.containsKey(good)) {
-            InventoryEntry current = stuff.get(good);
-            if (unitCost > 0) {
-                //If we did not have any previous inventory for this item
-                if (current.getAmount() <= 0) {
-                    resultAmount = delta;
-                    resultPrice = unitCost;
-                } else {
-                    //original_price = Average the two costs
-                    resultPrice = (current.getAmount() * current.getOriginalPrice() + delta * unitCost) / (current.getAmount() + delta);
-                    resultAmount = current.getAmount() + delta;
-                }
+        InventoryEntry current = stuff.get(good);
+        if (unitCost > 0) {
+            //If we did not have any previous inventory for this item
+            if (current.getAmount() <= 0) {
+                resultAmount = amount;
+                resultPrice = unitCost;
             } else {
-                resultAmount = current.getAmount() + delta;
-                resultPrice = current.getOriginalPrice();
+                //original_price = Average the two costs
+                resultPrice = (current.getAmount() * current.getOriginalPrice() + amount * unitCost) / (current.getAmount() + amount);
+                resultAmount = current.getAmount() + amount;
             }
         } else {
-            //just copy from old value?
-            resultAmount = delta;
-            resultPrice = unitCost;
-        }
-        if (resultAmount < 0) {
-            resultAmount = 0;
-            resultPrice = 0;
+            resultAmount = current.getAmount() + amount;
+            resultPrice = current.getOriginalPrice();
         }
 
         stuff.put(good, new InventoryEntry(resultAmount, resultPrice));
