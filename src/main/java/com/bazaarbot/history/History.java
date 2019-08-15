@@ -40,7 +40,7 @@ public class History
         trades.register(good);
     }
 
-    public ICommodity[] getCommodities() {
+    public List<ICommodity> getCommodities() {
         Set<ICommodity> result = new HashSet<>();
 
         List<HistoryLog<ICommodity>> sources = new ArrayList<>();
@@ -49,11 +49,11 @@ public class History
         sources.add(bids);
         sources.add(trades);
 
-        for(HistoryLog<ICommodity> l : sources) {
-            Collections.addAll(result, l.getSubjects(new ICommodity[0]));
+        for (HistoryLog<ICommodity> historyItem : sources) {
+            result.addAll(historyItem.getSubjects());
         }
 
-        return result.toArray(new ICommodity[0]);
+        return new ArrayList<>(result);
     }
 
 }

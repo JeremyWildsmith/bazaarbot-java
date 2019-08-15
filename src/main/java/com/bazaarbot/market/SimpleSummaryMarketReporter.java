@@ -4,10 +4,7 @@ import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.AgentSnapshot;
 import com.bazaarbot.history.History;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class SimpleSummaryMarketReporter {
     private final MarketSnapshot snapshot;
@@ -45,9 +42,9 @@ public class SimpleSummaryMarketReporter {
 
         History history = snapshot.getHistory();
 
-        ICommodity[] goodTypes = history.getCommodities();
+        List<ICommodity> goodTypes = history.getCommodities();
 
-        Arrays.sort(goodTypes, Comparator.comparing(ICommodity::getName));
+        goodTypes.sort(Comparator.comparing(ICommodity::getName));
 
         for (ICommodity commodity : goodTypes)
         {
@@ -88,16 +85,14 @@ public class SimpleSummaryMarketReporter {
                 {
                     count++;
                     money += a.getMoney();
-                    for (int lic = 0;lic < goodTypes.length; lic++)
-                    {
-                        inventory.add(lic, inventory.get(lic) + a.getInventory().query(goodTypes[lic]));
+                    for (int lic = 0; lic < goodTypes.size(); lic++) {
+                        inventory.add(lic, inventory.get(lic) + a.getInventory().query(goodTypes.get(lic)));
                     }
                 }
 
             }
             money /= count;
-            for (int lic = 0;lic < goodTypes.length; lic++)
-            {
+            for (int lic = 0; lic < goodTypes.size(); lic++) {
                 inventory.add(lic, inventory.get(lic) / count);
                 setarrStrListInventory.add(lic, setarrStrListInventory.get(lic) + String.format("%d\n", lic));
             }

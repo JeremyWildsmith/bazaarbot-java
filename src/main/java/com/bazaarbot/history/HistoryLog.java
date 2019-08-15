@@ -10,6 +10,7 @@ import com.bazaarbot.ICommodity;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HistoryLog<T>
 {
@@ -18,7 +19,11 @@ public class HistoryLog<T>
 
     public HistoryLog(HistoryLog<T> source) {
         this.type = source.type;
-        log = new HashMap<>(source.log);
+        log = new HashMap<>();
+
+        for(Map.Entry<T, ArrayList<Double>> e : source.log.entrySet()) {
+            log.put(e.getKey(), new ArrayList<>(e.getValue()));
+        }
     }
 
     public HistoryLog(EconNoun type) {
@@ -82,8 +87,8 @@ public class HistoryLog<T>
         return 0;
     }
 
-    public T[] getSubjects(T[] cls) {
-        return log.keySet().toArray(cls);
+    public List<T> getSubjects() {
+        return new ArrayList<>(log.keySet());
     }
 }
 
