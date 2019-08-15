@@ -15,6 +15,11 @@ public class HistoryLog<T>
     private EconNoun type = EconNoun.Price;
     private HashMap<T, ArrayList<Double>> log;
 
+    public HistoryLog(HistoryLog<T> source) {
+        this.type = source.type;
+        log = new HashMap<>(source.log);
+    }
+
     public HistoryLog(EconNoun type) {
         this.type = type;
         log = new HashMap<>();

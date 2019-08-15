@@ -23,6 +23,14 @@ public class History
         profit = new HistoryLog<>(EconNoun.Profit);
     }
 
+    public History(History src) {
+        prices = new HistoryLog<>(src.prices);
+        asks = new HistoryLog<>(src.asks);
+        bids = new HistoryLog<>(src.bids);
+        trades = new HistoryLog<>(src.trades);
+        profit = new HistoryLog<>(src.profit);
+    }
+
     public void registerCommodity(ICommodity good) {
         prices.register(good);
         asks.register(good);

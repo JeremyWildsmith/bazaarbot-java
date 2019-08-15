@@ -2,13 +2,10 @@ package com.bazaarbot.example;
 
 import com.bazaarbot.Economy;
 import com.bazaarbot.market.Market;
-import com.bazaarbot.market.MarketReport;
-import org.junit.Assert;
+import com.bazaarbot.market.MarketSnapshot;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -44,7 +41,7 @@ public class DoranAndParberryEconomyTest {
         Market market = economy.getMarket("default");
 
         market.simulate(20);
-        MarketReport res = market.get_marketReport(1);
+        MarketSnapshot res = market.get_marketReport(1);
 
         String[] result = new String[] {
                 res.strListGood,

@@ -254,69 +254,14 @@ public class Market
         return _goodTypes;
     }
 
-    public MarketReport get_marketReport(int rounds) {
-        MarketReport mr = new MarketReport();
-        mr.strListGood = "Commodities\n\n";
-        mr.strListGoodPrices = "Price\n\n";
-        mr.strListGoodTrades = "Trades\n\n";
-        mr.strListGoodAsks = "Supply\n\n";
-        mr.strListGoodBids = "Demand\n\n";
-        mr.strListAgent = "Classes\n\n";
-        mr.strListAgentCount = "Count\n\n";
-        mr.strListAgentProfit = "Profit\n\n";
-        mr.strListAgentMoney = "Money\n\n";
-        mr.setarrStrListInventory(new ArrayList<String>());
-        for (ICommodity commodity : _goodTypes)
-        {
-            mr.strListGood += commodity + "\n";
-            Double price = history.prices.average(commodity,rounds);
-            mr.strListGoodPrices += String.format("%.2f\n", price);
-            Double asks = history.asks.average(commodity,rounds);
-            mr.strListGoodAsks += ((asks.intValue())+"\n");
-            Double bids = history.bids.average(commodity,rounds);
-            mr.strListGoodBids += (bids.intValue())+"\n";
-            Double trades = history.trades.average(commodity,rounds);
-            mr.strListGoodTrades += (trades.intValue())+"\n";
-            mr.getarrStrListInventory().add(commodity + "\n\n");
+    public MarketSnapshot getSnapshot() {
+        List<AgentSnapshot> agentData = new ArrayList<>();
+        for(BasicAgent a : _agents) {
+            AgentSnapshot data = new AgentSnapshot(a.getClassName(), a.getMoney());
+            agentData.add(data);
         }
-        for (String key : _mapAgents.keySet())
-        {
-            List<Double> inventory = new ArrayList<Double>();
-            for (ICommodity str : _goodTypes)
-            {
-                inventory.add(0.0);
-            }
-            mr.strListAgent += key + "\n";
-            Double profit = history.profit.average(key,rounds);
-            mr.strListAgentProfit += String.format("%.2f\n", profit);
 
-            List<BasicAgent> list = _agents;
-
-            int count = 0;
-            double money = 0;
-            for (BasicAgent a : list)
-            {
-                if (a.getClassName().compareTo(key) == 0)
-                {
-                    count++;
-                    money += a.getMoney();
-                    for (int lic = 0;lic < _goodTypes.size();lic++)
-                    {
-                        inventory.add(lic, inventory.get(lic) + a.queryInventory(_goodTypes.get(lic)));
-                    }
-                }
-                 
-            }
-            money /= count;
-            for (int lic = 0;lic < _goodTypes.size();lic++)
-            {
-                inventory.add(lic, inventory.get(lic) / count);
-                mr.getarrStrListInventory().add(lic, mr.getarrStrListInventory().get(lic) + String.format("%d\n", lic));
-            }
-            mr.strListAgentCount += String.format("%d\n", count);
-            mr.strListAgentMoney += String.format("%d\n", (int)money);
-        }
-        return mr;
+        return new MarketSnapshot(new History(history), agentData);
     }
 
     /********PRIVATE*********/

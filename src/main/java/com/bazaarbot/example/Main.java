@@ -2,7 +2,7 @@ package com.bazaarbot.example;
 
 import com.bazaarbot.Economy;
 import com.bazaarbot.market.Market;
-import com.bazaarbot.market.MarketReport;
+import com.bazaarbot.market.MarketSnapshot;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -36,7 +36,7 @@ public class Main {
         while(true) {
 
             market.simulate(1);
-            MarketReport res = market.get_marketReport(1);
+            MarketSnapshot res = market.get_marketReport(1);
             System.out.println("\nRound: " + rounds);
             format_row(res.strListGood);
             format_row(res.strListGoodPrices);
