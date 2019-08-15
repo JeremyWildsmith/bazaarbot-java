@@ -154,6 +154,10 @@ public abstract class BasicAgent
         updatePriceModel(market, buy, good, b, 0);
     }
 
+    public AgentSnapshot getSnapshot() {
+        return new AgentSnapshot(getClassName(), getMoney(), new Inventory(_inventory));
+    }
+
     public boolean isInventoryFull() {
         return _inventory.getEmptySpace() == 0;
     }

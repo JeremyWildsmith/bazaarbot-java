@@ -5,6 +5,7 @@
 package com.bazaarbot.history;
 
 import com.bazaarbot.EconNoun;
+import com.bazaarbot.ICommodity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +82,9 @@ public class HistoryLog<T>
         return 0;
     }
 
+    public T[] getSubjects(T[] cls) {
+        return log.keySet().toArray(cls);
+    }
 }
 
 

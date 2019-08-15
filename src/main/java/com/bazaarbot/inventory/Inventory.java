@@ -15,14 +15,8 @@ public class Inventory
 {
     public double maxSize = 0;
 
-    // En-route items, expecting via contract
-    // Key: commodity_it, val: amount, original_cost
     private HashMap<ICommodity, InventoryEntry> _expecting;
-
-    // key:commodity_id, val:amount, original_cost
     private HashMap<ICommodity, InventoryEntry> _stuff;
-
-    // ideal counts for each thing
     private HashMap<ICommodity, Double> _ideal;
 
     public Inventory() {
@@ -30,6 +24,13 @@ public class Inventory
         _ideal = new HashMap<>();
         _expecting = new HashMap<>();
         maxSize = 0;
+    }
+
+    public Inventory(Inventory src) {
+        _stuff = new HashMap<>(src._stuff);
+        _ideal = new HashMap<>(src._ideal);
+        _expecting = new HashMap<>(src._expecting);
+        maxSize = src.maxSize;
     }
 
     public void fromData(InventoryData data) {

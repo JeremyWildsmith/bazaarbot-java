@@ -4,6 +4,7 @@
 
 package com.bazaarbot.market;
 
+import com.bazaarbot.agent.AgentSnapshot;
 import com.bazaarbot.history.History;
 
 import java.util.List;

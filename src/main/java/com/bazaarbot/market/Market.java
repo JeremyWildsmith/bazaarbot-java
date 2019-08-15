@@ -6,9 +6,11 @@ package com.bazaarbot.market;
 
 import com.bazaarbot.*;
 import com.bazaarbot.agent.AgentData;
+import com.bazaarbot.agent.AgentSnapshot;
 import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.history.History;
+import com.bazaarbot.inventory.Inventory;
 
 import java.util.*;
 
@@ -46,14 +48,6 @@ public class Market
         _contractResolver = contractResolver;
         this.rng = rng;
         fromData(marketData);
-    }
-
-    public int numTypesOfGood() {
-        return _goodTypes.size();
-    }
-
-    public int numAgents() {
-        return _agents.size();
     }
 
     public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) {
@@ -246,19 +240,10 @@ public class Market
         return agentData;
     }
 
-    public List<ICommodity> getGoods() {
-        return new ArrayList<>(_goodTypes);
-    }
-
-    public List<ICommodity> getGoods_unsafe() {
-        return _goodTypes;
-    }
-
     public MarketSnapshot getSnapshot() {
         List<AgentSnapshot> agentData = new ArrayList<>();
         for(BasicAgent a : _agents) {
-            AgentSnapshot data = new AgentSnapshot(a.getClassName(), a.getMoney());
-            agentData.add(data);
+            agentData.add(a.getSnapshot());
         }
 
         return new MarketSnapshot(new History(history), agentData);

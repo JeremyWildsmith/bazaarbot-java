@@ -7,6 +7,8 @@ package com.bazaarbot.history;
 import com.bazaarbot.EconNoun;
 import com.bazaarbot.ICommodity;
 
+import java.util.*;
+
 public class History
 {
     public HistoryLog<ICommodity> prices;
@@ -36,6 +38,22 @@ public class History
         asks.register(good);
         bids.register(good);
         trades.register(good);
+    }
+
+    public ICommodity[] getCommodities() {
+        Set<ICommodity> result = new HashSet<>();
+
+        List<HistoryLog<ICommodity>> sources = new ArrayList<>();
+        sources.add(prices);
+        sources.add(asks);
+        sources.add(bids);
+        sources.add(trades);
+
+        for(HistoryLog<ICommodity> l : sources) {
+            Collections.addAll(result, l.getSubjects(new ICommodity[0]));
+        }
+
+        return result.toArray(new ICommodity[0]);
     }
 
 }
