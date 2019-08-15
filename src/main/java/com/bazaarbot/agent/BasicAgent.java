@@ -3,126 +3,151 @@
 //
 
 package com.bazaarbot.agent;
-
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.*;
 import com.bazaarbot.inventory.Inventory;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.HashMap;
 
-public abstract class BasicAgent {
-    private final int id = UUID.randomUUID().hashCode();
+public abstract class BasicAgent
+{
+    public int id;
     //unique integer identifier
-    private final String agentName;
-    private final AgentSimulation agentSimulation;
-    private final Inventory inventory = new Inventory();
-    private final List<CommodityPricingHistory> commodityPricingHistories = new ArrayList<>();
+    private String className;
+    private double money;
+    //dfs stub  needed?
+    public double moneyLastRound;
+    //dfs stub needed?
+    public double trackcosts;
+    private Logic _logic;
+    protected Inventory _inventory;
+    protected HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
+    //profit from last round
+    private int _lookback = 15;
 
-    private double moneyAvailable;
-    private double moneyLastRound;
-    private double moneySpent;
 
-    public BasicAgent(AgentData data) {
-        this.agentName = data.getAgentClassName();
-        this.moneyAvailable = data.getMoney();
-        this.inventory.fromData(data.getInventory());
-        this.agentSimulation = data.getAgentSimulation();
+
+    public BasicAgent(int id, AgentData data) {
+        this.id = id;
+        setClassName(data.getClassName());
+        setMoney(data.getMoney());
+        _inventory = new Inventory();
+        _inventory.fromData(data.getInventory());
+        _logic = data.getLogic();
+        if (data.getLookBack() == null)
+        {
+            _lookback = 15;
+        }
+        else
+        {
+            _lookback = data.getLookBack();
+        }
+        trackcosts = 0;
     }
 
     public void simulate(Market market) {
-        this.moneyLastRound = this.moneyAvailable;
-        agentSimulation.perform(this, market);
+        _logic.perform(this,market);
     }
 
     public abstract void generateOffers(Market bazaar, ICommodity good);
-
-    public void updatePriceModel(Market market, String act, ICommodity good, boolean success, double unitPrice) {
-        if (success) {
-            Optional<CommodityPricingHistory> commodityPricingHistoryOptional = commodityPricingHistories.stream()
-                    .filter(commodityPricingHistory -> commodityPricingHistory.getCommodity().equals(good)).findFirst();
-            commodityPricingHistoryOptional.ifPresent(commodityPricingHistory -> commodityPricingHistory.addTransaction(unitPrice));
-        }
-    }
-
+    public abstract void updatePriceModel(Market bazaar, String act, ICommodity good, boolean success, double unitPrice);
     public abstract Offer createBid(Market bazaar, ICommodity good, double limit);
-
     public abstract Offer createAsk(Market bazaar, ICommodity commodity_, double limit_);
 
     public final double queryInventory(ICommodity good) {
-        return inventory.query(good);
+        return _inventory.query(good);
     }
 
-    public final void addInventoryItem(ICommodity good, double amount) {
-        commodityPricingHistories.add(new CommodityPricingHistory(good));
-        inventory.add(good, amount, (moneySpent >= 1 ? moneySpent : 1) / amount);
+    public final void produceInventory(ICommodity good, double delta) {
+        if (trackcosts < 1)
+            trackcosts = 1;
+         
+        double curunitcost = _inventory.change(good,delta,trackcosts / delta);
+        trackcosts = 0;
     }
 
-    public final void consumeInventoryItem(ICommodity good, double amount) {
-        if (good.getName().compareTo("money") == 0) {
-            this.moneyAvailable += amount;
-            if (amount < 0)
-                moneySpent += (-amount);
-        } else {
-            double price = inventory.change(good, amount, 0);
-            if (amount < 0)
-                moneySpent += (-amount) * price;
+    public final void consumeInventory(ICommodity good, double delta) {
+        if (good.getName().compareTo("money") == 0)
+        {
+            setMoney(getMoney() + delta);
+            if (delta < 0)
+                trackcosts += (-delta);
+             
         }
+        else
+        {
+            double curunitcost = _inventory.change(good,delta,0);
+            if (delta < 0)
+                trackcosts += (-delta) * curunitcost;
+             
+        } 
     }
 
-    public final void changeInventory(ICommodity good, double amount, double unitCost) {
-        if (good.getName().compareTo("money") == 0) {
-            this.moneyAvailable += amount;
-        } else {
-            inventory.change(good, amount, unitCost);
+    public final void changeInventory(ICommodity good, double delta, double unit_cost) {
+        if (good.getName().compareTo("money") == 0)
+        {
+            setMoney(getMoney() + delta);
         }
+        else
+        {
+            _inventory.change(good,delta,unit_cost);
+        } 
     }
 
-    protected double determineSaleQuantity(int observeWindow, double averageHistoricalPrice, ICommodity commodity) {
-        if (averageHistoricalPrice <= 0) {
-            return 0;
-        }
-        CommodityPricingRange tradingRange = observeTradingRange(commodity, observeWindow);
-        double favorability = tradingRange.positionInRange(averageHistoricalPrice);
-        //position_in_range: high means price is at a high point
-        //TODO: What is going on here?
-        double amountToSell = Math.round(favorability * inventory.surplus(commodity));
-        //double amount_to_sell = inventory.query(commodity);
-        if (amountToSell < 1) {
-            amountToSell = 1;
-        }
-
-        return amountToSell;
-    }
-
-
-    protected double determinePurchaseQuantity(int observeWindow, double averageHistoricalPrice, ICommodity commodity) {
-        if (averageHistoricalPrice <= 0) {
-            return 0;
-        }
-        CommodityPricingRange tradingRange = observeTradingRange(commodity, observeWindow);
-        double favorability = tradingRange == null ? 1 : tradingRange.positionInRange(averageHistoricalPrice);
+    protected double determineSaleQuantity(Market bazaar, ICommodity commodity_) {
+        double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
         //double
-        favorability = 1 - favorability;
-        //do 1 - favorability to see how close we are to the low end
-        double amountToBuy = Math.round(favorability * inventory.shortage(commodity));
-        //double
-        if (amountToBuy < 1) {
-            amountToBuy = 1;
+        PriceRange trading_range = observeTradingRange(commodity_,10);
+        //point
+        if (mean > 0)
+        {
+            double favorability = trading_range.positionInRange(mean);
+            //double
+            //position_in_range: high means price is at a high point
+            double amount_to_sell = Math.round(favorability * _inventory.surplus(commodity_));
+            //double
+            amount_to_sell = _inventory.query(commodity_);
+            if (amount_to_sell < 1)
+            {
+                amount_to_sell = 1;
+            }
+             
+            return amount_to_sell;
         }
-
-        return amountToBuy;
+         
+        return 0;
     }
 
-    private CommodityPricingRange observeTradingRange(ICommodity good, int window) {
-        Optional<CommodityPricingHistory> commodityPricingHistoryOptional = commodityPricingHistories.stream()
-                .filter(commodityPricingHistory -> commodityPricingHistory.getCommodity().equals(good)).findFirst();
-        //TODO: exception needed here
-        return commodityPricingHistoryOptional.map(commodityPricingHistory -> commodityPricingHistory.observe(window))
-                .orElse(null);
+    protected double determinePurchaseQuantity(Market bazaar, ICommodity commodity_) {
+        Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
+        //double
+        PriceRange trading_range = observeTradingRange(commodity_,10);
+        //Point
+        if (trading_range != null)
+        {
+            double favorability = trading_range.positionInRange(mean);
+            //double
+            favorability = 1 - favorability;
+            //do 1 - favorability to see how close we are to the low end
+            double amount_to_buy = Math.round(favorability * _inventory.shortage(commodity_));
+            //double
+            if (amount_to_buy < 1)
+            {
+                amount_to_buy = 1;
+            }
+             
+            return amount_to_buy;
+        }
+         
+        return 0;
+    }
+
+    private PriceRange observeTradingRange(ICommodity good, int window) {
+        if(!goodsPriceBelief.containsKey(good))
+            goodsPriceBelief.put(good, new PriceBelief());
+
+        return goodsPriceBelief.get(good).observe(window);
     }
 
     public final void updatePriceModel(Market market, String buy, ICommodity good, boolean b) {
@@ -130,40 +155,31 @@ public abstract class BasicAgent {
     }
 
     public AgentSnapshot getSnapshot() {
-        return new AgentSnapshot(getAgentName(), getMoneyAvailable(), new Inventory(inventory));
+        return new AgentSnapshot(getClassName(), getMoney(), new Inventory(_inventory));
     }
 
     public boolean isInventoryFull() {
-        return inventory.getEmptySpace() == 0;
+        return _inventory.getEmptySpace() == 0;
     }
 
-    public double getProfitFromLastRound() {
-        return moneyAvailable - moneyLastRound;
+    public double get_profit() {
+        return getMoney() - moneyLastRound;
     }
 
-    public String getAgentName() {
-        return agentName;
+    public String getClassName() {
+        return className;
     }
 
-    public double getMoneyAvailable() {
-        return moneyAvailable;
+    public void setClassName(String value) {
+        className = value;
     }
 
-    public void setMoneyAvailable(double value) {
-        moneyAvailable = value;
+    public double getMoney() {
+        return money;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public Inventory getInventory() {
-        return inventory;
-    }
-
-    @Override
-    public String toString() {
-        return agentName;
+    public void setMoney(double value) {
+        money = value;
     }
 }
 

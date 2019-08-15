@@ -4,16 +4,18 @@
 
 package com.bazaarbot.history;
 
+import com.bazaarbot.EconNoun;
 import com.bazaarbot.ICommodity;
 
 import java.util.*;
 
-public class History {
-    private HistoryLog<ICommodity> prices;
-    private HistoryLog<ICommodity> asks;
-    private HistoryLog<ICommodity> bids;
-    private HistoryLog<ICommodity> trades;
-    private HistoryLog<String> profit;
+public class History
+{
+    public HistoryLog<ICommodity> prices;
+    public HistoryLog<ICommodity> asks;
+    public HistoryLog<ICommodity> bids;
+    public HistoryLog<ICommodity> trades;
+    public HistoryLog<String> profit;
 
     public History() {
         prices = new HistoryLog<>(EconNoun.Price);
@@ -47,52 +49,13 @@ public class History {
         sources.add(bids);
         sources.add(trades);
 
-        for (HistoryLog<ICommodity> historyItem : sources) {
-            Collections.addAll(result, historyItem.getSubjects(new ICommodity[0]));
+        for(HistoryLog<ICommodity> l : sources) {
+            Collections.addAll(result, l.getSubjects(new ICommodity[0]));
         }
 
         return result.toArray(new ICommodity[0]);
     }
 
-    public HistoryLog<ICommodity> getPrices() {
-        return prices;
-    }
-
-    public void setPrices(HistoryLog<ICommodity> prices) {
-        this.prices = prices;
-    }
-
-    public HistoryLog<ICommodity> getAsks() {
-        return asks;
-    }
-
-    public void setAsks(HistoryLog<ICommodity> asks) {
-        this.asks = asks;
-    }
-
-    public HistoryLog<ICommodity> getBids() {
-        return bids;
-    }
-
-    public void setBids(HistoryLog<ICommodity> bids) {
-        this.bids = bids;
-    }
-
-    public HistoryLog<ICommodity> getTrades() {
-        return trades;
-    }
-
-    public void setTrades(HistoryLog<ICommodity> trades) {
-        this.trades = trades;
-    }
-
-    public HistoryLog<String> getProfit() {
-        return profit;
-    }
-
-    public void setProfit(HistoryLog<String> profit) {
-        this.profit = profit;
-    }
 }
 
 

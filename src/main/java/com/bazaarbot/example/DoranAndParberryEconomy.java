@@ -8,7 +8,6 @@ import com.bazaarbot.*;
 import com.bazaarbot.agent.Agent;
 import com.bazaarbot.agent.AgentData;
 import com.bazaarbot.agent.BasicAgent;
-import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.contract.DefaultContractResolver;
 import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.Market;
@@ -120,11 +119,13 @@ public class DoranAndParberryEconomy  extends Economy
         ii = new InventoryData(20, ideal, start);
         agentTypes.get(5).setInventory(ii);
 
+        int idc = 0;
         for (int iagent = 0;iagent < agentTypes.size();iagent++)
         {
             for (int i = 0;i < 5;i++)
             {
                 agents.add(getAgent(agentTypes.get(iagent)));
+                agents.get(agents.size() - 1).id = idc++;
             }
         }
         MarketData data = new MarketData(Arrays.asList(ExampleCommodity.values()), agentTypes,agents);
@@ -220,11 +221,11 @@ public class DoranAndParberryEconomy  extends Economy
     //    return new Agent(0, data);
     //}
     private BasicAgent getAgent(AgentData data) {
-        data.setAgentSimulation(getLogic(data.getLogicName()));
-        return new Agent(data);
+        data.setLogic(getLogic(data.getLogicName()));
+        return new Agent(0,data);
     }
 
-    private AgentSimulation getLogic(String str) {
+    private Logic getLogic(String str) {
         String __dummyScrutVar0 = str;
         if (__dummyScrutVar0.equals("blacksmith"))
         {

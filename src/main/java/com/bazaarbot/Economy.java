@@ -11,31 +11,34 @@ import com.bazaarbot.market.Market;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Economy implements ISignalBankrupt {
-    private List<Market> markets;
-
+public class Economy   implements ISignalBankrupt
+{
+    private List<Market> _markets;
     public Economy() {
-        markets = new ArrayList<>();
+        _markets = new ArrayList<Market>();
     }
 
     public void addMarket(Market m) {
-        if (!markets.contains(m)) {
-            markets.add(m);
+        if (!_markets.contains(m))
+        {
+            _markets.add(m);
         }
-
+         
     }
 
     public Market getMarket(String name) {
-        for (Market m : markets) {
-            if (m.getName().compareTo(name) == 0)
+        for (Market m : _markets)
+        {
+            if (m.name.compareTo(name) == 0)
                 return m;
-
+             
         }
         return null;
     }
 
     public void simulate(int rounds) {
-        for (Market m : markets) {
+        for (Market m : _markets)
+        {
             m.simulate(rounds);
         }
     }

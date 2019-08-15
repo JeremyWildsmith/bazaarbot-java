@@ -9,7 +9,8 @@ import com.bazaarbot.history.History;
 
 import java.util.List;
 
-public class MarketSnapshot {
+public class MarketSnapshot
+{
     private final History history;
     private final List<AgentSnapshot> agents;
 
