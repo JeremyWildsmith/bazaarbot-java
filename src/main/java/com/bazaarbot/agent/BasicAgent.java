@@ -16,12 +16,14 @@ public abstract class BasicAgent {
     private final int id = UUID.randomUUID().hashCode();
     //unique integer identifier
     private final String agentName;
+    private final AgentSimulation agentSimulation;
+    private final Inventory inventory = new Inventory();
+    private final HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
+
     private double moneyAvailable;
     private double moneyLastRound;
     private double moneySpent;
-    private Logic logic;
-    private final Inventory inventory = new Inventory();
-    private final HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
+
     private int lookBack = 15;
 
 
@@ -29,7 +31,7 @@ public abstract class BasicAgent {
         this.agentName = data.getAgentClassName();
         this.moneyAvailable = data.getMoney();
         this.inventory.fromData(data.getInventory());
-        logic = data.getLogic();
+        this.agentSimulation = data.getAgentSimulation();
         if (data.getLookBack() != null) {
             lookBack = data.getLookBack();
         }
@@ -37,7 +39,7 @@ public abstract class BasicAgent {
 
     public void simulate(Market market) {
         this.moneyLastRound = this.moneyAvailable;
-        logic.perform(this, market);
+        agentSimulation.perform(this, market);
     }
 
     public abstract void generateOffers(Market bazaar, ICommodity good);
@@ -157,14 +159,6 @@ public abstract class BasicAgent {
 
     public int getId() {
         return id;
-    }
-
-    public Logic getLogic() {
-        return logic;
-    }
-
-    public void setLogic(Logic logic) {
-        this.logic = logic;
     }
 
     public Inventory getInventory() {

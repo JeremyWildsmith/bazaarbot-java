@@ -5,7 +5,6 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.inventory.InventoryData;
-import com.bazaarbot.Logic;
 
 /**
  * The most fundamental agent class, and has as little implementation as possible.
@@ -18,7 +17,7 @@ public class AgentData {
     private double money;
     private InventoryData inventory;
     private String logicName;
-    private Logic logic;
+    private AgentSimulation agentSimulation;
     private Integer lookBack;
 
     public AgentData(String agentClassName, double money, String logicName) {
@@ -59,12 +58,12 @@ public class AgentData {
         this.logicName = logicName;
     }
 
-    public Logic getLogic() {
-        return logic;
+    public AgentSimulation getAgentSimulation() {
+        return agentSimulation;
     }
 
-    public void setLogic(Logic logic) {
-        this.logic = logic;
+    public void setAgentSimulation(AgentSimulation agentSimulation) {
+        this.agentSimulation = agentSimulation;
     }
 
     public Integer getLookBack() {
