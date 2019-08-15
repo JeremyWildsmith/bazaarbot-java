@@ -2,13 +2,11 @@ package com.bazaarbot.example;
 
 import com.bazaarbot.Economy;
 import com.bazaarbot.market.Market;
-import com.bazaarbot.market.MarketReport;
-import org.junit.Assert;
+import com.bazaarbot.market.MarketSnapshot;
+import com.bazaarbot.market.SimpleSummaryMarketReporter;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -31,30 +29,19 @@ public class DoranAndParberryEconomyTest {
 
     @Test
     public void test_general() {
-        String[] expected = new String[] {
-                "Commodities    |Food           |Tools          |Wood           |Work           |Metal          |Ore            |",
-                "Price          |0.26           |0.61           |0.52           |1.02           |0.40           |0.26           |",
-                "Trades         |30             |1              |5              |5              |1              |4              |",
-                "Demand         |30             |1              |5              |7              |1              |4              |",
-                "Supply         |34             |30             |20             |5              |23             |28             |"
-        };
-
+        String expected =
+                        "Commodities    |Food           |Metal          |Ore            |Tools          |Wood           |Work           |\n" +
+                        "Price          |0.26           |0.40           |0.26           |0.61           |0.52           |1.02           |\n" +
+                        "Trades         |30             |1              |4              |1              |5              |5              |\n" +
+                        "Demand         |30             |1              |4              |1              |5              |7              |\n" +
+                        "Supply         |34             |23             |28             |30             |20             |5              |";
         Random r = new Random(1234);
         Economy economy = new DoranAndParberryEconomy(r);
         Market market = economy.getMarket("default");
 
         market.simulate(20);
-        MarketReport res = market.get_marketReport(1);
+        SimpleSummaryMarketReporter reporter = new SimpleSummaryMarketReporter(market.getSnapshot());
 
-        String[] result = new String[] {
-                res.strListGood,
-                res.strListGoodPrices,
-                res.strListGoodTrades,
-                res.strListGoodBids,
-                res.strListGoodAsks
-        };
-        for(int i = 0; i < expected.length; i++) {
-            assertEquals(expected[i], format_row(result[i]));
-        }
+        assertEquals(expected, reporter.produce(1));
     }
 }

@@ -5,6 +5,7 @@
 package com.bazaarbot.history;
 
 import com.bazaarbot.EconNoun;
+import com.bazaarbot.ICommodity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,11 @@ public class HistoryLog<T>
 {
     private EconNoun type = EconNoun.Price;
     private HashMap<T, ArrayList<Double>> log;
+
+    public HistoryLog(HistoryLog<T> source) {
+        this.type = source.type;
+        log = new HashMap<>(source.log);
+    }
 
     public HistoryLog(EconNoun type) {
         this.type = type;
@@ -76,6 +82,9 @@ public class HistoryLog<T>
         return 0;
     }
 
+    public T[] getSubjects(T[] cls) {
+        return log.keySet().toArray(cls);
+    }
 }
 
 
