@@ -15,23 +15,22 @@ import java.util.UUID;
 public abstract class BasicAgent {
     private final int id = UUID.randomUUID().hashCode();
     //unique integer identifier
-    private String className;
+    private final String agentName;
     private double money;
     //dfs stub  needed?
     private double moneyLastRound;
     //dfs stub needed?
     private double trackCosts;
     private Logic logic;
-    private Inventory inventory;
-    private HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
+    private final Inventory inventory = new Inventory();
+    private final HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
     //profit from last round
     private int lookBack = 15;
 
 
     public BasicAgent(AgentData data) {
-        setClassName(data.getClassName());
+        this.agentName = data.getAgentClassName();
         setMoney(data.getMoney());
-        inventory = new Inventory();
         inventory.fromData(data.getInventory());
         logic = data.getLogic();
         if (data.getLookBack() != null) {
@@ -143,7 +142,7 @@ public abstract class BasicAgent {
     }
 
     public AgentSnapshot getSnapshot() {
-        return new AgentSnapshot(getClassName(), getMoney(), new Inventory(inventory));
+        return new AgentSnapshot(getAgentName(), getMoney(), new Inventory(inventory));
     }
 
     public boolean isInventoryFull() {
@@ -154,12 +153,8 @@ public abstract class BasicAgent {
         return getMoney() - moneyLastRound;
     }
 
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String value) {
-        className = value;
+    public String getAgentName() {
+        return agentName;
     }
 
     public double getMoney() {
@@ -202,16 +197,8 @@ public abstract class BasicAgent {
         return inventory;
     }
 
-    public void setInventory(Inventory inventory) {
-        this.inventory = inventory;
-    }
-
     public HashMap<ICommodity, PriceBelief> getGoodsPriceBelief() {
         return goodsPriceBelief;
-    }
-
-    public void setGoodsPriceBelief(HashMap<ICommodity, PriceBelief> goodsPriceBelief) {
-        this.goodsPriceBelief = goodsPriceBelief;
     }
 
     public int getLookBack() {

@@ -14,25 +14,25 @@ import com.bazaarbot.Logic;
  * @author larsiusprime
  */
 public class AgentData {
-    private String className;
+    private String agentClassName;
     private double money;
     private InventoryData inventory;
     private String logicName;
     private Logic logic;
     private Integer lookBack;
 
-    public AgentData(String className, double money, String logicName) {
-        this.className = className;
+    public AgentData(String agentClassName, double money, String logicName) {
+        this.agentClassName = agentClassName;
         this.money = money;
         this.logicName = logicName;
     }
 
-    public String getClassName() {
-        return className;
+    public String getAgentClassName() {
+        return agentClassName;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setAgentClassName(String agentClassName) {
+        this.agentClassName = agentClassName;
     }
 
     public double getMoney() {

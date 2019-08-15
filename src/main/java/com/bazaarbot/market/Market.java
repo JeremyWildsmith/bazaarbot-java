@@ -255,8 +255,8 @@ public class Market {
         mapAgents = new HashMap<>();
 
         for (AgentData aData : data.getAgentTypes()) {
-            mapAgents.put(aData.getClassName(), aData);
-            history.getProfit().register(aData.getClassName());
+            mapAgents.put(aData.getAgentClassName(), aData);
+            history.getProfit().register(aData.getAgentClassName());
         }
         //Make the agent list
         agents = new ArrayList<>(data.getAgents());
@@ -376,14 +376,14 @@ public class Market {
             averagePrice = history.getPrices().average(good, 1);
         }
         List<BasicAgent> ag = new ArrayList<>(agents);//.<BasicAgent>ToList();
-        ag.sort(Comparator.comparing(BasicAgent::getClassName));
+        ag.sort(Comparator.comparing(BasicAgent::getAgentName));
         String currentClass = "";
         String lastClass = "";
         List<Double> list = null;
         double averageProfit = 0;
         for (BasicAgent agent : ag) {
             //get current agent
-            currentClass = agent.getClassName();
+            currentClass = agent.getAgentName();
             //check its class
             if (currentClass.compareTo(lastClass) != 0) {
                 //new class?
