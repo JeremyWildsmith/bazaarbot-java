@@ -29,7 +29,7 @@ public class Economy   implements ISignalBankrupt
     public Market getMarket(String name) {
         for (Market m : _markets)
         {
-            if (m.name.compareTo(name) == 0)
+            if (m.getName().compareTo(name) == 0)
                 return m;
              
         }

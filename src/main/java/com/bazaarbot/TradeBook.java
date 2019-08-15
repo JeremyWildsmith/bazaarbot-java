@@ -26,18 +26,18 @@ public class TradeBook
     }
 
     public boolean bid(Offer offer) {
-        if (!bids.containsKey(offer.good))
+        if (!bids.containsKey(offer.getGood()))
             return false;
          
-        bids.get(offer.good).add(offer);
+        bids.get(offer.getGood()).add(offer);
         return true;
     }
 
     public boolean ask(Offer offer) {
-        if (!bids.containsKey(offer.good))
+        if (!bids.containsKey(offer.getGood()))
             return false;
          
-        asks.get(offer.good).add(offer);
+        asks.get(offer.getGood()).add(offer);
         return true;
     }
 
