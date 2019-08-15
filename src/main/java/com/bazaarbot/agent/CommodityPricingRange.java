@@ -1,28 +1,32 @@
-package com.bazaarbot;
+package com.bazaarbot.agent;
 
-public class PriceRange {
+import com.bazaarbot.ICommodity;
+
+final class CommodityPricingRange {
     private final double min;
     private final double max;
+    private final ICommodity commodity;
 
-    public PriceRange(double min, double max) {
+    CommodityPricingRange(ICommodity commodity, double min, double max) {
+        this.commodity = commodity;
         this.min = min;
         this.max = max;
     }
 
-    public double getMin() {
+    double getMin() {
         return min;
     }
 
-    public double getMax() {
+    double getMax() {
         return max;
     }
 
 
-    public double positionInRange(double value) {
+    double positionInRange(double value) {
         return positionInRange(value, true);
     }
 
-    public double positionInRange(double value, boolean clamp) {
+    double positionInRange(double value, boolean clamp) {
         value -= min;
 
         double workingMax = max - min;
@@ -42,5 +46,9 @@ public class PriceRange {
         }
 
         return value;
+    }
+
+    ICommodity getCommodity() {
+        return commodity;
     }
 }

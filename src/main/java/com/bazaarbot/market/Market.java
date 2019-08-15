@@ -64,7 +64,9 @@ public class Market {
             for (BasicAgent agent : agents) {
                 agent.simulate(this);
                 for (ICommodity commodity : goodTypes) {
-                    agent.generateOffers(this, commodity);
+                    //if (agent.queryInventory(commodity) > 0) {
+                        agent.generateOffers(this, commodity);
+                    //}
                 }
             }
             for (ICommodity commodity : goodTypes) {

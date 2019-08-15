@@ -5,7 +5,6 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
-import com.bazaarbot.PriceBelief;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
 
@@ -86,14 +85,6 @@ public class Agent extends BasicAgent {
             }
 
         }
-    }
-
-    @Override
-    public void updatePriceModel(Market bazaar, String act, ICommodity good, boolean success, double unitPrice) {
-        if (!getGoodsPriceBelief().containsKey(good))
-            getGoodsPriceBelief().put(good, new PriceBelief());
-
-        getGoodsPriceBelief().get(good).addTransaction(unitPrice, success);
     }
 
 }

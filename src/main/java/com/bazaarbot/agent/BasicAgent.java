@@ -5,13 +5,13 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
-import com.bazaarbot.PriceBelief;
-import com.bazaarbot.PriceRange;
 import com.bazaarbot.inventory.Inventory;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class BasicAgent {
@@ -20,7 +20,7 @@ public abstract class BasicAgent {
     private final String agentName;
     private final AgentSimulation agentSimulation;
     private final Inventory inventory = new Inventory();
-    private final HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
+    private final List<CommodityPricingHistory> commodityPricingHistories = new ArrayList<>();
 
     private double moneyAvailable;
     private double moneyLastRound;
@@ -40,7 +40,13 @@ public abstract class BasicAgent {
 
     public abstract void generateOffers(Market bazaar, ICommodity good);
 
-    public abstract void updatePriceModel(Market bazaar, String act, ICommodity good, boolean success, double unitPrice);
+    public void updatePriceModel(Market market, String act, ICommodity good, boolean success, double unitPrice) {
+        if (success) {
+            Optional<CommodityPricingHistory> commodityPricingHistoryOptional = commodityPricingHistories.stream()
+                    .filter(commodityPricingHistory -> commodityPricingHistory.getCommodity().equals(good)).findFirst();
+            commodityPricingHistoryOptional.ifPresent(commodityPricingHistory -> commodityPricingHistory.addTransaction(unitPrice));
+        }
+    }
 
     public abstract Offer createBid(Market bazaar, ICommodity good, double limit);
 
@@ -51,6 +57,7 @@ public abstract class BasicAgent {
     }
 
     public final void addInventoryItem(ICommodity good, double amount) {
+        commodityPricingHistories.add(new CommodityPricingHistory(good));
         inventory.add(good, amount, (moneySpent >= 1 ? moneySpent : 1) / amount);
     }
 
@@ -78,7 +85,7 @@ public abstract class BasicAgent {
         if (averageHistoricalPrice <= 0) {
             return 0;
         }
-        PriceRange tradingRange = observeTradingRange(commodity, observeWindow);
+        CommodityPricingRange tradingRange = observeTradingRange(commodity, observeWindow);
         double favorability = tradingRange.positionInRange(averageHistoricalPrice);
         //position_in_range: high means price is at a high point
         //TODO: What is going on here?
@@ -96,8 +103,8 @@ public abstract class BasicAgent {
         if (averageHistoricalPrice <= 0) {
             return 0;
         }
-        PriceRange tradingRange = observeTradingRange(commodity, observeWindow);
-        double favorability = tradingRange.positionInRange(averageHistoricalPrice);
+        CommodityPricingRange tradingRange = observeTradingRange(commodity, observeWindow);
+        double favorability = tradingRange == null ? 1 : tradingRange.positionInRange(averageHistoricalPrice);
         //double
         favorability = 1 - favorability;
         //do 1 - favorability to see how close we are to the low end
@@ -110,11 +117,12 @@ public abstract class BasicAgent {
         return amountToBuy;
     }
 
-    private PriceRange observeTradingRange(ICommodity good, int window) {
-        if (!goodsPriceBelief.containsKey(good))
-            goodsPriceBelief.put(good, new PriceBelief());
-
-        return goodsPriceBelief.get(good).observe(window);
+    private CommodityPricingRange observeTradingRange(ICommodity good, int window) {
+        Optional<CommodityPricingHistory> commodityPricingHistoryOptional = commodityPricingHistories.stream()
+                .filter(commodityPricingHistory -> commodityPricingHistory.getCommodity().equals(good)).findFirst();
+        //TODO: exception needed here
+        return commodityPricingHistoryOptional.map(commodityPricingHistory -> commodityPricingHistory.observe(window))
+                .orElse(null);
     }
 
     public final void updatePriceModel(Market market, String buy, ICommodity good, boolean b) {
@@ -153,8 +161,9 @@ public abstract class BasicAgent {
         return inventory;
     }
 
-    public HashMap<ICommodity, PriceBelief> getGoodsPriceBelief() {
-        return goodsPriceBelief;
+    @Override
+    public String toString() {
+        return agentName;
     }
 }
 
