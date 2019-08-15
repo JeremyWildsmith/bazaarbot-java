@@ -16,8 +16,8 @@ import com.bazaarbot.PriceBelief;
  */
 public class Agent extends BasicAgent {
     //lowest possible price
-    public Agent(int id, AgentData data) {
-        super(id, data);
+    public Agent(AgentData data) {
+        super(data);
     }
 
     @Override

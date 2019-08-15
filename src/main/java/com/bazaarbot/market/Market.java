@@ -54,7 +54,6 @@ public class Market {
     }
 
     public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) {
-        newAgent.setId(oldAgent.getId());
         this.agents.set(oldAgent.getId(), newAgent);
     }
 
@@ -260,13 +259,7 @@ public class Market {
             history.getProfit().register(aData.getClassName());
         }
         //Make the agent list
-        agents = new ArrayList<>();
-        int agentIndex = 0;
-        for (BasicAgent agent : data.getAgents()) {
-            agent.setId(agentIndex);
-            agents.add(agent);
-            agentIndex++;
-        }
+        agents = new ArrayList<>(data.getAgents());
     }
 
     private static void sortOffers(List<Offer> offers) {

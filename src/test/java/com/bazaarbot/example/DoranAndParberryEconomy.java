@@ -119,13 +119,11 @@ public class DoranAndParberryEconomy  extends Economy
         ii = new InventoryData(20, ideal, start);
         agentTypes.get(5).setInventory(ii);
 
-        int idc = 0;
         for (int iagent = 0;iagent < agentTypes.size();iagent++)
         {
             for (int i = 0;i < 5;i++)
             {
                 agents.add(getAgent(agentTypes.get(iagent)));
-                agents.get(agents.size() - 1).setId(idc++);
             }
         }
         MarketData data = new MarketData(Arrays.asList(ExampleCommodity.values()), agentTypes,agents);
@@ -222,7 +220,7 @@ public class DoranAndParberryEconomy  extends Economy
     //}
     private BasicAgent getAgent(AgentData data) {
         data.setLogic(getLogic(data.getLogicName()));
-        return new Agent(0,data);
+        return new Agent(data);
     }
 
     private Logic getLogic(String str) {

@@ -10,9 +10,10 @@ import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public abstract class BasicAgent {
-    private int id;
+    private final int id = UUID.randomUUID().hashCode();
     //unique integer identifier
     private String className;
     private double money;
@@ -27,8 +28,7 @@ public abstract class BasicAgent {
     private int lookBack = 15;
 
 
-    public BasicAgent(int id, AgentData data) {
-        this.id = id;
+    public BasicAgent(AgentData data) {
         setClassName(data.getClassName());
         setMoney(data.getMoney());
         inventory = new Inventory();
@@ -172,10 +172,6 @@ public abstract class BasicAgent {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public double getMoneyLastRound() {
