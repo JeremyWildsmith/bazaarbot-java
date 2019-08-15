@@ -61,7 +61,6 @@ public class Market {
     public void simulate(int rounds) {
         for (int round = 0; round < rounds; round++) {
             for (BasicAgent agent : agents) {
-                agent.setMoneyLastRound(agent.getMoneyAvailable());
                 agent.simulate(this);
                 for (ICommodity commodity : goodTypes) {
                     agent.generateOffers(this, commodity);
@@ -392,7 +391,7 @@ public class Market {
                 lastClass = currentClass;
             }
 
-            list.add(agent.getProfit());
+            list.add(agent.getProfitFromLastRound());
         }
         //push profit onto list
         //add the last class too

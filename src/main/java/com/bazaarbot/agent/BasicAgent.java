@@ -40,6 +40,7 @@ public abstract class BasicAgent {
     }
 
     public void simulate(Market market) {
+        this.moneyLastRound = this.moneyAvailable;
         logic.perform(this, market);
     }
 
@@ -149,8 +150,8 @@ public abstract class BasicAgent {
         return inventory.getEmptySpace() == 0;
     }
 
-    public double getProfit() {
-        return getMoneyAvailable() - moneyLastRound;
+    public double getProfitFromLastRound() {
+        return moneyAvailable - moneyLastRound;
     }
 
     public String getAgentName() {
@@ -167,14 +168,6 @@ public abstract class BasicAgent {
 
     public int getId() {
         return id;
-    }
-
-    public double getMoneyLastRound() {
-        return moneyLastRound;
-    }
-
-    public void setMoneyLastRound(double moneyLastRound) {
-        this.moneyLastRound = moneyLastRound;
     }
 
     public double getTrackCosts() {
