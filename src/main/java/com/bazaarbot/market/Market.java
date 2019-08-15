@@ -13,6 +13,7 @@ import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.history.History;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class Market {
     private String name;
@@ -296,22 +297,29 @@ public class Market {
         while (bids.size() > 0 && asks.size() > 0) {
             //march through and try to clear orders
             //while both books are non-empty
-            Offer buyer = bids.get(0);
-            Offer seller = asks.get(0);
-            double quantityTraded = Math.min(seller.getUnits(), buyer.getUnits());
-            double clearingPrice = seller.getUnitPrice();
+            Offer buyerBid = bids.get(0);
+            Offer sellerAsk = asks.get(0);
+            double quantityTraded = Math.min(sellerAsk.getUnits(), buyerBid.getUnits());
+            double clearingPrice = sellerAsk.getUnitPrice();
+            Optional<BasicAgent> seller = agents.stream().filter(basicAgent -> basicAgent.getId() == buyerBid.getAgentId()).findFirst();
+            Optional<BasicAgent> buyer = agents.stream().filter(basicAgent -> basicAgent.getId() == sellerAsk.getAgentId()).findFirst();
+            // If we do not have such ids
+            if (!seller.isPresent() || !buyer.isPresent()) {
+                return;
+            }
+            BasicAgent buyerA = buyer.get();
+            BasicAgent sellerA = seller.get();
+
             //Utils.avgf(seller.unit_price, buyer.unit_price);
             //if (buyer.unit_price < seller.unit_price)
             //    break;
             if (quantityTraded > 0) {
                 //transfer the goods for the agreed price
-                seller.setUnits(seller.getUnits() - quantityTraded);
-                buyer.setUnits(buyer.getUnits() - quantityTraded);
-                transferGood(good, quantityTraded, seller.getAgentId(), buyer.getAgentId(), clearingPrice);
-                transferMoney(quantityTraded * clearingPrice, seller.getAgentId(), buyer.getAgentId());
+                sellerAsk.setUnits(sellerAsk.getUnits() - quantityTraded);
+                buyerBid.setUnits(buyerBid.getUnits() - quantityTraded);
+                transferGood(good, quantityTraded, sellerA, buyerA, clearingPrice);
+                transferMoney(quantityTraded * clearingPrice, sellerA, buyerA);
                 //update agent price beliefs based on successful transaction
-                BasicAgent buyerA = agents.get(buyer.getAgentId());
-                BasicAgent sellerA = agents.get(seller.getAgentId());
                 buyerA.updatePriceModel(this, "buy", good, true, clearingPrice);
                 sellerA.updatePriceModel(this, "sell", good, true, clearingPrice);
                 //log the stats
@@ -320,14 +328,14 @@ public class Market {
                 successfulTrades++;
             }
 
-            if (seller.getUnits() == 0) {
+            if (sellerAsk.getUnits() == 0) {
                 //seller is out of offered good
                 asks.remove(0);
                 //.splice(0, 1);		//remove ask
                 failSafe = 0;
             }
 
-            if (buyer.getUnits() == 0) {
+            if (buyerBid.getUnits() == 0) {
                 //buyer is out of offered good
                 bids.remove(0);
                 //.splice(0, 1);		//remove bid
@@ -344,15 +352,23 @@ public class Market {
             //reject all remaining offers,
             //update price belief models based on unsuccessful transaction
             Offer buyer = bids.get(0);
-            BasicAgent buyerA = agents.get(buyer.getAgentId());
-            buyerA.updatePriceModel(this, "buy", good, false);
+            Optional<BasicAgent> buyerOptional = agents.stream().filter(basicAgent -> basicAgent.getId() == buyer.getAgentId()).findFirst();
+            if (!buyerOptional.isPresent()) {
+                // no such ids
+                return;
+            }
+            buyerOptional.get().updatePriceModel(this, "buy", good, false);
             bids.remove(0);
         }
         while (asks.size() > 0) {
             //.splice(0, 1);
             Offer seller = asks.get(0);
-            BasicAgent sellerA = agents.get(seller.getAgentId());
-            sellerA.updatePriceModel(this, "sell", good, false);
+            Optional<BasicAgent> sellerOptional = agents.stream().filter(basicAgent -> basicAgent.getId() == seller.getAgentId()).findFirst();
+            if (!sellerOptional.isPresent()) {
+                // no such ids
+                return;
+            }
+            sellerOptional.get().updatePriceModel(this, "sell", good, false);
             asks.remove(0);
         }
         // splice(0, 1);
@@ -400,16 +416,11 @@ public class Market {
 
     //sort by id so everything works again
     //agents.Sort(Utils.sortAgentId);
-    private void transferGood(ICommodity good, double units, int sellerId, int buyerId, double clearingPrice) {
-
-        BasicAgent seller = agents.get(sellerId);
-        BasicAgent buyer = agents.get(buyerId);
+    private void transferGood(ICommodity good, double units, BasicAgent seller, BasicAgent buyer, double clearingPrice) {
         contractResolver.newContract(seller, buyer, good, units, clearingPrice);
     }
 
-    private void transferMoney(double amount, int sellerId, int buyerId) {
-        BasicAgent seller = agents.get(sellerId);
-        BasicAgent buyer = agents.get(buyerId);
+    private void transferMoney(double amount, BasicAgent seller, BasicAgent buyer) {
         seller.setMoneyAvailable(seller.getMoneyAvailable() + amount);
         buyer.setMoneyAvailable(buyer.getMoneyAvailable() - amount);
     }
