@@ -1,7 +1,6 @@
 package com.bazaarbot.contract;
 
 import com.bazaarbot.agent.BasicAgent;
-import com.bazaarbot.contract.IContract;
 
 import java.util.Map;
 

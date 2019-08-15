@@ -5,34 +5,33 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.inventory.InventoryData;
-import com.bazaarbot.Logic;
 
 /**
  * The most fundamental agent class, and has as little implementation as possible.
  * In most cases you should start by extending Agent instead of this.
+ *
  * @author larsiusprime
  */
-public class AgentData   
-{
-    private String className;
+public class AgentData {
+    private String agentClassName;
     private double money;
     private InventoryData inventory;
     private String logicName;
-    private Logic logic;
+    private AgentSimulation agentSimulation;
     private Integer lookBack;
 
-    public AgentData(String className, double money, String logicName) {
-        this.className = className;
+    public AgentData(String agentClassName, double money, String logicName) {
+        this.agentClassName = agentClassName;
         this.money = money;
         this.logicName = logicName;
     }
 
-    public String getClassName() {
-        return className;
+    public String getAgentClassName() {
+        return agentClassName;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setAgentClassName(String agentClassName) {
+        this.agentClassName = agentClassName;
     }
 
     public double getMoney() {
@@ -59,12 +58,12 @@ public class AgentData
         this.logicName = logicName;
     }
 
-    public Logic getLogic() {
-        return logic;
+    public AgentSimulation getAgentSimulation() {
+        return agentSimulation;
     }
 
-    public void setLogic(Logic logic) {
-        this.logic = logic;
+    public void setAgentSimulation(AgentSimulation agentSimulation) {
+        this.agentSimulation = agentSimulation;
     }
 
     public Integer getLookBack() {
