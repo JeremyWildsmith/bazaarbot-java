@@ -7,57 +7,25 @@ package com.bazaarbot.market;
 
 import com.bazaarbot.ICommodity;
 
-public class Offer {
-    private ICommodity good;
+public class Offer
+{
+    public ICommodity good;
     //the thing offered
-    private double units;
+    public double units;
     //how many units
-    private double unitPrice;
+    public double unit_price;
     //price per unit
-    private int agentId;
-
+    public int agent_id;
     //who offered this
-    public Offer(int agentId, ICommodity commodity, double units, double unitPrice) {
-        this.agentId = agentId;
-        this.good = commodity;
-        this.units = units;
-        this.unitPrice = unitPrice;
-    }
-
-    public ICommodity getGood() {
-        return good;
-    }
-
-    public void setGood(ICommodity good) {
-        this.good = good;
-    }
-
-    public double getUnits() {
-        return units;
-    }
-
-    public void setUnits(double units) {
-        this.units = units;
-    }
-
-    public double getUnitPrice() {
-        return unitPrice;
-    }
-
-    public void setUnitPrice(double unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-    public int getAgentId() {
-        return agentId;
-    }
-
-    public void setAgentId(int agentId) {
-        this.agentId = agentId;
+    public Offer(int agent_id_, ICommodity commodity_, double units_, double unit_price_) {
+        agent_id = agent_id_;
+        good = commodity_;
+        units = units_;
+        unit_price = unit_price_;
     }
 
     public String toString() {
-        return "(" + agentId + "): " + good + "x " + units + " @ " + unitPrice;
+        return "(" + agent_id + "): " + good + "x " + units + " @ " + unit_price;
     }
 
 }
