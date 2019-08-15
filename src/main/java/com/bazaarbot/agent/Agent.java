@@ -100,7 +100,7 @@ public class Agent  extends BasicAgent
         if(!goodsPriceBelief.containsKey(good))
             goodsPriceBelief.put(good, new PriceBelief());
 
-        goodsPriceBelief.get(good).addTransaction(unitPrice, success);
+        //goodsPriceBelief.get(good).addTransaction(unitPrice, success);
     }
 
 }
