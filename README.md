@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/JeremyWildsmith/bazaarbot-java.svg?branch=master)](https://travis-ci.org/JeremyWildsmith/bazaarbot-java)
+
 bazaarBot - Java
 =========
 
