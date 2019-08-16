@@ -341,15 +341,13 @@ public class Market
         }
         while (bids.size() > 0 && asks.size() > 0)
         {
-            //march through and try to clear orders
-            //while both books are non-empty
             Offer buyer = bids.get(0);
             Offer seller = asks.get(0);
             Double quantity_traded = Math.min(seller.units,buyer.units);
             Double clearing_price = seller.unit_price;
-            //Utils.avgf(seller.unit_price, buyer.unit_price);
-            //if (buyer.unit_price < seller.unit_price)
-            //    break;
+
+
+
             if (quantity_traded > 0)
             {
                 //transfer the goods for the agreed price
