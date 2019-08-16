@@ -51,8 +51,8 @@ public class Market
     }
 
     public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) {
-        newAgent.id = oldAgent.id;
-        _agents.set(oldAgent.id, newAgent);
+        _agents.remove(oldAgent);
+        _agents.add(newAgent);
     }
 
     //@:access(bazaarbot.agent.BasicAgent)    //dfs stub ????
@@ -281,12 +281,9 @@ public class Market
         }
         //Make the agent list
         _agents = new ArrayList<>();
-        int agentIndex = 0;
         for (BasicAgent agent : data.agents)
         {
-            agent.id = agentIndex;
             _agents.add(agent);
-            agentIndex++;
         }
     }
 
@@ -353,11 +350,11 @@ public class Market
                 //transfer the goods for the agreed price
                 seller.units -= quantity_traded;
                 buyer.units -= quantity_traded;
-                transferGood(good,quantity_traded,seller.agent_id,buyer.agent_id,clearing_price);
-                transferMoney(quantity_traded * clearing_price,seller.agent_id,buyer.agent_id);
+                transferGood(good,quantity_traded,seller.agent,buyer.agent,clearing_price);
+                transferMoney(quantity_traded * clearing_price, seller.agent, buyer.agent);
                 //update agent price beliefs based on successful transaction
-                BasicAgent buyer_a = _agents.get(buyer.agent_id);
-                BasicAgent seller_a = _agents.get(seller.agent_id);
+                BasicAgent buyer_a = buyer.agent;
+                BasicAgent seller_a = seller.agent;
                 buyer_a.updatePriceModel(this, "buy", good, true, clearing_price);
                 seller_a.updatePriceModel(this, "sell", good, true, clearing_price);
                 //log the stats
@@ -394,7 +391,7 @@ public class Market
             //reject all remaining offers,
             //update price belief models based on unsuccessful transaction
             Offer buyer = bids.get(0);
-            BasicAgent buyer_a = _agents.get(buyer.agent_id);
+            BasicAgent buyer_a = buyer.agent;
             buyer_a.updatePriceModel(this, "buy", good, false);
             bids.remove(0);
         }
@@ -402,7 +399,7 @@ public class Market
         {
             //.splice(0, 1);
             Offer seller = asks.get(0);
-            BasicAgent seller_a = _agents.get(seller.agent_id);
+            BasicAgent seller_a = seller.agent;
             seller_a.updatePriceModel(this, "sell", good, false);
             asks.remove(0);
         }
@@ -458,16 +455,11 @@ public class Market
 
     //sort by id so everything works again
     //_agents.Sort(Utils.sortAgentId);
-    private void transferGood(ICommodity good, double units, int seller_id, int buyer_id, double clearing_price) {
-
-        BasicAgent seller = _agents.get(seller_id);
-        BasicAgent  buyer = _agents.get(buyer_id);
+    private void transferGood(ICommodity good, double units, BasicAgent seller, BasicAgent buyer, double clearing_price) {
         _contractResolver.newContract(seller, buyer, good, units, clearing_price);
     }
 
-    private void transferMoney(double amount, int seller_id, int buyer_id) {
-        BasicAgent seller = _agents.get(seller_id);
-        BasicAgent  buyer = _agents.get(buyer_id);
+    private void transferMoney(double amount, BasicAgent seller, BasicAgent buyer) {
         seller.setMoney(seller.getMoney() + amount);
         buyer.setMoney(buyer.getMoney() - amount);
     }
