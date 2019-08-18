@@ -47,7 +47,7 @@ public abstract class BasicAgent
     }
 
     public abstract void generateOffers(Market bazaar, ICommodity good);
-    public abstract void updatePriceModel(Market bazaar, String act, ICommodity good, boolean success, double unitPrice);
+    public abstract void updatePriceModel(String act, ICommodity good, boolean success, double unitPrice);
     public abstract Offer createBid(Market bazaar, ICommodity good, double limit);
     public abstract Offer createAsk(Market bazaar, ICommodity commodity_, double limit_);
 
@@ -91,30 +91,6 @@ public abstract class BasicAgent
         } 
     }
 
-    protected double determineSaleQuantity(Market bazaar, ICommodity commodity_) {
-        double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
-        //double
-        PriceRange trading_range = observeTradingRange(commodity_,10);
-        //point
-        if (mean > 0)
-        {
-            double favorability = trading_range.positionInRange(mean);
-            //double
-            //position_in_range: high means price is at a high point
-            double amount_to_sell = Math.round(favorability * inventory.surplus(commodity_));
-            //double
-            amount_to_sell = inventory.query(commodity_);
-            if (amount_to_sell < 1)
-            {
-                amount_to_sell = 1;
-            }
-             
-            return amount_to_sell;
-        }
-         
-        return 0;
-    }
-
     protected double determinePurchaseQuantity(Market bazaar, ICommodity commodity_) {
         Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
         //double
@@ -146,8 +122,8 @@ public abstract class BasicAgent
         return goodsPriceBelief.get(good).observe(window);
     }
 
-    public final void updatePriceModel(Market market, String buy, ICommodity good, boolean b) {
-        updatePriceModel(market, buy, good, b, 0);
+    public final void updatePriceModel(String buy, ICommodity good, boolean b) {
+        updatePriceModel(buy, good, b, 0);
     }
 
     public AgentSnapshot getSnapshot() {

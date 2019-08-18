@@ -8,9 +8,7 @@ import com.bazaarbot.*;
 import com.bazaarbot.agent.AgentData;
 import com.bazaarbot.agent.AgentSnapshot;
 import com.bazaarbot.agent.BasicAgent;
-import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.history.History;
-import com.bazaarbot.inventory.Inventory;
 
 import java.util.*;
 
@@ -29,15 +27,15 @@ public class Market
     public TradeBook _book;
     private HashMap<String, AgentData> _mapAgents;
 
-    private final IContractResolver _contractResolver;
-
+    private final IOfferResolver offerResolver;
+    private final IOfferExecuter offerExecutor;
     private final Random rng;
 
-    public Market(String name, MarketData marketData, ISignalBankrupt isb, IContractResolver contractResolver) {
-        this(name, marketData, isb, contractResolver, new Random());
+    public Market(String name, MarketData marketData, ISignalBankrupt isb, IOfferResolver offerResolver, IOfferExecuter executor) {
+        this(name, marketData, isb, offerResolver, executor, new Random());
     }
 
-    public Market(String name, MarketData marketData, ISignalBankrupt isb, IContractResolver contractResolver, Random rng) {
+    public Market(String name, MarketData marketData, ISignalBankrupt isb, IOfferResolver offerResolver, IOfferExecuter executor, Random rng) {
         this.name = name;
         history = new History();
         _book = new TradeBook();
@@ -45,7 +43,8 @@ public class Market
         _agents = new ArrayList<>();
         _mapAgents = new HashMap<>();
         signalBankrupt = isb;
-        _contractResolver = contractResolver;
+        this.offerResolver = offerResolver;
+        this.offerExecutor = executor;
         this.rng = rng;
         fromData(marketData);
     }
@@ -68,11 +67,10 @@ public class Market
                     agent.generateOffers(this, commodity);
                 }
             }
-            for (ICommodity commodity : _goodTypes)
-            {
-                resolveOffers(commodity);
-            }
-            List<BasicAgent> del = new ArrayList<BasicAgent>();
+
+            resolveOffers();
+
+            List<BasicAgent> del = new ArrayList<>();
             for (BasicAgent agent : _agents)
             {
                 if (agent.getMoney() <= 0)
@@ -202,10 +200,10 @@ public class Market
     }
 
     /**
-    	     *
-    	     * @param	range
-    	     * @return
-    	     */
+     *
+     * @param	range
+     * @return
+     */
     public String getMostProfitableAgentClass(int range) {
         double best = -999999;
         // Math.NEGATIVE_INFINITY;
@@ -232,12 +230,7 @@ public class Market
     }
 
     public List<String> getAgentClassNames() {
-        List<String> agentData = new ArrayList<String>();
-        for (String key : _mapAgents.keySet())
-        {
-            agentData.add(key);
-        }
-        return agentData;
+        return new ArrayList<>(_mapAgents.keySet());
     }
 
     public MarketSnapshot getSnapshot() {
@@ -270,7 +263,6 @@ public class Market
             //start history charts with 1 fake buy/sell bid
             history.bids.add(g,v);
             history.trades.add(g,v);
-            _book.register(g);
         }
         _mapAgents = new HashMap<>();
 
@@ -287,18 +279,6 @@ public class Market
         }
     }
 
-    private static void sortOffers(List<Offer> offers) {
-        offers.sort((Offer a, Offer b) -> {
-            if (a.unit_price < b.unit_price)
-                return -1;
-
-            if (a.unit_price > b.unit_price)
-                return 1;
-
-            return 0;
-        });
-    }
-
     private static double listAvgf(List<Double> list) {
         double avg = 0;
         for (int j = 0;j < list.size();j++)
@@ -309,122 +289,47 @@ public class Market
         return avg;
     }
 
-    private void resolveOffers(ICommodity good) {
-        List<Offer> bids = _book.bids.get(good);
-        List<Offer> asks = _book.asks.get(good);
-        Collections.shuffle(bids, rng);
-        Collections.shuffle(asks, rng);
-        //bids.Sort(Utils.sortOfferDecending); //highest buying price first
-        sortOffers(asks);
-        //lowest selling price first
-        int successfulTrades = 0;
-        //# of successful trades this round
-        double moneyTraded = 0;
-        //amount of money traded this round
-        double unitsTraded = 0;
-        //amount of goods traded this round
-        double avgPrice = 0;
-        //avg clearing price this round
-        double numAsks = 0;
-        double numBids = 0;
-        int failsafe = 0;
-        for (int i = 0;i < bids.size();i++)
-        {
-            numBids += bids.get(i).units;
-        }
-        for (int i = 0;i < asks.size();i++)
-        {
-            numAsks += asks.get(i).units;
-        }
-        while (bids.size() > 0 && asks.size() > 0)
-        {
-            Offer buyer = bids.get(0);
-            Offer seller = asks.get(0);
-            Double quantity_traded = Math.min(seller.units,buyer.units);
-            Double clearing_price = seller.unit_price;
+    private void resolveOffers() {
+        for(Map.Entry<ICommodity, List<Offer>> asks : _book.asks.entrySet()) {
+            double count = 0;
 
+            for(Offer o : asks.getValue())
+                count += o.units;
 
+            history.asks.add(asks.getKey(), count);
 
-            if (quantity_traded > 0)
-            {
-                //transfer the goods for the agreed price
-                seller.units -= quantity_traded;
-                buyer.units -= quantity_traded;
-                transferGood(good,quantity_traded,seller.agent,buyer.agent,clearing_price);
-                transferMoney(quantity_traded * clearing_price, seller.agent, buyer.agent);
-                //update agent price beliefs based on successful transaction
-                BasicAgent buyer_a = buyer.agent;
-                BasicAgent seller_a = seller.agent;
-                buyer_a.updatePriceModel(this, "buy", good, true, clearing_price);
-                seller_a.updatePriceModel(this, "sell", good, true, clearing_price);
-                //log the stats
-                moneyTraded += (quantity_traded * clearing_price);
-                unitsTraded += quantity_traded;
-                successfulTrades++;
-            }
-             
-            if (seller.units == 0)
-            {
-                //seller is out of offered good
-                asks.remove(0);
-                //.splice(0, 1);		//remove ask
-                failsafe = 0;
-            }
-             
-            if (buyer.units == 0)
-            {
-                //buyer is out of offered good
-                bids.remove(0);
-                //.splice(0, 1);		//remove bid
-                failsafe = 0;
-            }
-             
-            failsafe++;
-            if (failsafe > 1000)
-            {
-                System.out.println("BOINK!");
-            }
-             
         }
-        while (bids.size() > 0)
-        {
-            //reject all remaining offers,
-            //update price belief models based on unsuccessful transaction
-            Offer buyer = bids.get(0);
-            BasicAgent buyer_a = buyer.agent;
-            buyer_a.updatePriceModel(this, "buy", good, false);
-            bids.remove(0);
+
+        for(Map.Entry<ICommodity, List<Offer>> bids : _book.bids.entrySet()) {
+            double count = 0;
+
+            for(Offer o : bids.getValue())
+                count += o.units;
+
+            history.bids.add(bids.getKey(), count);
         }
-        while (asks.size() > 0)
-        {
-            //.splice(0, 1);
-            Offer seller = asks.get(0);
-            BasicAgent seller_a = seller.agent;
-            seller_a.updatePriceModel(this, "sell", good, false);
-            asks.remove(0);
+
+        Map<ICommodity, OfferResolutionStatistics> r = offerResolver.resolve(offerExecutor, new HashMap<>(_book.bids), new HashMap<>(_book.asks));
+        _book.bids.clear();
+        _book.asks.clear();
+
+        for(Map.Entry<ICommodity, OfferResolutionStatistics> e : r.entrySet()) {
+            OfferResolutionStatistics stats = e.getValue();
+            history.trades.add(e.getKey(), stats.unitsTraded);
+
+            if (stats.unitsTraded > 0) {
+                history.prices.add(e.getKey(), stats.moneyTraded / stats.unitsTraded);
+            } else {
+                //special case: none were traded this round, use last round's average price
+                history.prices.add(e.getKey(), history.prices.average(e.getKey(), 1));
+            }
         }
-        // splice(0, 1);
-        //update history
-        history.asks.add(good,numAsks);
-        history.bids.add(good,numBids);
-        history.trades.add(good,unitsTraded);
-        if (unitsTraded > 0)
-        {
-            avgPrice = moneyTraded / unitsTraded;
-            history.prices.add(good,avgPrice);
-        }
-        else
-        {
-            //special case: none were traded this round, use last round's average price
-            history.prices.add(good,history.prices.average(good,1));
-            avgPrice = history.prices.average(good,1);
-        } 
         List<BasicAgent> ag = new ArrayList<>(_agents);//.<BasicAgent>ToList();
         ag.sort(Comparator.comparing(BasicAgent::getClassName));
         String curr_class = "";
         String last_class = "";
         List<Double> list = null;
-        double avg_profit = 0;
+
         for (int i = 0;i < ag.size();i++)
         {
             BasicAgent a = ag.get(i);
@@ -440,28 +345,19 @@ public class Market
                     //log last class' profit
                     history.profit.add(last_class, listAvgf(list));
                 }
-                 
+
                 list = new ArrayList<Double>();
                 //make a new list
                 last_class = curr_class;
             }
-             
+
             list.add(a.get_profit());
         }
+
         //push profit onto list
         //add the last class too
-        history.profit.add(last_class, listAvgf(list));
-    }
-
-    //sort by id so everything works again
-    //_agents.Sort(Utils.sortAgentId);
-    private void transferGood(ICommodity good, double units, BasicAgent seller, BasicAgent buyer, double clearing_price) {
-        _contractResolver.newContract(seller, buyer, good, units, clearing_price);
-    }
-
-    private void transferMoney(double amount, BasicAgent seller, BasicAgent buyer) {
-        seller.setMoney(seller.getMoney() + amount);
-        buyer.setMoney(buyer.getMoney() - amount);
+        if(list != null)
+            history.profit.add(last_class, listAvgf(list));
     }
 }
 

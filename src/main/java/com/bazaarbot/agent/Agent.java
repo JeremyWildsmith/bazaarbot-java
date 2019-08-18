@@ -81,7 +81,7 @@ public class Agent  extends BasicAgent
     }
 
     @Override
-    public void updatePriceModel(Market bazaar, String act, ICommodity good, boolean success, double unitPrice) {
+    public void updatePriceModel(String act, ICommodity good, boolean success, double unitPrice) {
         if(!goodsPriceBelief.containsKey(good))
             goodsPriceBelief.put(good, new PriceBelief());
 

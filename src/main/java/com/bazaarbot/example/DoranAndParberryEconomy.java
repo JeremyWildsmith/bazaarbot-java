@@ -10,6 +10,8 @@ import com.bazaarbot.agent.AgentData;
 import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.contract.DefaultContractResolver;
 import com.bazaarbot.inventory.InventoryData;
+import com.bazaarbot.market.DefaultOfferExecutor;
+import com.bazaarbot.market.DefaultOfferResolver;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.MarketData;
 
@@ -25,7 +27,7 @@ public class DoranAndParberryEconomy  extends Economy
 
     public DoranAndParberryEconomy(Random rng) {
         this.rng = rng;
-        Market market = new Market("default", getMarketData(), this, new DefaultContractResolver(), rng);
+        Market market = new Market("default", getMarketData(), this, new DefaultOfferResolver(), new DefaultOfferExecutor(), rng);
         addMarket(market);
     }
 
