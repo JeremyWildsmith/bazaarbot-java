@@ -12,8 +12,6 @@ import java.util.HashMap;
 
 public abstract class BasicAgent
 {
-    public int id;
-    //unique integer identifier
     private String className;
     private double money;
     //dfs stub  needed?
@@ -21,19 +19,17 @@ public abstract class BasicAgent
     //dfs stub needed?
     public double trackcosts;
     private Logic _logic;
-    protected Inventory _inventory;
+    protected Inventory inventory;
     protected HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
     //profit from last round
     private int _lookback = 15;
 
 
-
-    public BasicAgent(int id, AgentData data) {
-        this.id = id;
+    public BasicAgent(AgentData data) {
         setClassName(data.getClassName());
         setMoney(data.getMoney());
-        _inventory = new Inventory();
-        _inventory.fromData(data.getInventory());
+        inventory = new Inventory();
+        inventory.fromData(data.getInventory());
         _logic = data.getLogic();
         if (data.getLookBack() == null)
         {
@@ -51,19 +47,19 @@ public abstract class BasicAgent
     }
 
     public abstract void generateOffers(Market bazaar, ICommodity good);
-    public abstract void updatePriceModel(Market bazaar, String act, ICommodity good, boolean success, double unitPrice);
+    public abstract void updatePriceModel(String act, ICommodity good, boolean success, double unitPrice);
     public abstract Offer createBid(Market bazaar, ICommodity good, double limit);
     public abstract Offer createAsk(Market bazaar, ICommodity commodity_, double limit_);
 
     public final double queryInventory(ICommodity good) {
-        return _inventory.query(good);
+        return inventory.query(good);
     }
 
     public final void produceInventory(ICommodity good, double delta) {
         if (trackcosts < 1)
             trackcosts = 1;
          
-        double curunitcost = _inventory.change(good,delta,trackcosts / delta);
+        double curunitcost = inventory.change(good,delta,trackcosts / delta);
         trackcosts = 0;
     }
 
@@ -77,7 +73,7 @@ public abstract class BasicAgent
         }
         else
         {
-            double curunitcost = _inventory.change(good,delta,0);
+            double curunitcost = inventory.change(good,delta,0);
             if (delta < 0)
                 trackcosts += (-delta) * curunitcost;
              
@@ -91,32 +87,8 @@ public abstract class BasicAgent
         }
         else
         {
-            _inventory.change(good,delta,unit_cost);
+            inventory.change(good,delta,unit_cost);
         } 
-    }
-
-    protected double determineSaleQuantity(Market bazaar, ICommodity commodity_) {
-        double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
-        //double
-        PriceRange trading_range = observeTradingRange(commodity_,10);
-        //point
-        if (mean > 0)
-        {
-            double favorability = trading_range.positionInRange(mean);
-            //double
-            //position_in_range: high means price is at a high point
-            double amount_to_sell = Math.round(favorability * _inventory.surplus(commodity_));
-            //double
-            amount_to_sell = _inventory.query(commodity_);
-            if (amount_to_sell < 1)
-            {
-                amount_to_sell = 1;
-            }
-             
-            return amount_to_sell;
-        }
-         
-        return 0;
     }
 
     protected double determinePurchaseQuantity(Market bazaar, ICommodity commodity_) {
@@ -130,7 +102,7 @@ public abstract class BasicAgent
             //double
             favorability = 1 - favorability;
             //do 1 - favorability to see how close we are to the low end
-            double amount_to_buy = Math.round(favorability * _inventory.shortage(commodity_));
+            double amount_to_buy = Math.round(favorability * inventory.shortage(commodity_));
             //double
             if (amount_to_buy < 1)
             {
@@ -150,16 +122,16 @@ public abstract class BasicAgent
         return goodsPriceBelief.get(good).observe(window);
     }
 
-    public final void updatePriceModel(Market market, String buy, ICommodity good, boolean b) {
-        updatePriceModel(market, buy, good, b, 0);
+    public final void updatePriceModel(String buy, ICommodity good, boolean b) {
+        updatePriceModel(buy, good, b, 0);
     }
 
     public AgentSnapshot getSnapshot() {
-        return new AgentSnapshot(getClassName(), getMoney(), new Inventory(_inventory));
+        return new AgentSnapshot(getClassName(), getMoney(), new Inventory(inventory));
     }
 
     public boolean isInventoryFull() {
-        return _inventory.getEmptySpace() == 0;
+        return inventory.getEmptySpace() == 0;
     }
 
     public double get_profit() {

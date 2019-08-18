@@ -20,25 +20,22 @@ public class TradeBook
         asks = new HashMap<>();
     }
 
-    public void register(ICommodity name) {
-        asks.put(name, new ArrayList<>());
-        bids.put(name, new ArrayList<>());
-    }
+    public void bid(Offer offer) {
+        if (!bids.containsKey(offer.good)) {
+            bids.put(offer.good, new ArrayList<>());
+            asks.put(offer.good, new ArrayList<>());
+        }
 
-    public boolean bid(Offer offer) {
-        if (!bids.containsKey(offer.good))
-            return false;
-         
         bids.get(offer.good).add(offer);
-        return true;
     }
 
-    public boolean ask(Offer offer) {
-        if (!bids.containsKey(offer.good))
-            return false;
+    public void ask(Offer offer) {
+        if (!bids.containsKey(offer.good)) {
+            bids.put(offer.good, new ArrayList<>());
+            asks.put(offer.good, new ArrayList<>());
+        }
          
         asks.get(offer.good).add(offer);
-        return true;
     }
 
 }

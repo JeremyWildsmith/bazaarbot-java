@@ -92,7 +92,7 @@ public class Inventory
         return 0;
     }
 
-    public double query_cost(ICommodity good) {
+    public double queryCost(ICommodity good) {
         if (_stuff.containsKey(good))
         {
             return _stuff.get(good).origialPrice;

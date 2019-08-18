@@ -10,6 +10,8 @@ import com.bazaarbot.agent.AgentData;
 import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.contract.DefaultContractResolver;
 import com.bazaarbot.inventory.InventoryData;
+import com.bazaarbot.market.DefaultOfferExecutor;
+import com.bazaarbot.market.DefaultOfferResolver;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.MarketData;
 
@@ -25,7 +27,7 @@ public class DoranAndParberryEconomy  extends Economy
 
     public DoranAndParberryEconomy(Random rng) {
         this.rng = rng;
-        Market market = new Market("default", getMarketData(), this, new DefaultContractResolver(), rng);
+        Market market = new Market("default", getMarketData(), this, new DefaultOfferResolver(), new DefaultOfferExecutor(), rng);
         addMarket(market);
     }
 
@@ -119,13 +121,11 @@ public class DoranAndParberryEconomy  extends Economy
         ii = new InventoryData(20, ideal, start);
         agentTypes.get(5).setInventory(ii);
 
-        int idc = 0;
         for (int iagent = 0;iagent < agentTypes.size();iagent++)
         {
             for (int i = 0;i < 5;i++)
             {
                 agents.add(getAgent(agentTypes.get(iagent)));
-                agents.get(agents.size() - 1).id = idc++;
             }
         }
         MarketData data = new MarketData(Arrays.asList(ExampleCommodity.values()), agentTypes,agents);
@@ -222,7 +222,7 @@ public class DoranAndParberryEconomy  extends Economy
     //}
     private BasicAgent getAgent(AgentData data) {
         data.setLogic(getLogic(data.getLogicName()));
-        return new Agent(0,data);
+        return new Agent(data);
     }
 
     private Logic getLogic(String str) {
