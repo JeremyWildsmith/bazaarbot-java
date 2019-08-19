@@ -50,10 +50,10 @@ public abstract class BasicAgent {
 
     public abstract Offer createBid(Market bazaar, ICommodity good, double limit);
 
-    public abstract Offer createAsk(Market bazaar, ICommodity commodity_, double limit_);
+    public abstract Offer createAsk(Market bazaar, ICommodity commodity, double limit);
 
     public final double queryInventory(ICommodity good) {
-        return inventory.query(good);
+        return inventory.queryAmount(good);
     }
 
     public final void addInventoryItem(ICommodity good, double amount) {
@@ -90,7 +90,7 @@ public abstract class BasicAgent {
         //position_in_range: high means price is at a high point
         //TODO: What is going on here?
         double amountToSell = Math.round(favorability * inventory.surplus(commodity));
-        //double amount_to_sell = inventory.query(commodity);
+        //double amount_to_sell = inventory.queryAmount(commodity);
         if (amountToSell < 1) {
             amountToSell = 1;
         }

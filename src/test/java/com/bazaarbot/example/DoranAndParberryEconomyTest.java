@@ -2,7 +2,6 @@ package com.bazaarbot.example;
 
 import com.bazaarbot.Economy;
 import com.bazaarbot.market.Market;
-import com.bazaarbot.market.MarketSnapshot;
 import com.bazaarbot.market.SimpleSummaryMarketReporter;
 import org.junit.Test;
 
@@ -19,7 +18,7 @@ public class DoranAndParberryEconomyTest {
     public static String format_row(String cols) {
         String row = "";
 
-        for(String c : cols.split("\\s+")) {
+        for (String c : cols.split("\\s+")) {
             String working = c.trim();
             row += padRight(working, 15) + "|";
         }
@@ -30,7 +29,7 @@ public class DoranAndParberryEconomyTest {
     @Test
     public void test_general() {
         String expected =
-                        "Commodities    |Food           |Metal          |Ore            |Tools          |Wood           |Work           |\n" +
+                "Commodities    |Food           |Metal          |Ore            |Tools          |Wood           |Work           |\n" +
                         "Price          |0.26           |0.40           |0.26           |0.61           |0.52           |1.02           |\n" +
                         "Trades         |30             |1              |4              |1              |5              |5              |\n" +
                         "Demand         |30             |1              |4              |1              |5              |7              |\n" +

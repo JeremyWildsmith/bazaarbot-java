@@ -26,7 +26,7 @@ public class LogicRefiner  extends AgentSimulation
         Double ore = agent.queryInventory(ExampleCommodity.Ore);
         if (ore > 4)
             ore = 4.0;
-         
+
         Double metal = agent.queryInventory(ExampleCommodity.Metal);
         Boolean need_metal = metal < 4;
         Boolean has_food = food >= 1;

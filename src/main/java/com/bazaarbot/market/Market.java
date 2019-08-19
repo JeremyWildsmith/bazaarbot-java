@@ -13,7 +13,6 @@ import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.history.History;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class Market {
     private String name;

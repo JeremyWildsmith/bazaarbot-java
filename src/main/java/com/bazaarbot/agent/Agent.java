@@ -5,6 +5,7 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.inventory.Inventory;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
 
@@ -40,50 +41,38 @@ public class Agent extends BasicAgent {
     private static final double SOME_MAGIC_NUMBER = 1.02;
 
     @Override
-    public Offer createAsk(Market bazaar, ICommodity commodity, double limit_) {
-        double askPrice = getInventory().query_cost(commodity) * SOME_MAGIC_NUMBER;
+    public Offer createAsk(Market market, ICommodity commodity, double limit) {
+        Inventory inventory = getInventory();
         //asks are fair prices:  costs + small profit
-        double quantityToSell = getInventory().query(commodity);
-        //put asks out for all inventory
-        if (quantityToSell > 0) {
-            return new Offer(getId(), commodity, quantityToSell, askPrice);
-        }
+        double quantityToSell = inventory.queryAmount(commodity);
 
-        return null;
+        //put asks out for all inventory
+        double askPrice = inventory.queryCost(commodity) * SOME_MAGIC_NUMBER;
+
+        return new Offer(getId(), commodity, quantityToSell, askPrice);
     }
 
     @Override
-    public void generateOffers(Market bazaar, ICommodity commodity) {
+    public void generateOffers(Market market, ICommodity commodity) {
         Offer offer;
-        double surplus = getInventory().surplus(commodity);
+        Inventory inventory = getInventory();
+        double surplus = inventory.surplus(commodity);
         if (surplus >= 1) {
-            offer = createAsk(bazaar, commodity, 1);
-            if (offer != null) {
-                bazaar.ask(offer);
-            }
+            offer = createAsk(market, commodity, 1);
+            market.ask(offer);
         } else {
-            Double shortage = getInventory().shortage(commodity);
-            Double space = getInventory().getEmptySpace();
+            double shortage = inventory.shortage(commodity);
+            double space = inventory.getEmptySpace();
             if (shortage > 0 && space > 0) {
-                double limit;
                 if (shortage <= space) {
                     //enough space for ideal order
-                    limit = shortage;
+                    offer = createBid(market, commodity, shortage);
                 } else {
                     //not enough space for ideal order
-                    limit = space;
+                    offer = createBid(market, commodity, space);
                 }
-                // Math.Floor(space / shortage);
-                if (limit > 0) {
-                    offer = createBid(bazaar, commodity, limit);
-                    if (offer != null) {
-                        bazaar.bid(offer);
-                    }
-
-                }
-
+                market.bid(offer);
             }
-
         }
     }
 

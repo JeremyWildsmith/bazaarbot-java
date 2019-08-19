@@ -84,7 +84,7 @@ public class SimpleSummaryMarketReporter {
                     count++;
                     money += a.getMoney();
                     for (int lic = 0; lic < goodTypes.length; lic++) {
-                        inventory.add(lic, inventory.get(lic) + a.getInventory().query(goodTypes[lic]));
+                        inventory.add(lic, inventory.get(lic) + a.getInventory().queryAmount(goodTypes[lic]));
                     }
                 }
 

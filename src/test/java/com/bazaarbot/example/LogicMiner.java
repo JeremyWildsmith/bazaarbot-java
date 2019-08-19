@@ -4,16 +4,15 @@
 
 package com.bazaarbot.example;
 
-import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.agent.AgentSimulation;
+import com.bazaarbot.agent.BasicAgent;
 import com.bazaarbot.market.Market;
 
 import java.util.Random;
 
 //fined $2 for being idle
 //consume(agent, "money", 2);
-public class LogicMiner  extends AgentSimulation
-{
+public class LogicMiner extends AgentSimulation {
     public LogicMiner(Random rnd) {
         super(rnd);
     }
@@ -31,31 +30,24 @@ public class LogicMiner  extends AgentSimulation
         //consume(agent, "money", 0.5);//cost of living/business
         consume(agent, ExampleCommodity.Food, 1);
         //cost of living
-        if (has_food && need_ore)
-        {
-            if (has_tools)
-            {
+        if (has_food && need_ore) {
+            if (has_tools) {
                 //produce 4 ore, consume 1 food, break tools with 10% chance
                 consume(agent, ExampleCommodity.Food, 1);
-                consume(agent,ExampleCommodity.Tools,1,0.1);
+                consume(agent, ExampleCommodity.Tools, 1, 0.1);
                 produce(agent, ExampleCommodity.Ore, 4);
-            }
-            else
-            {
+            } else {
                 //produce 2 ore, consume 1 food
                 consume(agent, ExampleCommodity.Food, 1);
                 produce(agent, ExampleCommodity.Ore, 2);
-            } 
-        }
-        else
-        {
+            }
+        } else {
             //fined $2 for being idle
             //consume(agent, "money", 2);
-            if (!has_food && agent.isInventoryFull())
-            {
+            if (!has_food && agent.isInventoryFull()) {
             }
-             
-        } 
+
+        }
     }
 
 }

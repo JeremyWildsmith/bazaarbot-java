@@ -65,11 +65,10 @@ public class Inventory {
      * @param good string id of commodity
      * @return
      */
-    public double query(ICommodity good) {
+    public double queryAmount(ICommodity good) {
         if (stuff.containsKey(good)) {
             return stuff.get(good).getAmount();
         }
-
         return 0;
     }
 
@@ -83,11 +82,10 @@ public class Inventory {
         if (expecting.containsKey(good)) {
             return expecting.get(good).getAmount();
         }
-
         return 0;
     }
 
-    public double query_cost(ICommodity good) {
+    public double queryCost(ICommodity good) {
         if (stuff.containsKey(good)) {
             return stuff.get(good).getOriginalPrice();
         }
@@ -198,7 +196,7 @@ public class Inventory {
      * @return
      */
     public double surplus(ICommodity good) {
-        double amount = query(good);
+        double amount = queryAmount(good);
         double ideal = 0;
 
         if (this.ideal.containsKey(good))
@@ -222,7 +220,7 @@ public class Inventory {
             return 0;
         }
 
-        double amount = query(good) + queryExpecting(good);
+        double amount = queryAmount(good) + queryExpecting(good);
 
         double ideal = 0;
         if (this.ideal.containsKey(good))
