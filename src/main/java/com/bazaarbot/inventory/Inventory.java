@@ -237,9 +237,9 @@ public class Inventory {
         private final double amount;
         private final double originalPrice;
 
-        InventoryEntry(double amount, double origialPrice) {
+        InventoryEntry(double amount, double originalPrice) {
             this.amount = amount;
-            this.originalPrice = origialPrice;
+            this.originalPrice = originalPrice;
         }
 
         double getAmount() {

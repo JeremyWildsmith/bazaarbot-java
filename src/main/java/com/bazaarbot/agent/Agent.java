@@ -24,14 +24,15 @@ public class Agent extends BasicAgent {
     private static final int LOOKBACK_RANGE = 15;
 
     @Override
-    public Offer createBid(Market market, ICommodity good, double limit) {
-        int bidPrice = 0;
+    public Offer createBid(Market market, ICommodity commodity, double limit) {
+        Inventory inventory = getInventory();
         // determinePriceOf(good);  bids are now made "at market", no price determination needed
-        double ideal = determinePurchaseQuantity(OBSERVE_WINDOW, market.getAverageHistoricalPrice(good, LOOKBACK_RANGE), good);
+        double ideal = determinePurchaseQuantity(OBSERVE_WINDOW, market.getAverageHistoricalPrice(commodity, LOOKBACK_RANGE), commodity);
         //can't buy more than limit
         double quantityToBuy = ideal > limit ? limit : ideal;
+        double bidPrice = inventory.queryCost(commodity) * SOME_MAGIC_NUMBER;
         if (quantityToBuy > 0) {
-            return new Offer(this, good, quantityToBuy, bidPrice);
+            return new Offer(this, commodity, quantityToBuy, bidPrice);
         }
 
         return null;
@@ -43,8 +44,9 @@ public class Agent extends BasicAgent {
     @Override
     public Offer createAsk(Market market, ICommodity commodity, double limit) {
         Inventory inventory = getInventory();
+        double ideal = determineSaleQuantity(OBSERVE_WINDOW, market.getAverageHistoricalPrice(commodity, LOOKBACK_RANGE), commodity);
         //asks are fair prices:  costs + small profit
-        double quantityToSell = inventory.queryAmount(commodity);
+        double quantityToSell = ideal > limit ? limit : ideal;//inventory.queryAmount(commodity);
 
         //put asks out for all inventory
         double askPrice = inventory.queryCost(commodity) * SOME_MAGIC_NUMBER;

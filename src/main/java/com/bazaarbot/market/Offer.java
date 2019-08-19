@@ -17,6 +17,8 @@ public class Offer {
     //price per unit
     private BasicAgent agent;
 
+    private final long timePut = 0;
+
     //who offered this
     public Offer(BasicAgent agent, ICommodity commodity, double units, double unitPrice) {
         this.agent = agent;
@@ -55,6 +57,10 @@ public class Offer {
 
     public void setAgent(BasicAgent agent) {
         this.agent = agent;
+    }
+
+    public long getTimePut() {
+        return timePut;
     }
 
     public String toString() {
