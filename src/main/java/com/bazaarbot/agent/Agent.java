@@ -31,7 +31,7 @@ public class Agent extends BasicAgent {
         //can't buy more than limit
         double quantityToBuy = ideal > limit ? limit : ideal;
         if (quantityToBuy > 0) {
-            return new Offer(getId(), good, quantityToBuy, bidPrice);
+            return new Offer(this, good, quantityToBuy, bidPrice);
         }
 
         return null;
@@ -49,7 +49,7 @@ public class Agent extends BasicAgent {
         //put asks out for all inventory
         double askPrice = inventory.queryCost(commodity) * SOME_MAGIC_NUMBER;
 
-        return new Offer(getId(), commodity, quantityToSell, askPrice);
+        return new Offer(this, commodity, quantityToSell, askPrice);
     }
 
     @Override

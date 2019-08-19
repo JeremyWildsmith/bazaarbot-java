@@ -54,7 +54,8 @@ public class Market {
     }
 
     public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) {
-        this.agents.set(oldAgent.getId(), newAgent);
+        this.agents.remove(oldAgent);
+        this.agents.add(newAgent);
     }
 
     //@:access(bazaarbot.agent.BasicAgent)    //dfs stub ????
@@ -64,7 +65,7 @@ public class Market {
                 agent.simulate(this);
                 for (ICommodity commodity : goodTypes) {
                     //if (agent.queryInventory(commodity) > 0) {
-                        agent.generateOffers(this, commodity);
+                    agent.generateOffers(this, commodity);
                     //}
                 }
             }
@@ -302,8 +303,8 @@ public class Market {
             Offer sellerAsk = asks.get(0);
             double quantityTraded = Math.min(sellerAsk.getUnits(), buyerBid.getUnits());
             double clearingPrice = sellerAsk.getUnitPrice();
-            Optional<BasicAgent> seller = agents.stream().filter(basicAgent -> basicAgent.getId() == buyerBid.getAgentId()).findFirst();
-            Optional<BasicAgent> buyer = agents.stream().filter(basicAgent -> basicAgent.getId() == sellerAsk.getAgentId()).findFirst();
+            Optional<BasicAgent> seller = agents.stream().filter(basicAgent -> basicAgent.equals(buyerBid.getAgent())).findFirst();
+            Optional<BasicAgent> buyer = agents.stream().filter(basicAgent -> basicAgent.equals(sellerAsk.getAgent())).findFirst();
             // If we do not have such ids
             if (!seller.isPresent() || !buyer.isPresent()) {
                 return;
@@ -353,7 +354,7 @@ public class Market {
             //reject all remaining offers,
             //update price belief models based on unsuccessful transaction
             Offer buyer = bids.get(0);
-            Optional<BasicAgent> buyerOptional = agents.stream().filter(basicAgent -> basicAgent.getId() == buyer.getAgentId()).findFirst();
+            Optional<BasicAgent> buyerOptional = agents.stream().filter(basicAgent -> basicAgent.equals(buyer.getAgent())).findFirst();
             if (!buyerOptional.isPresent()) {
                 // no such ids
                 return;
@@ -364,7 +365,7 @@ public class Market {
         while (asks.size() > 0) {
             //.splice(0, 1);
             Offer seller = asks.get(0);
-            Optional<BasicAgent> sellerOptional = agents.stream().filter(basicAgent -> basicAgent.getId() == seller.getAgentId()).findFirst();
+            Optional<BasicAgent> sellerOptional = agents.stream().filter(basicAgent -> basicAgent.equals(seller.getAgent())).findFirst();
             if (!sellerOptional.isPresent()) {
                 // no such ids
                 return;

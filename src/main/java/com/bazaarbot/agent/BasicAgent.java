@@ -12,10 +12,8 @@ import com.bazaarbot.market.Offer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public abstract class BasicAgent {
-    private final int id = UUID.randomUUID().hashCode();
     //unique integer identifier
     private final String agentName;
     private final AgentSimulation agentSimulation;
@@ -151,10 +149,6 @@ public abstract class BasicAgent {
 
     public void setMoneyAvailable(double value) {
         moneyAvailable = value;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public Inventory getInventory() {
