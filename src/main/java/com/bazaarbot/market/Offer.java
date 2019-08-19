@@ -6,7 +6,7 @@ package com.bazaarbot.market;
 
 
 import com.bazaarbot.ICommodity;
-import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.agent.IAgent;
 
 public class Offer
 {
@@ -16,10 +16,10 @@ public class Offer
     //how many units
     public double unit_price;
     //price per unit
-    public BasicAgent agent;
+    public IAgent agent;
     //who offered this
 
-    public Offer(BasicAgent agent, ICommodity commodity_, double units_, double unit_price_) {
+    public Offer(IAgent agent, ICommodity commodity_, double units_, double unit_price_) {
         this.agent = agent;
         good = commodity_;
         units = units_;

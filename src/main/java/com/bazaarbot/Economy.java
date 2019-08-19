@@ -4,7 +4,7 @@
 
 package com.bazaarbot;
 
-import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.market.ISignalBankrupt;
 import com.bazaarbot.market.Market;
 
@@ -43,6 +43,6 @@ public class Economy   implements ISignalBankrupt
         }
     }
 
-    public void signalBankrupt(Market m, BasicAgent a) {
+    public void signalBankrupt(Market m, IAgent a) {
     }
 }

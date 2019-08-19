@@ -9,7 +9,7 @@ import com.bazaarbot.Logic;
 
 /**
  * The most fundamental agent class, and has as little implementation as possible.
- * In most cases you should start by extending Agent instead of this.
+ * In most cases you should start by extending DefaultAgent instead of this.
  * @author larsiusprime
  */
 public class AgentData   

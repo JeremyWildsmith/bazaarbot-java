@@ -6,7 +6,7 @@ package com.bazaarbot.market;
 
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.AgentData;
-import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.agent.IAgent;
 
 import java.util.List;
 
@@ -14,9 +14,9 @@ public class MarketData
 {
     public List<ICommodity> goods;
     public List<AgentData> agentTypes;
-    public List<BasicAgent> agents;
+    public List<IAgent> agents;
 
-    public MarketData(List<ICommodity> goods, List<AgentData> agentTypes, List<BasicAgent> agents) {
+    public MarketData(List<ICommodity> goods, List<AgentData> agentTypes, List<IAgent> agents) {
         this.goods = goods;
         this.agentTypes = agentTypes;
         this.agents = agents;

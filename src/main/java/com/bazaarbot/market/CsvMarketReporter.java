@@ -2,17 +2,13 @@ package com.bazaarbot.market;
 
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.AgentSnapshot;
-import com.bazaarbot.agent.BasicAgent;
-import com.bazaarbot.history.History;
 import com.bazaarbot.history.HistoryLog;
 
 import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CsvMarketReporter {
     private final List<MarketSnapshot> snapshots = new ArrayList<>();

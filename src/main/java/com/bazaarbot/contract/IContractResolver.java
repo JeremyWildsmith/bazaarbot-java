@@ -1,9 +1,9 @@
 package com.bazaarbot.contract;
 
 import com.bazaarbot.ICommodity;
-import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.agent.IAgent;
 
 public interface IContractResolver {
-    void newContract(BasicAgent provider, BasicAgent receiver, ICommodity good, Double units, Double clearing_price);
-    ContractQuote getQuote(BasicAgent source, BasicAgent dest, double space);
+    void newContract(IAgent provider, IAgent receiver, ICommodity good, Double units, Double clearing_price);
+    ContractQuote getQuote(IAgent source, IAgent dest, double space);
 }

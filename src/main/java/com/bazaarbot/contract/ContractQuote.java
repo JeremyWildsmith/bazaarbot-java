@@ -1,7 +1,5 @@
 package com.bazaarbot.contract;
 
-import com.bazaarbot.agent.BasicAgent;
-
 public class ContractQuote {
     private final double cost;
     private final double risk;

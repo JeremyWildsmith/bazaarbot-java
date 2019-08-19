@@ -4,7 +4,7 @@
 
 package com.bazaarbot.example;
 
-import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
@@ -20,7 +20,7 @@ public class LogicWorker  extends Logic
     public LogicWorker() {
     }
 
-    public void perform(BasicAgent agent, Market market) {
+    public void perform(IAgent agent, Market market) {
         Double food = agent.queryInventory(ExampleCommodity.Food);
         Boolean has_food = food >= 1;
         Double work = agent.queryInventory(ExampleCommodity.Work);

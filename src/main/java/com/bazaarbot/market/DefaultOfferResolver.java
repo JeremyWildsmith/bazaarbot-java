@@ -1,7 +1,6 @@
 package com.bazaarbot.market;
 
 import com.bazaarbot.ICommodity;
-import com.bazaarbot.agent.BasicAgent;
 
 import java.util.*;
 

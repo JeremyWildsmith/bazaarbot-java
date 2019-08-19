@@ -3,42 +3,50 @@
 //
 
 package com.bazaarbot.agent;
-import com.bazaarbot.*;
+
+import com.bazaarbot.ICommodity;
+import com.bazaarbot.Logic;
+import com.bazaarbot.PriceRange;
 import com.bazaarbot.inventory.Inventory;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
+import com.bazaarbot.PriceBelief;
 
 import java.util.HashMap;
 
-public abstract class BasicAgent
+/**
+     * An agent that performs the basic logic from the Doran & Parberry article
+     * @author
+     */
+public class DefaultAgent implements IAgent
 {
+    //A small scaling of the ask price (to generate profit)
+    private static final double ASK_PRICE_INFLATION = 1.02;
+
     private String className;
     private double money;
     //dfs stub  needed?
-    public double moneyLastRound;
+    private double moneyLastRound;
     //dfs stub needed?
-    public double trackcosts;
+    private double trackcosts;
     private Logic _logic;
-    protected Inventory inventory;
-    protected HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
+    private Inventory inventory;
+    private HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
     //profit from last round
     private int _lookback = 15;
 
-
-    public BasicAgent(AgentData data) {
-        setClassName(data.getClassName());
+    //lowest possible price
+    public DefaultAgent(AgentData data) {
+        this.className = data.getClassName();
+        this.money = data.getMoney();
         setMoney(data.getMoney());
         inventory = new Inventory();
         inventory.fromData(data.getInventory());
         _logic = data.getLogic();
-        if (data.getLookBack() == null)
-        {
-            _lookback = 15;
-        }
-        else
-        {
+
+        if (data.getLookBack() != null)
             _lookback = data.getLookBack();
-        }
+
         trackcosts = 0;
     }
 
@@ -46,10 +54,70 @@ public abstract class BasicAgent
         _logic.perform(this,market);
     }
 
-    public abstract void generateOffers(Market bazaar, ICommodity good);
-    public abstract void updatePriceModel(String act, ICommodity good, boolean success, double unitPrice);
-    public abstract Offer createBid(Market bazaar, ICommodity good, double limit);
-    public abstract Offer createAsk(Market bazaar, ICommodity commodity_, double limit_);
+    @Override
+    public Offer createBid(Market bazaar, ICommodity good, double limit) {
+        // determinePriceOf(good);  bids are now made "at market", no price determination needed
+        int bidPrice = 0;
+
+        double ideal = determinePurchaseQuantity(bazaar,good);
+        //can't buy more than limit
+        double quantityToBuy = ideal > limit ? limit : ideal;
+
+        if (quantityToBuy > 0)
+            return new Offer(this, good, quantityToBuy, bidPrice);
+         
+        return null;
+    }
+
+    @Override
+    public Offer createAsk(Market bazaar, ICommodity commodity, double limit) {
+        //asks are fair prices:  costs + small profit
+        double askPrice = inventory.queryCost(commodity) * ASK_PRICE_INFLATION;
+        double quantityToSell = inventory.query(commodity);
+
+        //put asks out for all inventory
+        if (quantityToSell > 0)
+            return new Offer(this, commodity, quantityToSell, askPrice);
+         
+        return null;
+    }
+
+    @Override
+    public void generateOffers(Market bazaar, ICommodity commodity) {
+        Offer offer;
+        double surplus = inventory.surplus(commodity);
+        if (surplus >= 1)
+        {
+            offer = createAsk(bazaar,commodity,1);
+            if (offer != null)
+                bazaar.ask(offer);
+             
+        }
+        else
+        {
+            double shortage = inventory.shortage(commodity);
+            double space = inventory.getEmptySpace();
+
+            double limit = Math.min(shortage, space);
+
+            if (limit > 0)
+            {
+                offer = createBid(bazaar,commodity,limit);
+
+                if (offer != null)
+                    bazaar.bid(offer);
+            }
+
+        }
+    }
+
+    @Override
+    public void updatePriceModel(String act, ICommodity good, boolean success, double unitPrice) {
+        if(!goodsPriceBelief.containsKey(good))
+            goodsPriceBelief.put(good, new PriceBelief());
+
+        goodsPriceBelief.get(good).addTransaction(unitPrice, success);
+    }
 
     public final double queryInventory(ICommodity good) {
         return inventory.query(good);
@@ -58,7 +126,7 @@ public abstract class BasicAgent
     public final void produceInventory(ICommodity good, double delta) {
         if (trackcosts < 1)
             trackcosts = 1;
-         
+
         double curunitcost = inventory.change(good,delta,trackcosts / delta);
         trackcosts = 0;
     }
@@ -69,15 +137,15 @@ public abstract class BasicAgent
             setMoney(getMoney() + delta);
             if (delta < 0)
                 trackcosts += (-delta);
-             
+
         }
         else
         {
             double curunitcost = inventory.change(good,delta,0);
             if (delta < 0)
                 trackcosts += (-delta) * curunitcost;
-             
-        } 
+
+        }
     }
 
     public final void changeInventory(ICommodity good, double delta, double unit_cost) {
@@ -88,7 +156,7 @@ public abstract class BasicAgent
         else
         {
             inventory.change(good,delta,unit_cost);
-        } 
+        }
     }
 
     protected double determinePurchaseQuantity(Market bazaar, ICommodity commodity_) {
@@ -108,10 +176,10 @@ public abstract class BasicAgent
             {
                 amount_to_buy = 1;
             }
-             
+
             return amount_to_buy;
         }
-         
+
         return 0;
     }
 
@@ -120,10 +188,6 @@ public abstract class BasicAgent
             goodsPriceBelief.put(good, new PriceBelief());
 
         return goodsPriceBelief.get(good).observe(window);
-    }
-
-    public final void updatePriceModel(String buy, ICommodity good, boolean b) {
-        updatePriceModel(buy, good, b, 0);
     }
 
     public AgentSnapshot getSnapshot() {
@@ -142,16 +206,19 @@ public abstract class BasicAgent
         return className;
     }
 
-    public void setClassName(String value) {
-        className = value;
-    }
-
+    @Override
     public double getMoney() {
         return money;
     }
 
+    @Override
     public void setMoney(double value) {
         money = value;
+    }
+
+    @Override
+    public void setMoneyLastRound(double value) {
+        moneyLastRound = value;
     }
 }
 

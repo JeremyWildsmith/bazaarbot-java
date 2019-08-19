@@ -4,7 +4,7 @@
 
 package com.bazaarbot.example;
 
-import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
@@ -20,7 +20,7 @@ public class LogicBlacksmith  extends Logic
     public LogicBlacksmith() {
     }
 
-    public void perform(BasicAgent agent, Market market) {
+    public void perform(IAgent agent, Market market) {
         Double food = agent.queryInventory(ExampleCommodity.Food);
         Double metal = agent.queryInventory(ExampleCommodity.Metal);
         Double tools = agent.queryInventory(ExampleCommodity.Tools);

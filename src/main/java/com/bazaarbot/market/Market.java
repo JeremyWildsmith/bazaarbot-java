@@ -7,7 +7,7 @@ package com.bazaarbot.market;
 import com.bazaarbot.*;
 import com.bazaarbot.agent.AgentData;
 import com.bazaarbot.agent.AgentSnapshot;
-import com.bazaarbot.agent.BasicAgent;
+import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.History;
 
 import java.util.*;
@@ -23,7 +23,7 @@ public class Market
     private int _roundNum = 0;
     private List<ICommodity> _goodTypes;
     //list of string ids for all the legal commodities
-    public List<BasicAgent> _agents = new ArrayList<>();
+    public List<IAgent> _agents = new ArrayList<>();
     public TradeBook _book;
     private HashMap<String, AgentData> _mapAgents;
 
@@ -49,18 +49,18 @@ public class Market
         fromData(marketData);
     }
 
-    public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) {
+    public void replaceAgent(IAgent oldAgent, IAgent newAgent) {
         _agents.remove(oldAgent);
         _agents.add(newAgent);
     }
 
-    //@:access(bazaarbot.agent.BasicAgent)    //dfs stub ????
+    //@:access(bazaarbot.agent.IAgent)    //dfs stub ????
     public void simulate(int rounds) {
         for (int round = 0;round < rounds;round++)
         {
-            for (BasicAgent agent : _agents)
+            for (IAgent agent : _agents)
             {
-                agent.moneyLastRound = agent.getMoney();
+                agent.setMoneyLastRound(agent.getMoney());
                 agent.simulate(this);
                 for (ICommodity commodity : _goodTypes)
                 {
@@ -70,8 +70,8 @@ public class Market
 
             resolveOffers();
 
-            List<BasicAgent> del = new ArrayList<>();
-            for (BasicAgent agent : _agents)
+            List<IAgent> del = new ArrayList<>();
+            for (IAgent agent : _agents)
             {
                 if (agent.getMoney() <= 0)
                     del.add(agent);
@@ -235,7 +235,7 @@ public class Market
 
     public MarketSnapshot getSnapshot() {
         List<AgentSnapshot> agentData = new ArrayList<>();
-        for(BasicAgent a : _agents) {
+        for(IAgent a : _agents) {
             agentData.add(a.getSnapshot());
         }
 
@@ -273,7 +273,7 @@ public class Market
         }
         //Make the agent list
         _agents = new ArrayList<>();
-        for (BasicAgent agent : data.agents)
+        for (IAgent agent : data.agents)
         {
             _agents.add(agent);
         }
@@ -324,15 +324,15 @@ public class Market
                 history.prices.add(e.getKey(), history.prices.average(e.getKey(), 1));
             }
         }
-        List<BasicAgent> ag = new ArrayList<>(_agents);//.<BasicAgent>ToList();
-        ag.sort(Comparator.comparing(BasicAgent::getClassName));
+        List<IAgent> ag = new ArrayList<>(_agents);//.<IAgent>ToList();
+        ag.sort(Comparator.comparing(IAgent::getClassName));
         String curr_class = "";
         String last_class = "";
         List<Double> list = null;
 
         for (int i = 0;i < ag.size();i++)
         {
-            BasicAgent a = ag.get(i);
+            IAgent a = ag.get(i);
             //get current agent
             curr_class = a.getClassName();
             //check its class

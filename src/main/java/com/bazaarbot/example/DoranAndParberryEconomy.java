@@ -5,10 +5,9 @@
 package com.bazaarbot.example;
 
 import com.bazaarbot.*;
-import com.bazaarbot.agent.Agent;
+import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.AgentData;
-import com.bazaarbot.agent.BasicAgent;
-import com.bazaarbot.contract.DefaultContractResolver;
+import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.DefaultOfferExecutor;
 import com.bazaarbot.market.DefaultOfferResolver;
@@ -33,7 +32,7 @@ public class DoranAndParberryEconomy  extends Economy
 
     private MarketData getMarketData() {
         List<AgentData> agentTypes = new ArrayList<AgentData>();
-        List<BasicAgent> agents = new ArrayList<BasicAgent>();
+        List<IAgent> agents = new ArrayList<IAgent>();
 
         agentTypes.add(new AgentData("farmer",100,"farmer"));
         agentTypes.add(new AgentData("miner",100,"miner"));
@@ -133,11 +132,11 @@ public class DoranAndParberryEconomy  extends Economy
     }
 
     @Override
-    public void signalBankrupt(Market m, BasicAgent a) {
+    public void signalBankrupt(Market m, IAgent a) {
         replaceAgent(m,a);
     }
 
-    private void replaceAgent(Market market, BasicAgent agent) {
+    private void replaceAgent(Market market, IAgent agent) {
         String bestClass = market.getMostProfitableAgentClass();
         //Special case to deal with very high demand-to-supply ratios
         //This will make them favor entering an underserved market over
@@ -153,7 +152,7 @@ public class DoranAndParberryEconomy  extends Economy
              
         }
          
-        BasicAgent newAgent = getAgent(market.getAgentClass(bestClass));
+        IAgent newAgent = getAgent(market.getAgentClass(bestClass));
         market.replaceAgent(agent, newAgent);
     }
 
@@ -215,14 +214,14 @@ public class DoranAndParberryEconomy  extends Economy
     		    return bestClass;
     	    }
     	    */
-    //private BasicAgent getAgentScript(AgentData data)
+    //private IAgent getAgentScript(AgentData data)
     //{
     //    data.logic = new LogicScript(data.logicName+".hs");
-    //    return new Agent(0, data);
+    //    return new DefaultAgent(0, data);
     //}
-    private BasicAgent getAgent(AgentData data) {
+    private IAgent getAgent(AgentData data) {
         data.setLogic(getLogic(data.getLogicName()));
-        return new Agent(data);
+        return new DefaultAgent(data);
     }
 
     private Logic getLogic(String str) {

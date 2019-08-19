@@ -4,12 +4,11 @@
 
 package com.bazaarbot.market;
 
-import com.bazaarbot.agent.BasicAgent;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.agent.IAgent;
 
 public interface ISignalBankrupt
 {
-    void signalBankrupt(Market m, BasicAgent agent);
+    void signalBankrupt(Market m, IAgent agent);
 }
 
 
