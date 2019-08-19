@@ -162,7 +162,9 @@ public class DoranAndParberryEconomy  extends Economy
     	     * @return
     	     */
     public String getAgentClassThatMakesMost(ICommodity good) {
-        throw new RuntimeException("Not Implemented.");/*
+        return "";
+        //throw new RuntimeException("Not Implemented.");
+        /*
         String res = "";
         if (good.compareTo("food") == 0)
         {

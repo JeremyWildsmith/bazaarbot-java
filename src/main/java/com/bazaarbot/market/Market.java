@@ -54,8 +54,7 @@ public class Market {
     }
 
     public void replaceAgent(BasicAgent oldAgent, BasicAgent newAgent) {
-        this.agents.remove(oldAgent);
-        this.agents.add(newAgent);
+        this.agents.set(this.agents.indexOf(oldAgent), newAgent);
     }
 
     //@:access(bazaarbot.agent.BasicAgent)    //dfs stub ????
