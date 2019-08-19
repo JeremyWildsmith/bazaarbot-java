@@ -14,10 +14,11 @@ import java.util.Random;
 public class LogicRefiner  extends Logic
 {
     public LogicRefiner(Random rnd) {
-        super(rnd);
+        super("refiner", rnd);
     }
 
     public LogicRefiner() {
+        this(new Random());
     }
 
     public void perform(IAgent agent, Market market) {

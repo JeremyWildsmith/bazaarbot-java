@@ -17,14 +17,13 @@ public class AgentData
     private String className;
     private double money;
     private InventoryData inventory;
-    private String logicName;
     private Logic logic;
     private Integer lookBack;
 
-    public AgentData(String className, double money, String logicName) {
+    public AgentData(String className, double money, Logic logic) {
         this.className = className;
         this.money = money;
-        this.logicName = logicName;
+        this.logic = logic;
     }
 
     public String getClassName() {
@@ -49,14 +48,6 @@ public class AgentData
 
     public void setInventory(InventoryData inventory) {
         this.inventory = inventory;
-    }
-
-    public String getLogicName() {
-        return logicName;
-    }
-
-    public void setLogicName(String logicName) {
-        this.logicName = logicName;
     }
 
     public Logic getLogic() {

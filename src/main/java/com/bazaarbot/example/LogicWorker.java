@@ -14,10 +14,11 @@ import java.util.Random;
 public class LogicWorker  extends Logic
 {
     public LogicWorker(Random rnd) {
-        super(rnd);
+        super("worker", rnd);
     }
 
     public LogicWorker() {
+        this(new Random());
     }
 
     public void perform(IAgent agent, Market market) {

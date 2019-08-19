@@ -12,13 +12,15 @@ import java.util.Random;
 public abstract class Logic
 {
     private final Random rnd;
+    private final String name;
 
-    public Logic(Random rnd) {
+    public Logic(String name, Random rnd) {
         this.rnd = rnd;
+        this.name = name;
     }
 
-    public Logic() {
-        this.rnd = new Random();
+    public Logic(String name) {
+        this(name, new Random());
     }
 
     /**
@@ -49,6 +51,10 @@ public abstract class Logic
 
     protected final void consume(IAgent agent, ICommodity commodity, double amount) {
         consume(agent, commodity, amount, 1.0);
+    }
+
+    public String getName() {
+        return name;
     }
 }
 

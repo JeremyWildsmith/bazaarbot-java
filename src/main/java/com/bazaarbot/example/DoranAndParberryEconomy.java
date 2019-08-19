@@ -34,12 +34,12 @@ public class DoranAndParberryEconomy  extends Economy
         List<AgentData> agentTypes = new ArrayList<AgentData>();
         List<IAgent> agents = new ArrayList<IAgent>();
 
-        agentTypes.add(new AgentData("farmer",100,"farmer"));
-        agentTypes.add(new AgentData("miner",100,"miner"));
-        agentTypes.add(new AgentData("refiner",100,"refiner"));
-        agentTypes.add(new AgentData("woodcutter",100,"woodcutter"));
-        agentTypes.add(new AgentData("blacksmith",100,"blacksmith"));
-        agentTypes.add(new AgentData("worker",10,"worker"));
+        agentTypes.add(new AgentData("farmer",100,new LogicFarmer()));
+        agentTypes.add(new AgentData("miner",100,new LogicMiner()));
+        agentTypes.add(new AgentData("refiner",100,new LogicRefiner()));
+        agentTypes.add(new AgentData("woodcutter",100,new LogicWoodcutter()));
+        agentTypes.add(new AgentData("blacksmith",100,new LogicBlacksmith()));
+        agentTypes.add(new AgentData("worker",10,new LogicWorker()));
 
         InventoryData ii;
 
@@ -220,7 +220,7 @@ public class DoranAndParberryEconomy  extends Economy
     //    return new DefaultAgent(0, data);
     //}
     private IAgent getAgent(AgentData data) {
-        data.setLogic(getLogic(data.getLogicName()));
+        data.setLogic(getLogic(data.getLogic().getName()));
         return new DefaultAgent(data);
     }
 

@@ -14,10 +14,11 @@ import java.util.Random;
 public class LogicBlacksmith  extends Logic
 {
     public LogicBlacksmith(Random rnd) {
-        super(rnd);
+        super("blacksmith", rnd);
     }
 
     public LogicBlacksmith() {
+        this(new Random());
     }
 
     public void perform(IAgent agent, Market market) {

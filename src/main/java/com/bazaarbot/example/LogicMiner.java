@@ -15,10 +15,11 @@ import java.util.Random;
 public class LogicMiner  extends Logic
 {
     public LogicMiner(Random rnd) {
-        super(rnd);
+        super("miner", rnd);
     }
 
     public LogicMiner() {
+        this(new Random());
     }
 
     public void perform(IAgent agent, Market market) {

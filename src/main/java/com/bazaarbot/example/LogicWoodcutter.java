@@ -14,10 +14,11 @@ import java.util.Random;
 public class LogicWoodcutter  extends Logic
 {
     public LogicWoodcutter(Random rnd) {
-        super(rnd);
+        super("woodcutter", rnd);
     }
 
     public LogicWoodcutter() {
+        this(new Random());
     }
 
     public void perform(IAgent agent, Market market) {
