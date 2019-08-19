@@ -38,7 +38,7 @@ public class History {
         trades.register(good);
     }
 
-    public ICommodity[] getCommodities() {
+    public  List<ICommodity> getCommodities() {
         Set<ICommodity> result = new HashSet<>();
 
         List<HistoryLog<ICommodity>> sources = new ArrayList<>();
@@ -48,10 +48,10 @@ public class History {
         sources.add(trades);
 
         for (HistoryLog<ICommodity> historyItem : sources) {
-            Collections.addAll(result, historyItem.getSubjects(new ICommodity[0]));
+            result.addAll(historyItem.getSubjects());
         }
 
-        return result.toArray(new ICommodity[0]);
+        return new ArrayList<>(result);
     }
 
     public HistoryLog<ICommodity> getPrices() {

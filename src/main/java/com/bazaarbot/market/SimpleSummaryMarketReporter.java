@@ -45,9 +45,9 @@ public class SimpleSummaryMarketReporter {
 
         History history = snapshot.getHistory();
 
-        ICommodity[] goodTypes = history.getCommodities();
+        List<ICommodity> goodTypes = history.getCommodities();
 
-        Arrays.sort(goodTypes, Comparator.comparing(ICommodity::getName));
+        goodTypes.sort(Comparator.comparing(ICommodity::getName));
 
         for (ICommodity commodity : goodTypes) {
             strListGood.append(commodity).append("\n");
@@ -83,14 +83,14 @@ public class SimpleSummaryMarketReporter {
                 if (a.getClassName().compareTo(key) == 0) {
                     count++;
                     money += a.getMoney();
-                    for (int lic = 0; lic < goodTypes.length; lic++) {
-                        inventory.add(lic, inventory.get(lic) + a.getInventory().queryAmount(goodTypes[lic]));
+                    for (int lic = 0; lic < goodTypes.size(); lic++) {
+                        inventory.add(lic, inventory.get(lic) + a.getInventory().queryAmount(goodTypes.get(lic)));
                     }
                 }
 
             }
             money /= count;
-            for (int lic = 0; lic < goodTypes.length; lic++) {
+            for (int lic = 0; lic < goodTypes.size(); lic++) {
                 inventory.add(lic, inventory.get(lic) / count);
                 setarrStrListInventory.add(lic, setarrStrListInventory.get(lic) + String.format("%d\n", lic));
             }

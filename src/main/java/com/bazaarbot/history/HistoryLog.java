@@ -7,6 +7,7 @@ package com.bazaarbot.history;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HistoryLog<T> {
     private EconNoun type = EconNoun.Price;
@@ -14,7 +15,10 @@ public class HistoryLog<T> {
 
     public HistoryLog(HistoryLog<T> source) {
         this.type = source.type;
-        log = new HashMap<>(source.log);
+        log = new HashMap<>();
+        for (Map.Entry<T, ArrayList<Double>> e : source.log.entrySet()) {
+            log.put(e.getKey(), new ArrayList<>(e.getValue()));
+        }
     }
 
     public HistoryLog(EconNoun type) {
@@ -25,8 +29,8 @@ public class HistoryLog<T> {
     /**
      * Add a new entry to this log
      *
-     * @param    name
-     * @param    amount
+     * @param name
+     * @param amount
      */
     public void add(T name, double amount) {
         if (log.containsKey(name)) {
@@ -39,7 +43,7 @@ public class HistoryLog<T> {
     /**
      * Register a new category list in this log
      *
-     * @param    name
+     * @param name
      */
     public void register(T name) {
         if (!log.containsKey(name)) {
@@ -51,9 +55,9 @@ public class HistoryLog<T> {
     /**
      * Returns the average amount of the given category, looking backwards over a specified range
      *
+     * @param name  the category of thing
+     * @param range how far to look back
      * @return
-     * @param    name the category of thing
-     * @param    range how far to look back
      */
     public double average(T name, int range) {
         if (log.containsKey(name)) {
@@ -76,8 +80,8 @@ public class HistoryLog<T> {
         return 0;
     }
 
-    public T[] getSubjects(T[] cls) {
-        return log.keySet().toArray(cls);
+    public List<T> getSubjects() {
+        return new ArrayList<>(log.keySet());
     }
 }
 
