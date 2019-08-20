@@ -9,8 +9,7 @@ import com.bazaarbot.agent.IAgent;
 
 import java.util.List;
 
-public class MarketData   
-{
+public class MarketData {
     public List<ICommodity> goods;
     public List<IAgent> agents;
 

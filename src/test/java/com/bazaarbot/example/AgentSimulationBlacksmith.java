@@ -5,19 +5,19 @@
 package com.bazaarbot.example;
 
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.Logic;
+import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.market.Market;
 
 import java.util.Random;
 
 //}
-public class LogicBlacksmith  extends Logic
+public class AgentSimulationBlacksmith extends AgentSimulation
 {
-    public LogicBlacksmith(Random rnd) {
+    public AgentSimulationBlacksmith(Random rnd) {
         super("blacksmith", rnd);
     }
 
-    public LogicBlacksmith() {
+    public AgentSimulationBlacksmith() {
         this(new Random());
     }
 

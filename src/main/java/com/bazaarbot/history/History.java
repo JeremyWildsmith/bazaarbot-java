@@ -4,18 +4,17 @@
 
 package com.bazaarbot.history;
 
-import com.bazaarbot.EconNoun;
 import com.bazaarbot.ICommodity;
 
 import java.util.*;
 
 public class History
 {
-    public HistoryLog<ICommodity> prices;
-    public HistoryLog<ICommodity> asks;
-    public HistoryLog<ICommodity> bids;
-    public HistoryLog<ICommodity> trades;
-    public HistoryLog<String> profit;
+    private final HistoryLog<ICommodity> prices;
+    private final HistoryLog<ICommodity> asks;
+    private final HistoryLog<ICommodity> bids;
+    private final HistoryLog<ICommodity> trades;
+    private final HistoryLog<String> profit;
 
     public History() {
         prices = new HistoryLog<>(EconNoun.Price);
@@ -31,6 +30,13 @@ public class History
         bids = new HistoryLog<>(src.bids);
         trades = new HistoryLog<>(src.trades);
         profit = new HistoryLog<>(src.profit);
+    }
+
+    public void registerCommodity(ICommodity good) {
+        prices.register(good);
+        asks.register(good);
+        bids.register(good);
+        trades.register(good);
     }
 
     public List<ICommodity> getCommodities() {
@@ -49,6 +55,25 @@ public class History
         return new ArrayList<>(result);
     }
 
+    public HistoryLog<ICommodity> getPrices() {
+        return prices;
+    }
+
+    public HistoryLog<ICommodity> getAsks() {
+        return asks;
+    }
+
+    public HistoryLog<ICommodity> getBids() {
+        return bids;
+    }
+
+    public HistoryLog<ICommodity> getTrades() {
+        return trades;
+    }
+
+    public HistoryLog<String> getProfit() {
+        return profit;
+    }
 }
 
 

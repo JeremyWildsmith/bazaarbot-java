@@ -4,21 +4,21 @@
 
 package com.bazaarbot.example;
 
+import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
 import java.util.Random;
 
 //fined $2 for being idle
 //consume(agent, "money", 2);
-public class LogicMiner  extends Logic
+public class AgentSimulationMiner extends AgentSimulation
 {
-    public LogicMiner(Random rnd) {
+    public AgentSimulationMiner(Random rnd) {
         super("miner", rnd);
     }
 
-    public LogicMiner() {
+    public AgentSimulationMiner() {
         this(new Random());
     }
 

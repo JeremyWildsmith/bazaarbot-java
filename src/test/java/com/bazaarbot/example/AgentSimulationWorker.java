@@ -5,19 +5,19 @@
 package com.bazaarbot.example;
 
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.Logic;
+import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.market.Market;
 
 import java.util.Random;
 
 //make_room_for(agent, "food", 2);
-public class LogicWorker  extends Logic
+public class AgentSimulationWorker extends AgentSimulation
 {
-    public LogicWorker(Random rnd) {
+    public AgentSimulationWorker(Random rnd) {
         super("worker", rnd);
     }
 
-    public LogicWorker() {
+    public AgentSimulationWorker() {
         this(new Random());
     }
 
