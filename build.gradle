@@ -17,7 +17,7 @@ repositories {
 
 group = 'com.bazaarbot'
 version = '1.0-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '9'
 mainClassName = "com.bazaarbot.example.Main"
 
 publishing {

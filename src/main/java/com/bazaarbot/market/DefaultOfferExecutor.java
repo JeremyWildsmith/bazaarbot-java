@@ -5,18 +5,18 @@ import com.bazaarbot.agent.IAgent;
 
 public class DefaultOfferExecutor implements IOfferExecuter {
     @Override
-    public OfferExecutionStatistics execute(Offer buyer, Offer seller) {
-        Double quantityTraded = Math.min(buyer.getUnits(), seller.getUnits());
-        Double clearingPrice = seller.getUnitPrice();
-        ICommodity good = buyer.getGood();
+    public OfferExecutionStatistics execute(Offer buyerOffer, Offer sellerOffer) {
+        Double quantityTraded = Math.min(buyerOffer.getUnits(), sellerOffer.getUnits());
+        Double clearingPrice = sellerOffer.getUnitPrice();
+        ICommodity good = buyerOffer.getGood();
 
-        transferGood(good, quantityTraded,seller.getAgent(),buyer.getAgent(), clearingPrice);
-        transferMoney(quantityTraded * clearingPrice, seller.getAgent(), buyer.getAgent());
+        transferGood(good, quantityTraded, sellerOffer.getAgent(), buyerOffer.getAgent(), clearingPrice);
+        transferMoney(quantityTraded * clearingPrice, sellerOffer.getAgent(), buyerOffer.getAgent());
         //update agent price beliefs based on successful transaction
-        IAgent buyer_a = buyer.getAgent();
-        IAgent seller_a = seller.getAgent();
-        buyer_a.updatePriceModel("buy", good, true, clearingPrice);
-        seller_a.updatePriceModel("sell", good, true, clearingPrice);
+        IAgent buyer = buyerOffer.getAgent();
+        IAgent seller = sellerOffer.getAgent();
+        buyer.updatePriceModel("buy", good, true, clearingPrice);
+        seller.updatePriceModel("sell", good, true, clearingPrice);
         //log the stats
         double moneyTraded = (quantityTraded * clearingPrice);
 

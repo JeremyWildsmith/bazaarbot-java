@@ -4,7 +4,7 @@ import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.IAgent;
 
 public interface IContractResolver {
-    void newContract(IAgent provider, IAgent receiver, ICommodity good, Double units, Double clearing_price);
+    IContract newContract(IAgent provider, IAgent receiver, ICommodity good, double units, double clearingPrice);
 
-    ContractQuote getQuote(IAgent source, IAgent dest, double space);
+    ContractQuote getQuote(IAgent buyer, IAgent seller, double space);
 }

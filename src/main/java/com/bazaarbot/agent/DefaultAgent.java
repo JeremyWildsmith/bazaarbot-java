@@ -29,17 +29,15 @@ public class DefaultAgent implements IAgent {
     private double moneyAvailable;
     private double moneyLastSimulation;
     private double moneySpent;
-    private AgentSimulation agentSimulation;
     private Inventory inventory;
     private List<CommodityPricingHistory> commodityPricingHistories = new ArrayList<>();
 
 
-    public DefaultAgent(String agentName, AgentSimulation agentSimulation, InventoryData data, double moneyAvailable) {
+    public DefaultAgent(String agentName, InventoryData data, double moneyAvailable) {
         this.agentName = agentName;
         this.moneyAvailable = moneyAvailable;
         this.inventory = new Inventory();
         this.inventory.fromData(data);
-        this.agentSimulation = agentSimulation;
         this.moneySpent = 0;
     }
 
@@ -90,7 +88,6 @@ public class DefaultAgent implements IAgent {
     @Override
     public void simulate(Market market) {
         moneyLastSimulation = moneyAvailable;
-        agentSimulation.perform(this, market);
     }
 
     @Override

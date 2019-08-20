@@ -1,14 +1,15 @@
 package com.bazaarbot.contract;
 
+import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.IAgent;
 
 import java.util.Map;
 
-public class ProvideContract implements IContract {
+public class DefaultContract implements IContract {
     private final IAgent reciever;
-    private final Map<String, Double> goods;
+    private final Map<ICommodity, Double> goods;
 
-    public ProvideContract(IAgent reciever, IContract sellContract, Map<String, Double> goods) {
+    public DefaultContract(IAgent reciever, IAgent seller, Map<ICommodity, Double> goods) {
         this.reciever = reciever;
         this.goods = goods;
     }

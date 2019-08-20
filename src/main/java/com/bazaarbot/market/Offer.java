@@ -17,7 +17,7 @@ public class Offer {
     //price per unit
     private IAgent agent;
 
-    private final long timePut = 0;
+    private final long timePut = System.nanoTime();
 
     //who offered this
     public Offer(IAgent agent, ICommodity commodity, double units, double unitPrice) {
@@ -64,7 +64,7 @@ public class Offer {
     }
 
     public String toString() {
-        return "(" + agent + "): " + good + "x " + units + " @ " + unitPrice;
+        return "(" + agent + "): " + good + " x " + units + " @ " + unitPrice;
     }
 
 }

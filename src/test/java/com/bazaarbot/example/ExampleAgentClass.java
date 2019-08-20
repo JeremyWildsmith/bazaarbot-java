@@ -22,7 +22,7 @@ public enum ExampleAgentClass implements IAgentClass {
         start.put(ExampleCommodity.Work, 0.0);
         InventoryData inv = new InventoryData(20, ideal, start);
 
-        return new DefaultAgent("farmer", new AgentSimulationFarmer(), inv, 100);
+        return new DefaultAgent("farmer", /*new AgentSimulationFarmer(),*/ inv, 100);
     }),
 
     Miner("miner", () -> {
@@ -37,7 +37,7 @@ public enum ExampleAgentClass implements IAgentClass {
 
         InventoryData inv = new InventoryData(20, ideal, start);
 
-        return new DefaultAgent("miner", new AgentSimulationMiner(), inv, 100);
+        return new DefaultAgent("miner", /*new AgentSimulationMiner(),*/ inv, 100);
     }),
 
     Refiner("refiner", () -> {
@@ -52,7 +52,7 @@ public enum ExampleAgentClass implements IAgentClass {
 
         InventoryData inv = new InventoryData(20, ideal, start);
 
-        return new DefaultAgent("refiner", new AgentSimulationRefiner(), inv, 100);
+        return new DefaultAgent("refiner", /*new AgentSimulationRefiner(),*/ inv, 100);
     }),
 
     Woodcutter("woodcutter", () -> {
@@ -68,7 +68,7 @@ public enum ExampleAgentClass implements IAgentClass {
 
         InventoryData inv = new InventoryData(20, ideal, start);
 
-        return new DefaultAgent("woodcutter", new AgentSimulationWoodcutter(), inv, 100);
+        return new DefaultAgent("woodcutter", /*new AgentSimulationWoodcutter(),*/ inv, 100);
     }),
 
     blacksmith("blacksmith", () -> {
@@ -85,7 +85,7 @@ public enum ExampleAgentClass implements IAgentClass {
 
         InventoryData inv = new InventoryData(20, ideal, start);
 
-        return new DefaultAgent("blacksmith", new AgentSimulationBlacksmith(), inv, 100);
+        return new DefaultAgent("blacksmith", /*new AgentSimulationBlacksmith(),*/ inv, 100);
     }),
 
     Worker("worker", () -> {
@@ -96,7 +96,7 @@ public enum ExampleAgentClass implements IAgentClass {
 
         InventoryData inv = new InventoryData(20, ideal, start);
 
-        return new DefaultAgent("worker", new AgentSimulationWorker(), inv, 100);
+        return new DefaultAgent("worker", /*new AgentSimulationWorker(),*/ inv, 100);
     })
     ;
     private final String name;
