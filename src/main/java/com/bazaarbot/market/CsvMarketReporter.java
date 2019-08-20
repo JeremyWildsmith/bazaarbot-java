@@ -31,7 +31,7 @@ public class CsvMarketReporter {
         StringBuilder csv = new StringBuilder();
 
         List<String> names = new ArrayList<>();
-        names.add("Round#");
+        names.add("round");
 
         for (T s : subjects) {
             names.add(s.toString());
@@ -72,7 +72,7 @@ public class CsvMarketReporter {
 
     private String produceAgentMetric(String name, IAgentMetricFetcher fetcher) {
         List<String> rows = new ArrayList<>();
-        rows.add("round#," + String.join(",", agentClasses));
+        rows.add("round," + String.join(",", agentClasses));
 
         for (int i = 0; i < snapshots.size(); i++) {
             List<String> columns = new ArrayList<>();
