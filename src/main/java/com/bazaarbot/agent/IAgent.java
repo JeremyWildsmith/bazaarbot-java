@@ -36,15 +36,13 @@ public interface IAgent
 
     boolean isInventoryFull();
 
-    double get_profit();
+    double getLastSimulateProfit();
 
     String getClassName();
 
     double getMoney();
 
     void setMoney(double value);
-
-    void setMoneyLastRound(double value);
 }
 
 

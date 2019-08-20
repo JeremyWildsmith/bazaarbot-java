@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class HistoryLog<T>
 {
-    private EconNoun type = EconNoun.Price;
+    private EconNoun type;
     private HashMap<T, ArrayList<Double>> log;
 
     public HistoryLog(HistoryLog<T> source) {
@@ -37,24 +37,11 @@ public class HistoryLog<T>
     	     * @param	amount
     	     */
     public void add(T name, double amount) {
-        if (log.containsKey(name))
-        {
-            List<Double> list = log.get(name);
-            list.add(amount);
-        }
-         
-    }
-
-    /**
-    	     * Register a new category list in this log
-    	     * @param	name
-    	     */
-    public void register(T name) {
         if (!log.containsKey(name))
-        {
             log.put(name, new ArrayList<>());
-        }
-         
+
+        List<Double> list = log.get(name);
+        list.add(amount);
     }
 
     /**

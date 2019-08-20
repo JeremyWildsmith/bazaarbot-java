@@ -33,13 +33,6 @@ public class History
         profit = new HistoryLog<>(src.profit);
     }
 
-    public void registerCommodity(ICommodity good) {
-        prices.register(good);
-        asks.register(good);
-        bids.register(good);
-        trades.register(good);
-    }
-
     public List<ICommodity> getCommodities() {
         Set<ICommodity> result = new HashSet<>();
 

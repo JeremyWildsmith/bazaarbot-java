@@ -5,7 +5,6 @@
 package com.bazaarbot.market;
 
 import com.bazaarbot.*;
-import com.bazaarbot.agent.AgentData;
 import com.bazaarbot.agent.AgentSnapshot;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.History;
@@ -23,9 +22,8 @@ public class Market
     private int _roundNum = 0;
     private List<ICommodity> _goodTypes;
     //list of string ids for all the legal commodities
-    public List<IAgent> _agents = new ArrayList<>();
+    public List<IAgent> _agents;
     public TradeBook _book;
-    private HashMap<String, AgentData> _mapAgents;
 
     private final IOfferResolver offerResolver;
     private final IOfferExecuter offerExecutor;
@@ -41,7 +39,6 @@ public class Market
         _book = new TradeBook();
         _goodTypes = new ArrayList<>();
         _agents = new ArrayList<>();
-        _mapAgents = new HashMap<>();
         signalBankrupt = isb;
         this.offerResolver = offerResolver;
         this.offerExecutor = executor;
@@ -60,7 +57,6 @@ public class Market
         {
             for (IAgent agent : _agents)
             {
-                agent.setMoneyLastRound(agent.getMoney());
                 agent.simulate(this);
                 for (ICommodity commodity : _goodTypes)
                 {
@@ -199,6 +195,15 @@ public class Market
         return best_good;
     }
 
+    public List<String> getAgentClassNames() {
+        HashSet<String> classes = new HashSet<>();
+
+        for(IAgent a : _agents)
+            classes.add(a.getClassName());
+
+        return new ArrayList<>(classes);
+    }
+
     /**
      *
      * @param	range
@@ -208,7 +213,7 @@ public class Market
         double best = -999999;
         // Math.NEGATIVE_INFINITY;
         String bestClass = "";
-        for (String className : _mapAgents.keySet())
+        for (String className : getAgentClassNames())
         {
             double val = history.profit.average(className, range);
             if (val > best)
@@ -223,14 +228,6 @@ public class Market
 
     public final String getMostProfitableAgentClass() {
         return getMostProfitableAgentClass(10);
-    }
-
-    public AgentData getAgentClass(String className) {
-        return _mapAgents.get(className);
-    }
-
-    public List<String> getAgentClassNames() {
-        return new ArrayList<>(_mapAgents.keySet());
     }
 
     public MarketSnapshot getSnapshot() {
@@ -255,8 +252,7 @@ public class Market
              
             if (g.getName().compareTo("tools") == 0)
                 v = 3.0;
-             
-            history.registerCommodity(g);
+
             history.prices.add(g,v);
             //start the bidding at $1!
             history.asks.add(g,v);
@@ -264,19 +260,10 @@ public class Market
             history.bids.add(g,v);
             history.trades.add(g,v);
         }
-        _mapAgents = new HashMap<>();
 
-        for (AgentData aData : data.agentTypes)
-        {
-            _mapAgents.put(aData.getClassName(), aData);
-            history.profit.register(aData.getClassName());
-        }
         //Make the agent list
         _agents = new ArrayList<>();
-        for (IAgent agent : data.agents)
-        {
-            _agents.add(agent);
-        }
+        _agents.addAll(data.agents);
     }
 
     private static double listAvgf(List<Double> list) {
@@ -351,7 +338,7 @@ public class Market
                 last_class = curr_class;
             }
 
-            list.add(a.get_profit());
+            list.add(a.getLastSimulateProfit());
         }
 
         //push profit onto list

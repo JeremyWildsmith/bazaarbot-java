@@ -5,10 +5,7 @@
 package com.bazaarbot.example;
 
 import com.bazaarbot.*;
-import com.bazaarbot.agent.DefaultAgent;
-import com.bazaarbot.agent.AgentData;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.DefaultOfferExecutor;
 import com.bazaarbot.market.DefaultOfferResolver;
 import com.bazaarbot.market.Market;
@@ -31,103 +28,16 @@ public class DoranAndParberryEconomy  extends Economy
     }
 
     private MarketData getMarketData() {
-        List<AgentData> agentTypes = new ArrayList<AgentData>();
-        List<IAgent> agents = new ArrayList<IAgent>();
+        List<IAgent> agents = new ArrayList<>();
 
-        agentTypes.add(new AgentData("farmer",100,new LogicFarmer()));
-        agentTypes.add(new AgentData("miner",100,new LogicMiner()));
-        agentTypes.add(new AgentData("refiner",100,new LogicRefiner()));
-        agentTypes.add(new AgentData("woodcutter",100,new LogicWoodcutter()));
-        agentTypes.add(new AgentData("blacksmith",100,new LogicBlacksmith()));
-        agentTypes.add(new AgentData("worker",10,new LogicWorker()));
-
-        InventoryData ii;
-
-        //farmer
-        HashMap<ICommodity, Double> ideal = new HashMap<>();
-        HashMap<ICommodity, Double> start = new HashMap<>();
-        ideal.put(ExampleCommodity.Food, 0.0);
-        ideal.put(ExampleCommodity.Tools, 1.0);
-        ideal.put(ExampleCommodity.Wood, 3.0);
-        ideal.put(ExampleCommodity.Work, 3.0);
-        start.put(ExampleCommodity.Food, 1.0);
-        start.put(ExampleCommodity.Tools, 1.0);
-        start.put(ExampleCommodity.Wood, 0.0);
-        start.put(ExampleCommodity.Work, 0.0);
-        ii = new InventoryData(20, ideal, start);
-        agentTypes.get(0).setInventory(ii);
-
-        //miner
-        ideal = new HashMap<>();
-        start = new HashMap<>();
-        ideal.put(ExampleCommodity.Food, 3.0);
-        ideal.put(ExampleCommodity.Tools, 1.0);
-        ideal.put(ExampleCommodity.Ore, 0.0);
-        start.put(ExampleCommodity.Food, 1.0);
-        start.put(ExampleCommodity.Tools, 1.0);
-        start.put(ExampleCommodity.Ore, 0.0);
-
-        ii = new InventoryData(20, ideal, start);
-        agentTypes.get(1).setInventory(ii);
-
-
-        //refiner
-        ideal = new HashMap<>();
-        start = new HashMap<>();
-        ideal.put(ExampleCommodity.Food, 3.0);
-        ideal.put(ExampleCommodity.Tools, 1.0);
-        ideal.put(ExampleCommodity.Ore, 5.0);
-        start.put(ExampleCommodity.Food, 1.0);
-        start.put(ExampleCommodity.Tools, 1.0);
-        start.put(ExampleCommodity.Ore, 0.0);
-
-        ii = new InventoryData(20, ideal, start);
-        agentTypes.get(2).setInventory(ii);
-
-
-        //woodcutter
-        ideal = new HashMap<>();
-        start = new HashMap<>();
-        ideal.put(ExampleCommodity.Food, 3.0);
-        ideal.put(ExampleCommodity.Tools, 1.0);
-        ideal.put(ExampleCommodity.Wood, 0.0);
-        start.put(ExampleCommodity.Food, 1.0);
-        start.put(ExampleCommodity.Tools, 1.0);
-        start.put(ExampleCommodity.Wood, 0.0);
-
-        ii = new InventoryData(20, ideal, start);
-        agentTypes.get(3).setInventory(ii);
-        //blacksmith
-        ideal = new HashMap<>();
-        start = new HashMap<>();
-        ideal.put(ExampleCommodity.Food, 3.0);
-        ideal.put(ExampleCommodity.Tools, 1.0);
-        ideal.put(ExampleCommodity.Metal, 5.0);
-        start.put(ExampleCommodity.Food, 1.0);
-        start.put(ExampleCommodity.Tools, 0.0);
-        start.put(ExampleCommodity.Metal, 0.0);
-        start.put(ExampleCommodity.Ore, 0.0);
-
-        ii = new InventoryData(20, ideal, start);
-        agentTypes.get(4).setInventory(ii);
-
-        //worker
-        ideal = new HashMap<>();
-        start = new HashMap<>();
-        ideal.put(ExampleCommodity.Food, 3.0);
-        start.put(ExampleCommodity.Food, 1.0);
-
-        ii = new InventoryData(20, ideal, start);
-        agentTypes.get(5).setInventory(ii);
-
-        for (int iagent = 0;iagent < agentTypes.size();iagent++)
+        for (ExampleAgentClass c : ExampleAgentClass.values())
         {
-            for (int i = 0;i < 5;i++)
+            for (int i = 0; i < 5;i++)
             {
-                agents.add(getAgent(agentTypes.get(iagent)));
+                agents.add(c.getFactory().create());
             }
         }
-        MarketData data = new MarketData(Arrays.asList(ExampleCommodity.values()), agentTypes,agents);
+        MarketData data = new MarketData(Arrays.asList(ExampleCommodity.values()), agents);
         return data;
     }
 
@@ -152,7 +62,7 @@ public class DoranAndParberryEconomy  extends Economy
              
         }
          
-        IAgent newAgent = getAgent(market.getAgentClass(bestClass));
+        IAgent newAgent = getAgent(bestClass);
         market.replaceAgent(agent, newAgent);
     }
 
@@ -219,9 +129,8 @@ public class DoranAndParberryEconomy  extends Economy
     //    data.logic = new LogicScript(data.logicName+".hs");
     //    return new DefaultAgent(0, data);
     //}
-    private IAgent getAgent(AgentData data) {
-        data.setLogic(getLogic(data.getLogic().getName()));
-        return new DefaultAgent(data);
+    private IAgent getAgent(String className) {
+        return ExampleAgentClass.getByClassName(className).getFactory().create();
     }
 
     private Logic getLogic(String str) {

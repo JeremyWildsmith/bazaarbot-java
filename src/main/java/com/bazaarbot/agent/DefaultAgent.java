@@ -8,6 +8,7 @@ import com.bazaarbot.ICommodity;
 import com.bazaarbot.Logic;
 import com.bazaarbot.PriceRange;
 import com.bazaarbot.inventory.Inventory;
+import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
 import com.bazaarbot.PriceBelief;
@@ -22,36 +23,36 @@ public class DefaultAgent implements IAgent
 {
     //A small scaling of the ask price (to generate profit)
     private static final double ASK_PRICE_INFLATION = 1.02;
+    private static final int DEFAULT_LOOKBACK = 15;
 
     private String className;
     private double money;
-    //dfs stub  needed?
-    private double moneyLastRound;
-    //dfs stub needed?
+    private double moneyLastSimulation;
     private double trackcosts;
-    private Logic _logic;
+    private Logic logic;
     private Inventory inventory;
     private HashMap<ICommodity, PriceBelief> goodsPriceBelief = new HashMap<>();
-    //profit from last round
-    private int _lookback = 15;
+    private int lookback;
 
-    //lowest possible price
-    public DefaultAgent(AgentData data) {
-        this.className = data.getClassName();
-        this.money = data.getMoney();
-        setMoney(data.getMoney());
+    public DefaultAgent(String className, Logic logic, InventoryData data, double money, int lookback) {
+        this.className = className;
+        this.money = money;
         inventory = new Inventory();
-        inventory.fromData(data.getInventory());
-        _logic = data.getLogic();
+        inventory.fromData(data);
+        this.logic = logic;
 
-        if (data.getLookBack() != null)
-            _lookback = data.getLookBack();
+        this.lookback = lookback;
 
         trackcosts = 0;
     }
 
+    public DefaultAgent(String className, Logic logic, InventoryData data, double money) {
+        this(className, logic, data, money, DEFAULT_LOOKBACK);
+    }
+
     public void simulate(Market market) {
-        _logic.perform(this,market);
+        moneyLastSimulation = money;
+        logic.perform(this,market);
     }
 
     @Override
@@ -160,7 +161,7 @@ public class DefaultAgent implements IAgent
     }
 
     protected double determinePurchaseQuantity(Market bazaar, ICommodity commodity_) {
-        Double mean = bazaar.getAverageHistoricalPrice(commodity_,_lookback);
+        Double mean = bazaar.getAverageHistoricalPrice(commodity_, lookback);
         //double
         PriceRange trading_range = observeTradingRange(commodity_,10);
         //Point
@@ -198,8 +199,8 @@ public class DefaultAgent implements IAgent
         return inventory.getEmptySpace() == 0;
     }
 
-    public double get_profit() {
-        return getMoney() - moneyLastRound;
+    public double getLastSimulateProfit() {
+        return getMoney() - moneyLastSimulation;
     }
 
     public String getClassName() {
@@ -216,9 +217,8 @@ public class DefaultAgent implements IAgent
         money = value;
     }
 
-    @Override
-    public void setMoneyLastRound(double value) {
-        moneyLastRound = value;
+    public void setMoneyLastSimulation(double value) {
+        moneyLastSimulation = value;
     }
 }
 
