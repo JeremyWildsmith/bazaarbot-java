@@ -3,34 +3,32 @@
 //
 
 package com.bazaarbot.agent;
-import com.bazaarbot.*;
-import com.bazaarbot.inventory.Inventory;
+
+import com.bazaarbot.ICommodity;
 import com.bazaarbot.market.Market;
 import com.bazaarbot.market.Offer;
 
-import java.util.HashMap;
-
-public interface IAgent
-{
+public interface IAgent {
 
     void simulate(Market market);
 
-    void generateOffers(Market bazaar, ICommodity good);
-    void updatePriceModel(String act, ICommodity good, boolean success, double unitPrice);
-    Offer createBid(Market bazaar, ICommodity good, double limit);
-    Offer createAsk(Market bazaar, ICommodity commodity_, double limit_);
+    Offer createBid(Market market, ICommodity commodity, double limit);
 
-    double queryInventory(ICommodity good);
+    Offer createAsk(Market market, ICommodity commodity, double limit);
 
-    void produceInventory(ICommodity good, double delta);;
+    void generateOffers(Market market, ICommodity commodity);
 
-    void consumeInventory(ICommodity good, double delta);
+    void updatePriceModel(String act, ICommodity commodity, boolean success, double unitPrice);
 
-    void changeInventory(ICommodity good, double delta, double unit_cost);
+    void addInventoryItem(ICommodity good, double amount);
 
-    default void updatePriceModel(String buy, ICommodity good, boolean b) {
-        updatePriceModel(buy, good, b, 0);
-    }
+    double queryInventory(ICommodity commodity);
+
+    void produceInventory(ICommodity good, double delta);
+
+    void consumeInventoryItem(ICommodity commodity, double amount);
+
+    void changeInventory(ICommodity commodity, double amount, double unitCost);
 
     AgentSnapshot getSnapshot();
 
@@ -38,11 +36,11 @@ public interface IAgent
 
     double getLastSimulateProfit();
 
-    String getClassName();
+    String getAgentName();
 
-    double getMoney();
+    double getMoneyAvailable();
 
-    void setMoney(double value);
+    void setMoneyAvailable(double value);
 }
 
 

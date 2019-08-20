@@ -4,7 +4,9 @@ import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.AgentSnapshot;
 import com.bazaarbot.history.History;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class SimpleSummaryMarketReporter {
     private final MarketSnapshot snapshot;
@@ -20,7 +22,7 @@ public class SimpleSummaryMarketReporter {
     private static String format_row(String cols) {
         String row = "";
 
-        for(String c : cols.split("\\s+")) {
+        for (String c : cols.split("\\s+")) {
             String working = c.trim();
             row += padRight(working, 15) + "|";
         }
@@ -46,47 +48,42 @@ public class SimpleSummaryMarketReporter {
 
         goodTypes.sort(Comparator.comparing(ICommodity::getName));
 
-        for (ICommodity commodity : goodTypes)
-        {
+        for (ICommodity commodity : goodTypes) {
             strListGood += commodity + "\n";
-            Double price = history.prices.average(commodity, rounds);
+            Double price = history.getPrices().average(commodity, rounds);
             strListGoodPrices += String.format("%.2f\n", price);
-            Double asks = history.asks.average(commodity, rounds);
-            strListGoodAsks += ((asks.intValue())+"\n");
-            Double bids = history.bids.average(commodity, rounds);
-            strListGoodBids += (bids.intValue())+"\n";
-            Double trades = history.trades.average(commodity, rounds);
-            strListGoodTrades += (trades.intValue())+"\n";
+            Double asks = history.getAsks().average(commodity, rounds);
+            strListGoodAsks += ((asks.intValue()) + "\n");
+            Double bids = history.getBids().average(commodity, rounds);
+            strListGoodBids += (bids.intValue()) + "\n";
+            Double trades = history.getTrades().average(commodity, rounds);
+            strListGoodTrades += (trades.intValue()) + "\n";
             setarrStrListInventory.add(commodity + "\n\n");
         }
 
         List<String> agentClasses = new ArrayList<>();
 
-        for(AgentSnapshot s : snapshot.getAgents())
-            if(!agentClasses.contains(s.getClassName()))
+        for (AgentSnapshot s : snapshot.getAgents())
+            if (!agentClasses.contains(s.getClassName()))
                 agentClasses.add(s.getClassName());
 
-        for (String key : agentClasses)
-        {
+        for (String key : agentClasses) {
             List<Double> inventory = new ArrayList<Double>();
-            for (ICommodity str : goodTypes)
-            {
+            for (ICommodity str : goodTypes) {
                 inventory.add(0.0);
             }
             strListAgent += key + "\n";
-            Double profit = history.profit.average(key,rounds);
+            Double profit = history.getProfit().average(key, rounds);
             strListAgentProfit += String.format("%.2f\n", profit);
 
             int count = 0;
             double money = 0;
-            for (AgentSnapshot a : snapshot.getAgents())
-            {
-                if (a.getClassName().compareTo(key) == 0)
-                {
+            for (AgentSnapshot a : snapshot.getAgents()) {
+                if (a.getClassName().compareTo(key) == 0) {
                     count++;
                     money += a.getMoney();
                     for (int lic = 0; lic < goodTypes.size(); lic++) {
-                        inventory.add(lic, inventory.get(lic) + a.getInventory().query(goodTypes.get(lic)));
+                        inventory.add(lic, inventory.get(lic) + a.getInventory().queryAmount(goodTypes.get(lic)));
                     }
                 }
 
@@ -97,10 +94,10 @@ public class SimpleSummaryMarketReporter {
                 setarrStrListInventory.add(lic, setarrStrListInventory.get(lic) + String.format("%d\n", lic));
             }
             strListAgentCount += String.format("%d\n", count);
-            strListAgentMoney += String.format("%d\n", (int)money);
+            strListAgentMoney += String.format("%d\n", (int) money);
         }
 
-        return String.join("\n", new String[] {
+        return String.join("\n", new String[]{
                 format_row(strListGood),
                 format_row(strListGoodPrices),
                 format_row(strListGoodTrades),

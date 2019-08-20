@@ -5,6 +5,7 @@
 package com.bazaarbot.example;
 
 import com.bazaarbot.*;
+import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.market.DefaultOfferExecutor;
 import com.bazaarbot.market.DefaultOfferResolver;
@@ -133,31 +134,31 @@ public class DoranAndParberryEconomy  extends Economy
         return ExampleAgentClass.getByClassName(className).getFactory().create();
     }
 
-    private Logic getLogic(String str) {
+    private AgentSimulation getLogic(String str) {
         String __dummyScrutVar0 = str;
         if (__dummyScrutVar0.equals("blacksmith"))
         {
-            return new LogicBlacksmith(rng);
+            return new AgentSimulationBlacksmith(rng);
         }
         else if (__dummyScrutVar0.equals("farmer"))
         {
-            return new LogicFarmer(rng);
+            return new AgentSimulationFarmer(rng);
         }
         else if (__dummyScrutVar0.equals("miner"))
         {
-            return new LogicMiner(rng);
+            return new AgentSimulationMiner(rng);
         }
         else if (__dummyScrutVar0.equals("refiner"))
         {
-            return new LogicRefiner(rng);
+            return new AgentSimulationRefiner(rng);
         }
         else if (__dummyScrutVar0.equals("woodcutter"))
         {
-            return new LogicWoodcutter(rng);
+            return new AgentSimulationWoodcutter(rng);
         }
         else if (__dummyScrutVar0.equals("worker"))
         {
-            return new LogicWorker(rng);
+            return new AgentSimulationWorker(rng);
         }
               
         return null;

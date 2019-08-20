@@ -10,34 +10,45 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TradeBook   
-{
-    public HashMap<ICommodity, List<Offer>> bids;
-    public HashMap<ICommodity, List<Offer>> asks;
+public class TradeBook {
+    private final HashMap<ICommodity, List<Offer>> bids;
+    private final HashMap<ICommodity, List<Offer>> asks;
 
     public TradeBook() {
         bids = new HashMap<>();
         asks = new HashMap<>();
     }
 
+    public void register(ICommodity name) {
+        asks.put(name, new ArrayList<>());
+        bids.put(name, new ArrayList<>());
+    }
+
     public void bid(Offer offer) {
-        if (!bids.containsKey(offer.good)) {
-            bids.put(offer.good, new ArrayList<>());
-            asks.put(offer.good, new ArrayList<>());
+        if (!bids.containsKey(offer.getGood())) {
+            bids.put(offer.getGood(), new ArrayList<>());
+            asks.put(offer.getGood(), new ArrayList<>());
         }
 
-        bids.get(offer.good).add(offer);
+        bids.get(offer.getGood()).add(offer);
     }
 
     public void ask(Offer offer) {
-        if (!bids.containsKey(offer.good)) {
-            bids.put(offer.good, new ArrayList<>());
-            asks.put(offer.good, new ArrayList<>());
+        if (!bids.containsKey(offer.getGood())) {
+            bids.put(offer.getGood(), new ArrayList<>());
+            asks.put(offer.getGood(), new ArrayList<>());
         }
-         
-        asks.get(offer.good).add(offer);
+
+        asks.get(offer.getGood()).add(offer);
     }
 
+    public HashMap<ICommodity, List<Offer>> getBids() {
+        return bids;
+    }
+
+    public HashMap<ICommodity, List<Offer>> getAsks() {
+        return asks;
+    }
 }
 
 

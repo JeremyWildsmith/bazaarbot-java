@@ -4,20 +4,20 @@
 
 package com.bazaarbot.example;
 
+import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.Logic;
 import com.bazaarbot.market.Market;
 
 import java.util.Random;
 
 //make_room_for(agent, ExampleCommodity.Food, 2); stub todo needed?
-public class LogicFarmer  extends Logic
+public class AgentSimulationFarmer extends AgentSimulation
 {
-    public LogicFarmer(Random rnd) {
+    public AgentSimulationFarmer(Random rnd) {
         super("farmer", rnd);
     }
 
-    public LogicFarmer() {
+    public AgentSimulationFarmer() {
         this(new Random());
     }
 

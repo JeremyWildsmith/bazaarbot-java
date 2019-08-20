@@ -2,11 +2,10 @@
 // Translated by CS2J (http://www.cs2j.com): 2019-08-12 9:59:31 PM
 //
 
-package com.bazaarbot;
+package com.bazaarbot.history;
 
 
-public enum EconNoun
-{
+public enum EconNoun {
     Price,
     Ask,
     Bid,

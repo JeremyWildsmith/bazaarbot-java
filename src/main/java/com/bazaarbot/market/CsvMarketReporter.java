@@ -22,7 +22,7 @@ public class CsvMarketReporter {
         snapshots.add(snapshot);
         commodities.addAll(snapshot.getHistory().getCommodities());
 
-        for(AgentSnapshot a : snapshot.getAgents()) {
+        for (AgentSnapshot a : snapshot.getAgents()) {
             agentClasses.add(a.getClassName());
         }
     }
@@ -33,7 +33,7 @@ public class CsvMarketReporter {
         List<String> names = new ArrayList<>();
         names.add("Round#");
 
-        for(T s : subjects) {
+        for (T s : subjects) {
             names.add(s.toString());
         }
 
@@ -43,7 +43,7 @@ public class CsvMarketReporter {
     private <T> String produceLogRecord(int round, HistoryLog<T> log, List<T> subjects) {
         List<String> values = new ArrayList<>();
         values.add(String.valueOf(round));
-        for(T s : subjects) {
+        for (T s : subjects) {
             double avg = log.average(s, 1);
             values.add(String.valueOf(avg));
         }
@@ -57,7 +57,7 @@ public class CsvMarketReporter {
         result.append(produceLogHeader(subjects)).append("\n");
 
         int round = 0;
-        for(int i = 0; i < logs.size(); i++) {
+        for (int i = 0; i < logs.size(); i++) {
             result.append(produceLogRecord(round++, logs.get(i), subjects)).append("\n");
         }
 
@@ -74,7 +74,7 @@ public class CsvMarketReporter {
         List<String> rows = new ArrayList<>();
         rows.add("round#," + String.join(",", agentClasses));
 
-        for(int i = 0; i < snapshots.size(); i++) {
+        for (int i = 0; i < snapshots.size(); i++) {
             List<String> columns = new ArrayList<>();
             columns.add(String.valueOf(i));
 
@@ -100,26 +100,26 @@ public class CsvMarketReporter {
 
         String asks = this.produceLog(
                 snapshots.stream().map(
-                        b -> b.getHistory().asks
+                        b -> b.getHistory().getAsks()
                 ).collect(Collectors.toList()), goodTypes);
 
         String bids = this.produceLog(
                 snapshots.stream().map(
-                        b -> b.getHistory().bids
+                        b -> b.getHistory().getBids()
                 ).collect(Collectors.toList()), goodTypes);
 
         String prices = this.produceLog(
                 snapshots.stream().map(
-                        b -> b.getHistory().prices
+                        b -> b.getHistory().getPrices()
                 ).collect(Collectors.toList()), goodTypes);
 
         String trades = this.produceLog(
                 snapshots.stream().map(
-                        b -> b.getHistory().trades
+                        b -> b.getHistory().getTrades()
                 ).collect(Collectors.toList()), goodTypes);
 
         String agentProfit = produceAgentMetric("profit", (name, snapshot) ->
-                snapshot.getHistory().profit.average(name, 1)
+                snapshot.getHistory().getProfit().average(name, 1)
         );
 
         String agentMoney = produceAgentMetric("money", (name, snapshot) -> {
