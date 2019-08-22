@@ -1,5 +1,6 @@
 package com.bazaarbot;
 
+import ch.qos.logback.classic.Level;
 import com.bazaarbot.agent.AgentSimulation2;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.DefaultContractResolver;
@@ -35,8 +36,8 @@ public class Economy2 {
         for (int i = 0; i < rounds; i++) {
             IContractResolver contractResolver = new DefaultContractResolver(statistics);
             for (Market2 market : marketsMap.keySet()) {
-                market.step(contractResolver, marketsMap.get(market));
                 simulateAgentActivity();
+                market.step(contractResolver, marketsMap.get(market));
                 // outputs what is left from session
                 // e.g. unmet offers
                 // next round they will be served in priority, because they were created earlier

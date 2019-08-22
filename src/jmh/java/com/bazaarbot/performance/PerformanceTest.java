@@ -1,30 +1,33 @@
-package com.bazaarbot.example.com.bazaarbot.example2;
+package com.bazaarbot.performance;
 
-import ch.qos.logback.classic.Level;
 import com.bazaarbot.Economy2;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.history.Statistics;
 import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.Market2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openjdk.jmh.annotations.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Nick Gritsenko
  */
-public class Main2 {
-    private static final Logger LOG = LoggerFactory.getLogger(Main2.class);
+@State(Scope.Benchmark)
+@BenchmarkMode({Mode.Throughput})
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@CompilerControl(CompilerControl.Mode.DONT_INLINE)
+public class PerformanceTest {
 
-    public static void main(String[] args) {
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-        root.setLevel(Level.DEBUG);
+    private Economy2 economy;
 
+
+    @Setup(Level.Iteration)
+    public void setup() {
         ICommodity exampleCommodity1 = new ExampleCommodity1();
         ICommodity exampleCommodity2 = new ExampleCommodity2();
         ICommodity exampleCommodity3 = new ExampleCommodity3();
@@ -55,7 +58,7 @@ public class Main2 {
 
         List<ICommodity> commodities = List.of(exampleCommodity1, exampleCommodity2, exampleCommodity3);
 
-        Economy2 economy = new Economy2();
+        this.economy = new Economy2();
         IAgent agent1 = new DefaultAgent("TestAgent1", agent1Data, 20);
         IAgent agent2 = new DefaultAgent("TestAgent2", agent2Data, 40);
         IAgent agent3 = new DefaultAgent("TestAgent3", agent3Data, 60);
@@ -69,18 +72,25 @@ public class Main2 {
 
         Market2 market = new Market2();
         economy.addMarket(market);
+    }
 
+    @Benchmark
+    public void test10() {
         economy.startSimulation(10);
+    }
 
-        Statistics statistics = economy.getStatistics();
-        for (ICommodity commodity : commodities) {
-            LOG.info("Average historical price for {} is {}", commodity,
-                    statistics.getAverageHistoricalPrice(market, commodity));
-        }
-        LOG.info("Cheapest commodity: {}", statistics.getCheapestCommodity(market));
-        LOG.info("Dearest commodity: {}", statistics.getDearestGood(market));
-        LOG.info("Hottest commodity: {}", statistics.getHottestCommodity(market));
-        LOG.info("Most profitable agent: {}", statistics.getMostProfitableAgent(market));
+    @Benchmark
+    public void test100() {
+        economy.startSimulation(100);
+    }
 
+    @Benchmark
+    public void test1000() {
+        economy.startSimulation(1000);
+    }
+
+    @Benchmark
+    public void test10000() {
+        economy.startSimulation(10_000);
     }
 }

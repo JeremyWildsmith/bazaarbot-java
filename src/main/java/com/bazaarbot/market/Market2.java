@@ -90,7 +90,6 @@ public class Market2 {
             // nothing to get from seller, no items
             return null;
         }
-        //LOG.info("Quantity to be traded: {}", askOffer.getUnits());
         // 4.2 Negotiate the price by some engine (separate method)
         ContractQuote quote = contractResolver.getQuote(this, bidOffer, askOffer);
         double negotiatedPrice = quote.getFinalPrice();
