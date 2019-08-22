@@ -1,6 +1,7 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.Market2;
 
 import java.util.Random;
@@ -15,8 +16,6 @@ public abstract class AgentSimulation2 {
         this.randomGenerator = randomGenerator;
     }
 
-
-    public abstract void simulateActivity(IAgent agent, Market2 market);
 
     protected final void produce(IAgent agent, ICommodity commodity, double amount, double chance) {
         if (chance >= 1.0 || randomGenerator.nextDouble() < chance) {
@@ -38,4 +37,5 @@ public abstract class AgentSimulation2 {
         consume(agent, commodity, amount, 1.0);
     }
 
+    public abstract void simulateActivity(IAgent agent, Market2 market, Statistics statistics);
 }

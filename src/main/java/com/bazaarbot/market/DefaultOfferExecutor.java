@@ -8,7 +8,7 @@ public class DefaultOfferExecutor implements IOfferExecuter {
     public OfferExecutionStatistics execute(Offer buyerOffer, Offer sellerOffer) {
         Double quantityTraded = Math.min(buyerOffer.getUnits(), sellerOffer.getUnits());
         Double clearingPrice = sellerOffer.getUnitPrice();
-        ICommodity good = buyerOffer.getGood();
+        ICommodity good = buyerOffer.getCommodity();
 
         transferGood(good, quantityTraded, sellerOffer.getAgent(), buyerOffer.getAgent(), clearingPrice);
         transferMoney(quantityTraded * clearingPrice, sellerOffer.getAgent(), buyerOffer.getAgent());
@@ -25,12 +25,12 @@ public class DefaultOfferExecutor implements IOfferExecuter {
 
     @Override
     public void rejectBid(Offer buyer, double unitPrice) {
-        buyer.getAgent().updatePriceModel("buy", buyer.getGood(), false, unitPrice);
+        buyer.getAgent().updatePriceModel("buy", buyer.getCommodity(), false, unitPrice);
     }
 
     @Override
     public void rejectAsk(Offer seller, double unitPrice) {
-        seller.getAgent().updatePriceModel("sell", seller.getGood(), false, unitPrice);
+        seller.getAgent().updatePriceModel("sell", seller.getCommodity(), false, unitPrice);
     }
 
     //sort by id so everything works again

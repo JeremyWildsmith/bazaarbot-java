@@ -1,25 +1,30 @@
 package com.bazaarbot.example.com.bazaarbot.example2;
 
+import ch.qos.logback.classic.Level;
 import com.bazaarbot.Economy2;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.IAgent;
+import com.bazaarbot.history.Statistics;
 import com.bazaarbot.inventory.InventoryData;
-import com.bazaarbot.market.*;
+import com.bazaarbot.market.Market2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * @author Nick Gritsenko
  */
 public class Main2 {
-
+    private static final Logger LOG = LoggerFactory.getLogger(Main2.class);
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+        root.setLevel(Level.INFO);
+
         ICommodity exampleCommodity1 = new ExampleCommodity1();
         ICommodity exampleCommodity2 = new ExampleCommodity2();
         ICommodity exampleCommodity3 = new ExampleCommodity3();
@@ -62,16 +67,21 @@ public class Main2 {
         economy.addAgentSimulation(agent2, new ExampleAgentSimulation2(commodities, new Random()));
         economy.addAgentSimulation(agent3, new ExampleAgentSimulation2(commodities, new Random()));
 
-        economy.addMarket(new Market2(
-                new MarketData(
-                        commodities,
-                        List.of(agent1, agent2, agent3)
-                ), (m, agent) -> System.out.println(agent.getAgentName() + " is bankrupt!"),
-                new DefaultOfferResolver(),
-                new DefaultOfferExecutor()
-        ));
+        Market2 market = new Market2();
+        economy.addMarket(market);
 
-        economy.startSimulation(3_000_000);
+        economy.startSimulation(1000);
+
+        Statistics statistics = economy.getStatistics();
+        for (ICommodity commodity : commodities) {
+            LOG.info("Average historical price for {} is {}", commodity,
+                    statistics.getAverageHistoricalPrice(market, commodity));
+        }
+        LOG.info("Cheapest commodity: {}", statistics.getCheapestCommodity(market));
+        LOG.info("Dearest commodity: {}", statistics.getDearestGood(market));
+        LOG.info("Hottest commodity: {}", statistics.getHottestCommodity(market));
+        LOG.info("Most profitable agent: {}", statistics.getMostProfitableAgent(market));
+
 
 //        Economy economy = new DoranAndParberryEconomy(new Random(1234));
 //        Market market = economy.getMarket("default");

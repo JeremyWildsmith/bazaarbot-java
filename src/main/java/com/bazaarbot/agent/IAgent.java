@@ -6,11 +6,13 @@ package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.market.Market;
+import com.bazaarbot.market.Market2;
 import com.bazaarbot.market.Offer;
 
 public interface IAgent {
 
     void simulate(Market market);
+    void simulate(Market2 market);
 
     Offer createBid(Market market, ICommodity commodity, double limit);
 

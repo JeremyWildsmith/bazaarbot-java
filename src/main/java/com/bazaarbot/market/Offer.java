@@ -9,7 +9,7 @@ import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.IAgent;
 
 public class Offer {
-    private ICommodity good;
+    private ICommodity commodity;
     //the thing offered
     private double units;
     //how many units
@@ -17,22 +17,22 @@ public class Offer {
     //price per unit
     private IAgent agent;
 
-    private final long timePut = System.nanoTime();
+    private final long createdTimeOffer = System.nanoTime();
 
     //who offered this
     public Offer(IAgent agent, ICommodity commodity, double units, double unitPrice) {
         this.agent = agent;
-        this.good = commodity;
+        this.commodity = commodity;
         this.units = units;
         this.unitPrice = unitPrice;
     }
 
-    public ICommodity getGood() {
-        return good;
+    public ICommodity getCommodity() {
+        return commodity;
     }
 
-    public void setGood(ICommodity good) {
-        this.good = good;
+    public void setCommodity(ICommodity commodity) {
+        this.commodity = commodity;
     }
 
     public double getUnits() {
@@ -59,12 +59,12 @@ public class Offer {
         this.agent = agent;
     }
 
-    public long getTimePut() {
-        return timePut;
+    public long getCreatedTimeOffer() {
+        return createdTimeOffer;
     }
 
     public String toString() {
-        return "(" + agent + "): " + good + " x " + units + " @ " + unitPrice;
+        return "(" + agent + "): " + commodity + " x " + units + " @ " + unitPrice;
     }
 
 }

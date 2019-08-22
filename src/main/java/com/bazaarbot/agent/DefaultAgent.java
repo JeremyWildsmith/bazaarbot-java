@@ -8,6 +8,7 @@ import com.bazaarbot.ICommodity;
 import com.bazaarbot.inventory.Inventory;
 import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.Market;
+import com.bazaarbot.market.Market2;
 import com.bazaarbot.market.Offer;
 
 import java.util.ArrayList;
@@ -87,6 +88,11 @@ public class DefaultAgent implements IAgent {
 
     @Override
     public void simulate(Market market) {
+        moneyLastSimulation = moneyAvailable;
+    }
+
+    @Override
+    public void simulate(Market2 market) {
         moneyLastSimulation = moneyAvailable;
     }
 

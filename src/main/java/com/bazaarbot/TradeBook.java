@@ -25,21 +25,21 @@ public class TradeBook {
     }
 
     public void bid(Offer offer) {
-        if (!bids.containsKey(offer.getGood())) {
-            bids.put(offer.getGood(), new ArrayList<>());
-            asks.put(offer.getGood(), new ArrayList<>());
+        if (!bids.containsKey(offer.getCommodity())) {
+            bids.put(offer.getCommodity(), new ArrayList<>());
+            asks.put(offer.getCommodity(), new ArrayList<>());
         }
 
-        bids.get(offer.getGood()).add(offer);
+        bids.get(offer.getCommodity()).add(offer);
     }
 
     public void ask(Offer offer) {
-        if (!bids.containsKey(offer.getGood())) {
-            bids.put(offer.getGood(), new ArrayList<>());
-            asks.put(offer.getGood(), new ArrayList<>());
+        if (!bids.containsKey(offer.getCommodity())) {
+            bids.put(offer.getCommodity(), new ArrayList<>());
+            asks.put(offer.getCommodity(), new ArrayList<>());
         }
 
-        asks.get(offer.getGood()).add(offer);
+        asks.get(offer.getCommodity()).add(offer);
     }
 
     public HashMap<ICommodity, List<Offer>> getBids() {
