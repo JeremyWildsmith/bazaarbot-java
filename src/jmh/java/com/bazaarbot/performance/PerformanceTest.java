@@ -6,24 +6,21 @@ import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.Market2;
+import com.bazaarbot.simulation.TimeBasedRunner;
 import org.openjdk.jmh.annotations.*;
 
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Nick Gritsenko
  */
 @State(Scope.Benchmark)
-@BenchmarkMode({Mode.Throughput})
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
-@CompilerControl(CompilerControl.Mode.DONT_INLINE)
 public class PerformanceTest {
 
-    private Economy2 economy;
+    private TimeBasedRunner runner;
 
 
     @Setup(Level.Iteration)
@@ -58,7 +55,7 @@ public class PerformanceTest {
 
         List<ICommodity> commodities = List.of(exampleCommodity1, exampleCommodity2, exampleCommodity3);
 
-        this.economy = new Economy2();
+        Economy2 economy = new Economy2();
         IAgent agent1 = new DefaultAgent("TestAgent1", agent1Data, 20);
         IAgent agent2 = new DefaultAgent("TestAgent2", agent2Data, 40);
         IAgent agent3 = new DefaultAgent("TestAgent3", agent3Data, 60);
@@ -72,25 +69,30 @@ public class PerformanceTest {
 
         Market2 market = new Market2();
         economy.addMarket(market);
+
+        //StepBasedRunner runner = new StepBasedRunner(economy, 5000);
+        runner = new TimeBasedRunner(economy, Duration.ofSeconds(5), 500);
+        //TimeBasedRunner runner = new TimeBasedRunner(economy, Duration.ofSeconds(5));
+        runner.run();
     }
 
     @Benchmark
     public void test10() {
-        economy.startSimulation(10);
+        runner.run();
     }
 
-    @Benchmark
-    public void test100() {
-        economy.startSimulation(100);
-    }
-
-    @Benchmark
-    public void test1000() {
-        economy.startSimulation(1000);
-    }
-
-    @Benchmark
-    public void test10000() {
-        economy.startSimulation(10_000);
-    }
+//    @Benchmark
+//    public void test100() {
+//        economy.startSimulation(100);
+//    }
+//
+//    @Benchmark
+//    public void test1000() {
+//        economy.startSimulation(1000);
+//    }
+//
+//    @Benchmark
+//    public void test10000() {
+//        economy.startSimulation(10_000);
+//    }
 }

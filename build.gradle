@@ -30,8 +30,6 @@ publishing {
     }
 }
 
-
-
 dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'org.slf4j:slf4j-api:1.7.28'
@@ -46,7 +44,7 @@ jmh {
     iterations = 10
     fork = 1
     jvmArgsAppend = ["-Xms2048m", "-Xmx2048m", "-XX:+UseG1GC"]
-    timeUnit = 's'
+    timeUnit = 'ms'
     benchmarkMode = ['all']
 
 }

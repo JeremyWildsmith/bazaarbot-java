@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -67,7 +66,13 @@ public class Statistics {
     }
 
     private IHistoryRegistryRead getHistoryRegistryByMarket(Market2 market) {
-        return Optional.of(statisticsRegistry.get(market)).orElseThrow();
+        IHistoryRegistryRead registry = statisticsRegistry.get(market);
+        if (registry == null) {
+            throw new RuntimeException("Registry is null");
+        }
+        LOG.debug("Sizes - bids: {} asks: {} contracts: {}", registry.getBidOffers().size(),
+                registry.getAskOffers().size(), registry.getContractAgreements().size());
+        return registry;
     }
 
     public double getCommodityCount(Market2 market, ICommodity commodity) {

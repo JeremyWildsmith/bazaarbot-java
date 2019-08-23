@@ -1,6 +1,5 @@
 package com.bazaarbot;
 
-import ch.qos.logback.classic.Level;
 import com.bazaarbot.agent.AgentSimulation2;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.DefaultContractResolver;
@@ -27,25 +26,33 @@ public class Economy2 {
     private Map<IAgent, AgentSimulation2> agentSimulations = new HashMap<>();
 
     private final Statistics statistics = new Statistics();
+    private final String name;
 
     public Economy2() {
+        this("DefaultEconomy");
     }
 
-    public void startSimulation(int rounds) {
-        LOG.info("Session started with {} rounds", rounds);
-        for (int i = 0; i < rounds; i++) {
-            IContractResolver contractResolver = new DefaultContractResolver(statistics);
-            for (Market2 market : marketsMap.keySet()) {
-                simulateAgentActivity();
-                market.step(contractResolver, marketsMap.get(market));
-                // outputs what is left from session
-                // e.g. unmet offers
-                // next round they will be served in priority, because they were created earlier
-                //
-                // Put statistics, which affects market prices depending the left offers, quantities from the round and prices
-            }
+    public Economy2(String name) {
+        this.name = name;
+//        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+//        root.setLevel(Level.OFF);
+    }
+
+    public void startSimulation() {
+        IContractResolver contractResolver = new DefaultContractResolver(statistics);
+        for (Market2 market : marketsMap.keySet()) {
+            simulateAgentActivity();
+            market.step(contractResolver, marketsMap.get(market));
+            // outputs what is left from session
+            // e.g. unmet offers
+            // next round they will be served in priority, because they were created earlier
+            //
+            // Put statistics, which affects market prices depending the left offers, quantities from the round and prices
         }
-        LOG.info("Finished simulation");
+        for (Market2 market : marketsMap.keySet()) {
+            LOG.info("Market {} statistics. Bid offers left {}, ask offers left {}",
+                    market, market.getBidOffersSize(), market.getAskOffersSize());
+        }
     }
 
     public void simulateAgentActivity() {
@@ -73,5 +80,10 @@ public class Economy2 {
 
     public Statistics getStatistics() {
         return statistics;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

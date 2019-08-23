@@ -1,6 +1,7 @@
 package com.bazaarbot.market;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.TimerHelper;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.ContractQuote;
 import com.bazaarbot.contract.IContract;
@@ -18,26 +19,45 @@ import java.util.stream.Collectors;
  */
 public class Market2 {
     private static final Logger LOG = LoggerFactory.getLogger(Market2.class);
+    private final TimerHelper timerHelper = new TimerHelper();
 
-    private List<Offer> bidOffers = new ArrayList<>();
-    private List<Offer> askOffers = new ArrayList<>();
+    private final List<Offer> bidOffers = new ArrayList<>();
+    private final List<Offer> askOffers = new ArrayList<>();
+
+    private List<Offer> newBidOffers = new ArrayList<>();
+    private List<Offer> newAskOffers = new ArrayList<>();
 
     //String name, MarketData marketData, ISignalBankrupt isb, IContractResolver contractResolver, Random rng
     public Market2() {
     }
 
     public void putBid(Offer offer) {
-        this.bidOffers.add(offer);
+        this.newBidOffers.add(offer);
     }
 
     public void putAsk(Offer offer) {
-        this.askOffers.add(offer);
+        this.newAskOffers.add(offer);
+    }
+
+    public int getBidOffersSize() {
+        return bidOffers.size();
+    }
+
+    public int getAskOffersSize() {
+        return askOffers.size();
     }
 
     public void step(IContractResolver contractResolver, IHistoryRegistryWrite registry) {
+        timerHelper.start();
         // 0. Fill up the registry with current items, before proceed
-        registry.addAskOffers(askOffers);
-        registry.addBidOffers(bidOffers);
+        registry.addAskOffers(newAskOffers);
+        registry.addBidOffers(newBidOffers);
+
+        this.bidOffers.addAll(newBidOffers);
+        this.askOffers.addAll(newAskOffers);
+        this.newBidOffers = new ArrayList<>();
+        this.newAskOffers = new ArrayList<>();
+
 
         LOG.debug("Starting step. Bids: {} Asks: {}", bidOffers.size(), askOffers.size());
 
@@ -78,6 +98,8 @@ public class Market2 {
                 }
             }
         }
+        timerHelper.stop();
+        LOG.debug("Step took {}ns", timerHelper.getTimeNanos());
     }
 
     private IContract tryDeal(Offer bidOffer, Offer askOffer,

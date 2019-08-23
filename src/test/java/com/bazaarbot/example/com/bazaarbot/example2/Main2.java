@@ -8,9 +8,11 @@ import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.Statistics;
 import com.bazaarbot.inventory.InventoryData;
 import com.bazaarbot.market.Market2;
+import com.bazaarbot.simulation.TimeBasedRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -23,7 +25,8 @@ public class Main2 {
 
     public static void main(String[] args) {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-        root.setLevel(Level.DEBUG);
+        root.setLevel(Level.INFO);
+
 
         ICommodity exampleCommodity1 = new ExampleCommodity1();
         ICommodity exampleCommodity2 = new ExampleCommodity2();
@@ -70,7 +73,10 @@ public class Main2 {
         Market2 market = new Market2();
         economy.addMarket(market);
 
-        economy.startSimulation(10);
+        //StepBasedRunner runner = new StepBasedRunner(economy, 5000);
+        TimeBasedRunner runner = new TimeBasedRunner(economy, Duration.ofSeconds(5), 500);
+        //TimeBasedRunner runner = new TimeBasedRunner(economy, Duration.ofSeconds(5));
+        runner.run();
 
         Statistics statistics = economy.getStatistics();
         for (ICommodity commodity : commodities) {

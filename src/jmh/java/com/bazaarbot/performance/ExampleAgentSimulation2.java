@@ -25,7 +25,6 @@ public class ExampleAgentSimulation2 extends AgentSimulation2 {
 
     @Override
     public void simulateActivity(IAgent agent, Market2 market, Statistics statistics) {
-        Double d;
         int randomNumber = randomGenerator.nextInt(10) + 1;
         ICommodity commodity1 = commodityList.get(0);
         ICommodity commodity2 = commodityList.get(1);

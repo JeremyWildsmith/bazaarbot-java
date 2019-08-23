@@ -48,7 +48,7 @@ public class ExampleAgentSimulation2 extends AgentSimulation2 {
             if (agent.queryInventory(commodity1) > 0) {
                 market.putBid(new Offer(agent, commodity1, agent.queryInventory(commodity1) / randomNumber + 1, 2));
             }
-            market.putAsk(new Offer(agent, commodity2, randomNumber + 1, randomNumber + 2));
+            market.putAsk(new Offer(agent, commodity2, (averagePriceCommodity2 + 1) / randomNumber + randomGenerator.nextInt(2), randomNumber + 2));
         } else if (randomNumber <= 8) {
             produce(agent, commodity2, randomNumber);
             consume(agent, commodity1, randomNumber);
@@ -63,6 +63,9 @@ public class ExampleAgentSimulation2 extends AgentSimulation2 {
             produce(agent, commodity2, randomNumber + 50, 0.4);
             if (agent.queryInventory(commodity3) > 0) {
                 market.putBid(new Offer(agent, commodity3, agent.queryInventory(commodity3) / randomNumber + 2, randomNumber));
+            }
+            if (agent.queryInventory(commodity2) > 0) {
+                market.putBid(new Offer(agent, commodity2, agent.queryInventory(commodity2) / randomNumber + 2, 3));
             }
             market.putAsk(new Offer(agent, commodity3, (averagePriceCommodity3 + 1)/ randomNumber + randomGenerator.nextInt(2), randomNumber + 3));
         }
