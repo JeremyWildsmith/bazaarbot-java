@@ -1,7 +1,7 @@
-package com.bazaarbot.simulation;
+package com.bazaarbot.runner;
 
-import com.bazaarbot.DefaultEconomy;
 import com.bazaarbot.TimerHelper;
+import com.bazaarbot.economy.IEconomy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,29 +14,29 @@ import java.util.concurrent.*;
 /**
  * @author Nick Gritsenko
  */
-public class TimeBasedRunner {
+public class TimeBasedRunner implements IRunner {
     private static final Logger LOG = LoggerFactory.getLogger(TimeBasedRunner.class);
     private final TimerHelper timerHelper = new TimerHelper();
     private final ForkJoinPool threadPool = new ForkJoinPool(1);
 
-    private final DefaultEconomy economy;
+    private final IEconomy economy;
     private final Duration duration;
     private final long tick;
 
-    public TimeBasedRunner(DefaultEconomy economy, Duration simulationDuration) {
+    public TimeBasedRunner(IEconomy economy, Duration simulationDuration) {
         this(economy, simulationDuration, 0);
     }
 
-    public TimeBasedRunner(DefaultEconomy economy, Duration simulationDuration, long tick) {
+    public TimeBasedRunner(IEconomy economy, Duration simulationDuration, long tick) {
         this.economy = economy;
         this.duration = simulationDuration;
         this.tick = tick;
     }
 
     private class TimerBasedTask extends TimerTask {
-        private final DefaultEconomy economy;
+        private final IEconomy economy;
 
-        TimerBasedTask(DefaultEconomy economy) {
+        TimerBasedTask(IEconomy economy) {
             this.economy = economy;
         }
 
@@ -48,9 +48,9 @@ public class TimeBasedRunner {
 
     private class TimeBasedRunnerThreadFactory implements ThreadFactory {
         private final Duration duration;
-        private final DefaultEconomy economy;
+        private final IEconomy economy;
 
-        TimeBasedRunnerThreadFactory(DefaultEconomy economy, Duration duration) {
+        TimeBasedRunnerThreadFactory(IEconomy economy, Duration duration) {
             this.duration = duration;
             this.economy = economy;
         }
@@ -90,7 +90,7 @@ public class TimeBasedRunner {
         executorService.shutdownNow();
     }
 
-
+    @Override
     public void run() {
         LOG.info("Session started for {}s.", duration.toSeconds());
         timerHelper.start();
@@ -101,6 +101,6 @@ public class TimeBasedRunner {
             timeBasedRun();
         }
         timerHelper.stop();
-        LOG.info("Finished simulation in {}s", timerHelper.getTimeSeconds());
+        LOG.info("Finished runner in {}s", timerHelper.getTimeSeconds());
     }
 }

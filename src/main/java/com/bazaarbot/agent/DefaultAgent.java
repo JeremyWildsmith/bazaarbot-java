@@ -24,6 +24,9 @@ public class DefaultAgent implements IAgent {
     private double inventoryMaxSize;
     private Map<ICommodity, Double> inventory = new HashMap<>();
 
+    public DefaultAgent(BigDecimal moneyAvailable, double inventoryMaxSize) {
+        this("DefaultAgent", moneyAvailable, inventoryMaxSize);
+    }
 
     public DefaultAgent(String agentName, BigDecimal moneyAvailable, double inventoryMaxSize) {
         this.agentName = agentName;

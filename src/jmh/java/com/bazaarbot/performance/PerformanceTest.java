@@ -1,11 +1,11 @@
 package com.bazaarbot.performance;
 
-import com.bazaarbot.DefaultEconomy;
+import com.bazaarbot.economy.DefaultEconomy;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.market.DefaultMarket;
-import com.bazaarbot.simulation.TimeBasedRunner;
+import com.bazaarbot.runner.TimeBasedRunner;
 import org.openjdk.jmh.annotations.*;
 
 import java.math.BigDecimal;

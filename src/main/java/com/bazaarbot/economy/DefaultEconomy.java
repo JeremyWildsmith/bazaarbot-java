@@ -1,4 +1,4 @@
-package com.bazaarbot;
+package com.bazaarbot.economy;
 
 import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.agent.IAgent;

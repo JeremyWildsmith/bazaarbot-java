@@ -1,7 +1,7 @@
-package com.bazaarbot.simulation;
+package com.bazaarbot.runner;
 
-import com.bazaarbot.DefaultEconomy;
 import com.bazaarbot.TimerHelper;
+import com.bazaarbot.economy.IEconomy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadFactory;
 /**
  * @author Nick Gritsenko
  */
-public class StepBasedRunner {
+public class StepBasedRunner implements IRunner {
     private static final Logger LOG = LoggerFactory.getLogger(StepBasedRunner.class);
     private final TimerHelper timerHelper = new TimerHelper();
 
@@ -29,14 +29,15 @@ public class StepBasedRunner {
         }
     }
 
-    private final DefaultEconomy economy;
+    private final IEconomy economy;
     private final int rounds;
 
-    public StepBasedRunner(DefaultEconomy economy, int rounds) {
+    public StepBasedRunner(IEconomy economy, int rounds) {
         this.economy = economy;
         this.rounds = rounds;
     }
 
+    @Override
     public void run() {
         LOG.info("Session started with {} steps", rounds);
         timerHelper.start();
@@ -48,11 +49,11 @@ public class StepBasedRunner {
                 }
             }).get();
         } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Error while doing simulation", e);
+            LOG.error("Error while doing runner", e);
         }
 
         timerHelper.stop();
-        LOG.info("Finished simulation in {}s", timerHelper.getTimeSeconds());
+        LOG.info("Finished runner in {}s", timerHelper.getTimeSeconds());
         executorService.shutdownNow();
     }
 }
