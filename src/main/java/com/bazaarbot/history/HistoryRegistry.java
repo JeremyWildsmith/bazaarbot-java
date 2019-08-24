@@ -14,9 +14,6 @@ public class HistoryRegistry implements IHistoryRegistryRead, IHistoryRegistryWr
     private final List<HistoryRecord<Offer>> askOffers = new ArrayList<>();
     private final List<HistoryRecord<IContract>> contractAgreements = new ArrayList<>();
 
-    public HistoryRegistry() {
-    }
-
     @Override
     public void addBidOffer(Offer bidOffer) {
         bidOffers.add(new HistoryRecord<>(bidOffer));

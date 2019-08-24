@@ -2,32 +2,23 @@ package com.bazaarbot.contract;
 
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.IAgent;
+import com.bazaarbot.agent.ImmutableAgent;
 
+import java.math.BigDecimal;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DefaultContract implements IContract {
     private final IAgent buyer;
     private final IAgent seller;
     private final Map<ICommodity, Double> goods;
-    private final double clearingPrice;
+    private final BigDecimal clearingPrice;
     private final long contractTimeResolution = System.nanoTime();
 
-    public DefaultContract(IAgent buyer, IAgent seller, Map<ICommodity, Double> goods, double clearingPrice) {
-        this.buyer = buyer;
-        this.seller = seller;
+    DefaultContract(IAgent buyer, IAgent seller, Map<ICommodity, Double> goods, BigDecimal clearingPrice) {
+        this.buyer = new ImmutableAgent(buyer);
+        this.seller = new ImmutableAgent(seller);
         this.goods = goods;
         this.clearingPrice = clearingPrice;
-    }
-
-    @Override
-    public void complete() {
-
-    }
-
-    @Override
-    public void abandon() {
-
     }
 
     @Override
@@ -36,7 +27,7 @@ public class DefaultContract implements IContract {
     }
 
     @Override
-    public double getContractPrice() {
+    public BigDecimal getContractPrice() {
         return clearingPrice;
     }
 
@@ -60,5 +51,9 @@ public class DefaultContract implements IContract {
         return seller;
     }
 
-
+    @Override
+    public IContract clone() {
+        //contract is immutable
+        return this;
+    }
 }

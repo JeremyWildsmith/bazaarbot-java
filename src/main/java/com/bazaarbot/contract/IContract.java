@@ -2,16 +2,16 @@ package com.bazaarbot.contract;
 
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.IAgent;
+import com.bazaarbot.history.ICloneable;
 
-public interface IContract {
-    void complete();
+import java.math.BigDecimal;
 
-    void abandon();
+public interface IContract extends ICloneable<IContract> {
 
     IAgent getSeller();
     IAgent getBuyer();
 
-    double getContractPrice();
+    BigDecimal getContractPrice();
 
     long getContractTimeResolution();
 

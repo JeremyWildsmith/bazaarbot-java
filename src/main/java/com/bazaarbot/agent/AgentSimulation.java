@@ -1,37 +1,25 @@
-//
-// Translated by CS2J (http://www.cs2j.com): 2019-08-12 9:59:31 PM
-//
-
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.Market;
 
 import java.util.Random;
 
+/**
+ * @author Nick Gritsenko
+ */
 public abstract class AgentSimulation {
-    private final Random rnd;
-    private final String name;
+    private final Random randomGenerator;
 
-    public AgentSimulation(String name, Random rnd) {
-        this.name = name;
-        this.rnd = rnd;
+    public AgentSimulation(Random randomGenerator) {
+        this.randomGenerator = randomGenerator;
     }
 
-    public AgentSimulation(String name) {
-        this(name, new Random());
-    }
-
-    /**
-     * Perform this logic on the given agent
-     *
-     * @param agent
-     */
-    public abstract void perform(IAgent agent, Market market);
 
     protected final void produce(IAgent agent, ICommodity commodity, double amount, double chance) {
-        if (chance >= 1.0 || rnd.nextDouble() < chance) {
-            agent.addInventoryItem(commodity, amount);
+        if (chance >= 1.0 || randomGenerator.nextDouble() < chance) {
+            agent.addCommodity(commodity, amount);
         }
     }
 
@@ -40,8 +28,8 @@ public abstract class AgentSimulation {
     }
 
     protected final void consume(IAgent agent, ICommodity commodity, double amount, double chance) {
-        if (chance >= 1.0 || rnd.nextDouble() < chance) {
-            agent.consumeInventoryItem(commodity, -amount);
+        if (chance >= 1.0 || randomGenerator.nextDouble() < chance) {
+            agent.addCommodity(commodity, -amount);
         }
     }
 
@@ -49,9 +37,5 @@ public abstract class AgentSimulation {
         consume(agent, commodity, amount, 1.0);
     }
 
-    public String getName() {
-        return name;
-    }
+    public abstract void simulateActivity(IAgent agent, Market market, Statistics statistics);
 }
-
-

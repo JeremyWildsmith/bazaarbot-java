@@ -6,21 +6,25 @@ package com.bazaarbot.market;
 
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.agent.ImmutableAgent;
 import com.bazaarbot.agent.IAgent;
+import com.bazaarbot.history.ICloneable;
 
-public class Offer {
+import java.math.BigDecimal;
+
+public class Offer implements ICloneable<Offer> {
     private ICommodity commodity;
     //the thing offered
     private double units;
     //how many units
-    private double unitPrice;
+    private BigDecimal unitPrice;
     //price per unit
     private IAgent agent;
 
     private final long createdTimeOffer = System.nanoTime();
 
     //who offered this
-    public Offer(IAgent agent, ICommodity commodity, double units, double unitPrice) {
+    public Offer(IAgent agent, ICommodity commodity, double units, BigDecimal unitPrice) {
         this.agent = agent;
         this.commodity = commodity;
         this.units = units;
@@ -43,11 +47,11 @@ public class Offer {
         this.units = units;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -67,6 +71,17 @@ public class Offer {
         return "(" + agent + "): " + commodity + " x " + units + " @ " + unitPrice;
     }
 
+    @Override
+    public Offer clone() {
+        Offer offer;
+        try {
+            offer = (Offer) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Cannot clone Offer!", e);
+        }
+        offer.setAgent(new ImmutableAgent(agent));
+        return offer;
+    }
 }
 
 

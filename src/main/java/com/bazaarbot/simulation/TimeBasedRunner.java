@@ -1,6 +1,6 @@
 package com.bazaarbot.simulation;
 
-import com.bazaarbot.Economy2;
+import com.bazaarbot.Economy;
 import com.bazaarbot.TimerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,24 +19,24 @@ public class TimeBasedRunner {
     private final TimerHelper timerHelper = new TimerHelper();
     private final ForkJoinPool threadPool = new ForkJoinPool(1);
 
-    private final Economy2 economy;
+    private final Economy economy;
     private final Duration duration;
     private final long tick;
 
-    public TimeBasedRunner(Economy2 economy, Duration simulationDuration) {
+    public TimeBasedRunner(Economy economy, Duration simulationDuration) {
         this(economy, simulationDuration, 0);
     }
 
-    public TimeBasedRunner(Economy2 economy, Duration simulationDuration, long tick) {
+    public TimeBasedRunner(Economy economy, Duration simulationDuration, long tick) {
         this.economy = economy;
         this.duration = simulationDuration;
         this.tick = tick;
     }
 
     private class TimerBasedTask extends TimerTask {
-        private final Economy2 economy;
+        private final Economy economy;
 
-        TimerBasedTask(Economy2 economy) {
+        TimerBasedTask(Economy economy) {
             this.economy = economy;
         }
 
@@ -48,9 +48,9 @@ public class TimeBasedRunner {
 
     private class TimeBasedRunnerThreadFactory implements ThreadFactory {
         private final Duration duration;
-        private final Economy2 economy;
+        private final Economy economy;
 
-        TimeBasedRunnerThreadFactory(Economy2 economy, Duration duration) {
+        TimeBasedRunnerThreadFactory(Economy economy, Duration duration) {
             this.duration = duration;
             this.economy = economy;
         }
