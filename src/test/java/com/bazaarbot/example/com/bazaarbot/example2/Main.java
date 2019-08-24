@@ -1,14 +1,14 @@
 package com.bazaarbot.example.com.bazaarbot.example2;
 
 import ch.qos.logback.classic.Level;
-import com.bazaarbot.Economy;
+import com.bazaarbot.DefaultEconomy;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.IHistoryRegistryRead;
 import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.CsvMarketReporter;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.simulation.TimeBasedRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +22,8 @@ import java.util.Random;
 /**
  * @author Nick Gritsenko
  */
-public class Main2 {
-    private static final Logger LOG = LoggerFactory.getLogger(Main2.class);
+public class Main {
+    private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
@@ -37,7 +37,7 @@ public class Main2 {
 
         List<ICommodity> commodities = List.of(exampleCommodity1, exampleCommodity2, exampleCommodity3);
 
-        Economy economy = new Economy("Market");
+        DefaultEconomy economy = new DefaultEconomy("DefaultEconomy");
         IAgent agent1 = new DefaultAgent("TestAgent1", new BigDecimal(20), 10);
         IAgent agent2 = new DefaultAgent("TestAgent2", new BigDecimal(40), 5);
         IAgent agent3 = new DefaultAgent("TestAgent3", new BigDecimal(60), 20);
@@ -48,15 +48,11 @@ public class Main2 {
         agent3.addCommodity(exampleCommodity3, 2.0);
         agent3.addCommodity(exampleCommodity1, 1.0);
         agent3.addCommodity(exampleCommodity3, 10.0);
-        economy.addAgent(agent1);
-        economy.addAgent(agent2);
-        economy.addAgent(agent3);
+        economy.addAgent(agent1, new ExampleAgentSimulation(commodities, new Random()));
+        economy.addAgent(agent2, new ExampleAgentSimulation(commodities, new Random()));
+        economy.addAgent(agent3, new ExampleAgentSimulation(commodities, new Random()));
 
-        economy.addAgentSimulation(agent1, new ExampleAgentSimulation(commodities, new Random()));
-        economy.addAgentSimulation(agent2, new ExampleAgentSimulation(commodities, new Random()));
-        economy.addAgentSimulation(agent3, new ExampleAgentSimulation(commodities, new Random()));
-
-        Market market = new Market("Market");
+        DefaultMarket market = new DefaultMarket("DefaultMarket");
         economy.addMarket(market);
 
         //StepBasedRunner runner = new StepBasedRunner(economy, 100);

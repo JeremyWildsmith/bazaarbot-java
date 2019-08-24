@@ -4,7 +4,8 @@ import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.Statistics;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.market.DefaultMarket;
+import com.bazaarbot.market.IMarket;
 import com.bazaarbot.market.Offer;
 
 import java.math.BigDecimal;
@@ -25,7 +26,7 @@ public class ExampleAgentSimulation extends AgentSimulation {
     }
 
     @Override
-    public void simulateActivity(IAgent agent, Market market, Statistics statistics) {
+    public void simulateActivity(IAgent agent, IMarket market, Statistics statistics) {
         int randomNumber = randomGenerator.nextInt(10) + 1;
         ICommodity commodity1 = commodityList.get(0);
         ICommodity commodity2 = commodityList.get(1);

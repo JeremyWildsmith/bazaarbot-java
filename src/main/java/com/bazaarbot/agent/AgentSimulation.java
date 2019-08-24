@@ -2,7 +2,8 @@ package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.history.Statistics;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.market.DefaultMarket;
+import com.bazaarbot.market.IMarket;
 
 import java.util.Random;
 
@@ -37,5 +38,5 @@ public abstract class AgentSimulation {
         consume(agent, commodity, amount, 1.0);
     }
 
-    public abstract void simulateActivity(IAgent agent, Market market, Statistics statistics);
+    public abstract void simulateActivity(IAgent agent, IMarket market, Statistics statistics);
 }

@@ -6,15 +6,14 @@ import com.bazaarbot.history.Statistics;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 
 public class CsvMarketReporter {
 
-    private final Market market;
+    private final DefaultMarket market;
     private final Statistics statistics;
 
-    public CsvMarketReporter(Market market, Statistics statistics) {
+    public CsvMarketReporter(DefaultMarket market, Statistics statistics) {
         this.market = market;
         this.statistics = statistics;
     }

@@ -3,7 +3,6 @@ package com.bazaarbot.market;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.TimerHelper;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.contract.DefaultContractNegotiator;
 import com.bazaarbot.contract.IContract;
 import com.bazaarbot.contract.IContractNegotiator;
 import com.bazaarbot.contract.IContractResolver;
@@ -19,8 +18,8 @@ import java.util.stream.Collectors;
 /**
  * @author Nick Gritsenko
  */
-public class Market {
-    private static final Logger LOG = LoggerFactory.getLogger(Market.class);
+public class DefaultMarket implements IMarket {
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultMarket.class);
     private final TimerHelper timerHelper = new TimerHelper();
     private final String name;
 
@@ -30,31 +29,35 @@ public class Market {
     private List<Offer> newBidOffers = new ArrayList<>();
     private List<Offer> newAskOffers = new ArrayList<>();
 
-    //String name, MarketData marketData, ISignalBankrupt isb, IContractResolver contractResolver, Random rng
-    public Market() {
+    public DefaultMarket() {
         this("DefaultMarket");
     }
 
-    public Market(String name) {
+    public DefaultMarket(String name) {
         this.name = name;
     }
 
+    @Override
     public void putBid(Offer offer) {
         this.newBidOffers.add(offer);
     }
 
+    @Override
     public void putAsk(Offer offer) {
         this.newAskOffers.add(offer);
     }
 
+    @Override
     public int getBidOffersSize() {
         return bidOffers.size();
     }
 
+    @Override
     public int getAskOffersSize() {
         return askOffers.size();
     }
 
+    @Override
     public void step(IContractResolver contractResolver, IHistoryRegistryWrite registry) {
         timerHelper.start();
         // 0. Fill up the registry with current items, before proceed

@@ -6,7 +6,7 @@ import com.bazaarbot.contract.DefaultContractResolver;
 import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.history.HistoryRegistry;
 import com.bazaarbot.history.Statistics;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.market.IMarket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,29 +18,28 @@ import java.util.Map;
 /**
  * @author Nick Gritsenko
  */
-public class Economy {
-    private static final Logger LOG = LoggerFactory.getLogger(Economy.class);
+public class DefaultEconomy implements IEconomy {
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultEconomy.class);
 
-    private Map<Market, HistoryRegistry> marketsMap = new HashMap<>();
-    private List<IAgent> agents = new ArrayList<>();
-    private Map<IAgent, AgentSimulation> agentSimulations = new HashMap<>();
+    private Map<IMarket, HistoryRegistry> marketsMap = new HashMap<>();
+    private Map<IAgent, AgentSimulation> agents = new HashMap<>();
+    private Map<IMarket, List<IAgent>> agentsToMarket = new HashMap<>();
 
     private final Statistics statistics = new Statistics();
     private final String name;
 
-    public Economy() {
+    public DefaultEconomy() {
         this("DefaultEconomy");
     }
 
-    public Economy(String name) {
+    public DefaultEconomy(String name) {
         this.name = name;
-//        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-//        root.setLevel(Level.OFF);
     }
 
+    @Override
     public void startSimulation() {
         IContractResolver contractResolver = new DefaultContractResolver(statistics);
-        for (Market market : marketsMap.keySet()) {
+        for (IMarket market : marketsMap.keySet()) {
             simulateAgentActivity();
             market.step(contractResolver, marketsMap.get(market));
             // outputs what is left from session
@@ -49,34 +48,45 @@ public class Economy {
             //
             // Put statistics, which affects market prices depending the left offers, quantities from the round and prices
         }
-        for (Market market : marketsMap.keySet()) {
+        for (IMarket market : marketsMap.keySet()) {
             LOG.info("Market {} statistics. Bid offers left {}, ask offers left {}",
                     market, market.getBidOffersSize(), market.getAskOffersSize());
         }
     }
 
+    @Override
     public void simulateAgentActivity() {
-        for (Market market : marketsMap.keySet()) {
-            for (IAgent agent : agents) {
-                agentSimulations.get(agent).simulateActivity(agent, market, statistics);
+        for (IMarket market : marketsMap.keySet()) {
+            List<IAgent> agentsToMarketList = agentsToMarket.get(market);
+            for (IAgent agent : (agentsToMarketList == null ? agents.keySet() : agentsToMarketList)) {
+                agents.get(agent).simulateActivity(agent, market, statistics);
             }
         }
     }
-
-    public void addAgent(IAgent agent) {
-        agents.add(agent);
+    @Override
+    public void addAgent(IAgent agent, AgentSimulation agentSimulation) {
+        agents.put(agent, agentSimulation);
     }
 
-    public void addMarket(Market market) {
+    @Override
+    public void addAgent(IMarket market, IAgent agent, AgentSimulation agentSimulation) {
+        addAgent(agent,agentSimulation);
+        List<IAgent> agents = agentsToMarket.get(market);
+        if (agents == null) {
+            agents = new ArrayList<>();
+        }
+        agents.add(agent);
+        agentsToMarket.put(market, agents);
+    }
+
+    @Override
+    public void addMarket(IMarket market) {
         HistoryRegistry registry = new HistoryRegistry();
         statistics.addHistoryRegistry(market, registry);
         marketsMap.put(market, registry);
     }
 
-    public void addAgentSimulation(IAgent agent, AgentSimulation agentSimulation) {
-        agentSimulations.put(agent, agentSimulation);
-    }
-
+    @Override
     public Statistics getStatistics() {
         return statistics;
     }

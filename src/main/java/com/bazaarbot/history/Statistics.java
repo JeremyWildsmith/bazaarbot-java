@@ -3,7 +3,7 @@ package com.bazaarbot.history;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.IContract;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.market.IMarket;
 import com.bazaarbot.market.Offer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 public class Statistics {
     private static final Logger LOG = LoggerFactory.getLogger(Statistics.class);
-    private final Map<Market, IHistoryRegistryRead> statisticsRegistry = new HashMap<>();
+    private final Map<IMarket, IHistoryRegistryRead> statisticsRegistry = new HashMap<>();
 
     private final ForkJoinPool threadPool = new ForkJoinPool(10);
 
@@ -63,11 +63,11 @@ public class Statistics {
         }
     }
 
-    public void addHistoryRegistry(Market market, IHistoryRegistryRead registry) {
+    public void addHistoryRegistry(IMarket market, IHistoryRegistryRead registry) {
         statisticsRegistry.put(market, registry);
     }
 
-    public IHistoryRegistryRead getHistoryRegistryByMarket(Market market) {
+    public IHistoryRegistryRead getHistoryRegistryByMarket(IMarket market) {
         IHistoryRegistryRead registry = statisticsRegistry.get(market);
         if (registry == null) {
             throw new RuntimeException("Registry is null");
@@ -77,11 +77,11 @@ public class Statistics {
         return registry;
     }
 
-    public double getCommodityCount(Market market, ICommodity commodity) {
+    public double getCommodityCount(IMarket market, ICommodity commodity) {
         return getCommodityCount(market, commodity, 0, Long.MAX_VALUE);
     }
 
-    public double getCommodityCount(Market market, ICommodity commodity, long start, long end) {
+    public double getCommodityCount(IMarket market, ICommodity commodity, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
         return threadPool.submit(() -> registry.getBidOffers().parallelStream()
                 .map(HistoryRecord::getHistoryObject)
@@ -92,7 +92,7 @@ public class Statistics {
         ).join();
     }
 
-    public BigDecimal getAverageHistoricalPrice(Market market, ICommodity commodity) {
+    public BigDecimal getAverageHistoricalPrice(IMarket market, ICommodity commodity) {
         return getAverageHistoricalPrice(market, commodity, 0, Long.MAX_VALUE);
     }
 
@@ -110,7 +110,7 @@ public class Statistics {
         };
     }
 
-    public BigDecimal getAverageHistoricalPrice(Market market, ICommodity commodity, long start, long end) {
+    public BigDecimal getAverageHistoricalPrice(IMarket market, ICommodity commodity, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
         return registry.getContractAgreements().stream()
                 .map(HistoryRecord::getHistoryObject)
@@ -120,11 +120,11 @@ public class Statistics {
                 .collect(new BigDecimalAverageCollector());
     }
 
-    public ICommodity getHottestCommodity(Market market) {
+    public ICommodity getHottestCommodity(IMarket market) {
         return getHottestCommodity(market, 0, Long.MAX_VALUE);
     }
 
-    public ICommodity getHottestCommodity(Market market, long start, long end) {
+    public ICommodity getHottestCommodity(IMarket market, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
         return threadPool.submit(() -> registry.getAskOffers().parallelStream()
                 .map(HistoryRecord::getHistoryObject)
@@ -139,11 +139,11 @@ public class Statistics {
         ).join();
     }
 
-    public ICommodity getCheapestCommodity(Market market) {
+    public ICommodity getCheapestCommodity(IMarket market) {
         return getCheapestCommodity(market, 0, Long.MAX_VALUE);
     }
 
-    public ICommodity getCheapestCommodity(Market market, long start, long end) {
+    public ICommodity getCheapestCommodity(IMarket market, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
         return threadPool.submit(() -> registry.getBidOffers().parallelStream()
                 .map(HistoryRecord::getHistoryObject)
@@ -155,11 +155,11 @@ public class Statistics {
         ).join();
     }
 
-    public ICommodity getDearestGood(Market market) {
+    public ICommodity getDearestGood(IMarket market) {
         return getDearestGood(market, 0, Long.MAX_VALUE);
     }
 
-    public ICommodity getDearestGood(Market market, long start, long end) {
+    public ICommodity getDearestGood(IMarket market, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
         return threadPool.submit(() -> registry.getBidOffers().parallelStream()
                 .map(HistoryRecord::getHistoryObject)
@@ -171,11 +171,11 @@ public class Statistics {
         ).join();
     }
 
-    public IAgent getMostProfitableAgent(Market market) {
+    public IAgent getMostProfitableAgent(IMarket market) {
         return getMostProfitableAgent(market, 0, Long.MAX_VALUE);
     }
 
-    public IAgent getMostProfitableAgent(Market market, long start, long end) {
+    public IAgent getMostProfitableAgent(IMarket market, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
         return registry.getContractAgreements().stream()
                 .map(HistoryRecord::getHistoryObject)
@@ -189,7 +189,7 @@ public class Statistics {
                 .orElse(null);
     }
 
-    public List<Offer> getBidOffers(Market market) {
+    public List<Offer> getBidOffers(IMarket market) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
         return registry.getBidOffers().stream()
                 .map(HistoryRecord::getHistoryObject)

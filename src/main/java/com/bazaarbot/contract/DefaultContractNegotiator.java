@@ -1,7 +1,7 @@
 package com.bazaarbot.contract;
 
 import com.bazaarbot.history.Statistics;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.Offer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +15,9 @@ public class DefaultContractNegotiator implements IContractNegotiator {
 
     private final Offer bidOffer;
     private final Offer askOffer;
-    private final Market market;
+    private final DefaultMarket market;
 
-    DefaultContractNegotiator(Market market, Statistics statistics, Offer bidOffer, Offer askOffer) {
+    DefaultContractNegotiator(DefaultMarket market, Statistics statistics, Offer bidOffer, Offer askOffer) {
         this.market = market;
         this.statistics = statistics;
         this.bidOffer = bidOffer;

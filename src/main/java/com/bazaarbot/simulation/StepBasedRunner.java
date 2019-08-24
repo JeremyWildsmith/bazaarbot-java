@@ -1,6 +1,6 @@
 package com.bazaarbot.simulation;
 
-import com.bazaarbot.Economy;
+import com.bazaarbot.DefaultEconomy;
 import com.bazaarbot.TimerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +29,10 @@ public class StepBasedRunner {
         }
     }
 
-    private final Economy economy;
+    private final DefaultEconomy economy;
     private final int rounds;
 
-    public StepBasedRunner(Economy economy, int rounds) {
+    public StepBasedRunner(DefaultEconomy economy, int rounds) {
         this.economy = economy;
         this.rounds = rounds;
     }

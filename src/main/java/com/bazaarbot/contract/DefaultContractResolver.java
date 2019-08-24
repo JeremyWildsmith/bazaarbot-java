@@ -3,7 +3,7 @@ package com.bazaarbot.contract;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.Statistics;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.Offer;
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ public class DefaultContractResolver implements IContractResolver {
 
 
     @Override
-    public IContractNegotiator getContractNegotiator(Market market, Offer bidOffer, Offer askOffer) {
+    public IContractNegotiator getContractNegotiator(DefaultMarket market, Offer bidOffer, Offer askOffer) {
         return new DefaultContractNegotiator(market, statistics, bidOffer, askOffer);
     }
 }

@@ -1,10 +1,10 @@
 package com.bazaarbot.performance;
 
-import com.bazaarbot.Economy;
+import com.bazaarbot.DefaultEconomy;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.market.Market;
+import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.simulation.TimeBasedRunner;
 import org.openjdk.jmh.annotations.*;
 
@@ -31,7 +31,7 @@ public class PerformanceTest {
 
         List<ICommodity> commodities = List.of(exampleCommodity1, exampleCommodity2, exampleCommodity3);
 
-        Economy economy = new Economy("Market");
+        DefaultEconomy economy = new DefaultEconomy("DefaultMarket");
         IAgent agent1 = new DefaultAgent("TestAgent1", new BigDecimal(20), 10);
         IAgent agent2 = new DefaultAgent("TestAgent2", new BigDecimal(40), 5);
         IAgent agent3 = new DefaultAgent("TestAgent3", new BigDecimal(60), 20);
@@ -42,15 +42,11 @@ public class PerformanceTest {
         agent3.addCommodity(exampleCommodity3, 2.0);
         agent3.addCommodity(exampleCommodity1, 1.0);
         agent3.addCommodity(exampleCommodity3, 10.0);
-        economy.addAgent(agent1);
-        economy.addAgent(agent2);
-        economy.addAgent(agent3);
+        economy.addAgent(agent1, new ExampleAgentSimulation(commodities, new Random()));
+        economy.addAgent(agent2, new ExampleAgentSimulation(commodities, new Random()));
+        economy.addAgent(agent3, new ExampleAgentSimulation(commodities, new Random()));
 
-        economy.addAgentSimulation(agent1, new ExampleAgentSimulation(commodities, new Random()));
-        economy.addAgentSimulation(agent2, new ExampleAgentSimulation(commodities, new Random()));
-        economy.addAgentSimulation(agent3, new ExampleAgentSimulation(commodities, new Random()));
-
-        Market market = new Market();
+        DefaultMarket market = new DefaultMarket();
         economy.addMarket(market);
 
         //StepBasedRunner runner = new StepBasedRunner(economy, 5000);
