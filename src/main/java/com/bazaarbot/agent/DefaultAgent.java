@@ -5,6 +5,8 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.history.Statistics;
+import com.bazaarbot.market.IMarket;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,20 +20,21 @@ import java.util.Map;
  * @author
  */
 public class DefaultAgent implements IAgent {
-
+    private final ISimulationStrategy simulationStrategy;
     private String agentName;
     private BigDecimal moneyAvailable;
     private double inventoryMaxSize;
     private Map<ICommodity, Double> inventory = new HashMap<>();
 
-    public DefaultAgent(BigDecimal moneyAvailable, double inventoryMaxSize) {
-        this("DefaultAgent", moneyAvailable, inventoryMaxSize);
+    public DefaultAgent(BigDecimal moneyAvailable, double inventoryMaxSize, ISimulationStrategy simulationStrategy) {
+        this("DefaultAgent", moneyAvailable, inventoryMaxSize, simulationStrategy);
     }
 
-    public DefaultAgent(String agentName, BigDecimal moneyAvailable, double inventoryMaxSize) {
+    public DefaultAgent(String agentName, BigDecimal moneyAvailable, double inventoryMaxSize, ISimulationStrategy simulationStrategy) {
         this.agentName = agentName;
         this.moneyAvailable = moneyAvailable;
         this.inventoryMaxSize = inventoryMaxSize;
+        this.simulationStrategy = simulationStrategy;
     }
 
     @Override
@@ -80,6 +83,11 @@ public class DefaultAgent implements IAgent {
     @Override
     public void setMoneyAvailable(BigDecimal moneyAvailable) {
         this.moneyAvailable = moneyAvailable;
+    }
+
+    @Override
+    public void simulateActivity(IMarket market, Statistics statistics) {
+        this.simulationStrategy.simulateActivity(this, market, statistics);
     }
 
     @Override

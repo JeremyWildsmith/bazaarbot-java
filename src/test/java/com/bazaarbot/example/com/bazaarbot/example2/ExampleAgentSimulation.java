@@ -1,10 +1,9 @@
 package com.bazaarbot.example.com.bazaarbot.example2;
 
 import com.bazaarbot.ICommodity;
-import com.bazaarbot.agent.AgentSimulation;
+import com.bazaarbot.agent.DefaultSimulationStrategy;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.Statistics;
-import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.IMarket;
 import com.bazaarbot.market.Offer;
 
@@ -15,12 +14,11 @@ import java.util.Random;
 /**
  * @author Nick Gritsenko
  */
-public class ExampleAgentSimulation extends AgentSimulation {
+public class ExampleAgentSimulation extends DefaultSimulationStrategy {
     private final Random randomGenerator;
     private final List<ICommodity> commodityList;
 
     public ExampleAgentSimulation(List<ICommodity> commodityList, Random randomGenerator) {
-        super(randomGenerator);
         this.randomGenerator = randomGenerator;
         this.commodityList = commodityList;
     }

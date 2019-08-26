@@ -5,6 +5,8 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.history.Statistics;
+import com.bazaarbot.market.IMarket;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,6 +28,8 @@ public interface IAgent {
     BigDecimal getMoneyAvailable();
 
     void setMoneyAvailable(BigDecimal moneyAvailable);
+
+    void simulateActivity(IMarket market, Statistics statistics);
 }
 
 

@@ -1,6 +1,7 @@
 package com.bazaarbot.contract;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.agent.DefaultSimulationStrategy;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.DefaultMarket;
@@ -11,11 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultContractResolver implements IContractResolver {
-    private final Statistics statistics;
-
-    public DefaultContractResolver(Statistics statistics) {
-        this.statistics = statistics;
-    }
+    private Statistics statistics;
 
     @Override
     public IContract signContract(IAgent seller, IAgent buyer, ICommodity good, double units, BigDecimal clearingPrice) {
@@ -29,6 +26,11 @@ public class DefaultContractResolver implements IContractResolver {
 
     @Override
     public IContractNegotiator getContractNegotiator(DefaultMarket market, Offer bidOffer, Offer askOffer) {
-        return new DefaultContractNegotiator(market, statistics, bidOffer, askOffer);
+        return new DefaultContractNegotiator(market, bidOffer, askOffer, statistics);
+    }
+
+    @Override
+    public void setStatistics(Statistics statistics) {
+        this.statistics = statistics;
     }
 }

@@ -1,6 +1,8 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.history.Statistics;
+import com.bazaarbot.market.IMarket;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -10,7 +12,7 @@ import java.util.Map;
 /**
  * @author Nick Gritsenko
  */
-public class ImmutableAgent implements IAgent {
+public final class ImmutableAgent implements IAgent {
     private final String agentName;
     private final BigDecimal moneyAvailable;
     private final Map<ICommodity, Double> stuff = new HashMap<>();
@@ -55,6 +57,11 @@ public class ImmutableAgent implements IAgent {
 
     @Override
     public void setMoneyAvailable(BigDecimal moneyAvailable) {
+        throw new RuntimeException("Not implemented!");
+    }
+
+    @Override
+    public void simulateActivity(IMarket market, Statistics statistics) {
         throw new RuntimeException("Not implemented!");
     }
 

@@ -1,11 +1,14 @@
 package com.bazaarbot.performance;
 
-import com.bazaarbot.economy.DefaultEconomy;
+import com.bazaarbot.Bazaar;
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.agent.DefaultAgent;
+import com.bazaarbot.agent.DefaultSimulationStrategy;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.market.DefaultMarket;
-import com.bazaarbot.runner.TimeBasedRunner;
+import com.bazaarbot.example.com.bazaarbot.example2.ExampleAgentSimulation;
+import com.bazaarbot.example.com.bazaarbot.example2.ExampleCommodity1;
+import com.bazaarbot.example.com.bazaarbot.example2.ExampleCommodity2;
+import com.bazaarbot.example.com.bazaarbot.example2.ExampleCommodity3;
 import org.openjdk.jmh.annotations.*;
 
 import java.math.BigDecimal;
@@ -19,7 +22,7 @@ import java.util.Random;
 @State(Scope.Benchmark)
 public class PerformanceTest {
 
-    private TimeBasedRunner runner;
+    private Bazaar.BazaarBuilder bazaarBuilder;
 
 
     @Setup(Level.Iteration)
@@ -31,33 +34,27 @@ public class PerformanceTest {
 
         List<ICommodity> commodities = List.of(exampleCommodity1, exampleCommodity2, exampleCommodity3);
 
-        DefaultEconomy economy = new DefaultEconomy("DefaultMarket");
-        IAgent agent1 = new DefaultAgent("TestAgent1", new BigDecimal(20), 10);
-        IAgent agent2 = new DefaultAgent("TestAgent2", new BigDecimal(40), 5);
-        IAgent agent3 = new DefaultAgent("TestAgent3", new BigDecimal(60), 20);
-        agent1.addCommodity(exampleCommodity1, 2.0);
-        agent1.addCommodity(exampleCommodity2, 4.0);
-        agent2.addCommodity(exampleCommodity3, 2.0);
-        agent2.addCommodity(exampleCommodity1, 1.0);
-        agent3.addCommodity(exampleCommodity3, 2.0);
-        agent3.addCommodity(exampleCommodity1, 1.0);
-        agent3.addCommodity(exampleCommodity3, 10.0);
-        economy.addAgent(agent1, new ExampleAgentSimulation(commodities, new Random()));
-        economy.addAgent(agent2, new ExampleAgentSimulation(commodities, new Random()));
-        economy.addAgent(agent3, new ExampleAgentSimulation(commodities, new Random()));
+        DefaultSimulationStrategy simulation = new ExampleAgentSimulation(commodities, new Random());
 
-        DefaultMarket market = new DefaultMarket();
-        economy.addMarket(market);
+        IAgent agent1 = new DefaultAgent("TestAgent1", new BigDecimal(20), 10, simulation);
+        IAgent agent2 = new DefaultAgent("TestAgent2", new BigDecimal(40), 5, simulation);
+        IAgent agent3 = new DefaultAgent("TestAgent3", new BigDecimal(60), 20, simulation);
 
-        //StepBasedRunner runner = new StepBasedRunner(economy, 5000);
-        runner = new TimeBasedRunner(economy, Duration.ofSeconds(5), 500);
-        //TimeBasedRunner runner = new TimeBasedRunner(economy, Duration.ofSeconds(5));
-        runner.run();
+        bazaarBuilder = Bazaar.newBuilder()
+                .withDefaultEconomy()
+                .withDefaultMarket()
+                .withDefaultContractResolver()
+                .addAgent(agent1)
+                .addAgent(agent2)
+                .addAgent(agent3);
     }
 
     @Benchmark
     public void test10() {
-        runner.run();
+        Bazaar bazaar = bazaarBuilder.withTimeBasedRunner(Duration.ofSeconds(5))
+                .build();
+        bazaar.run();
+
     }
 
 //    @Benchmark

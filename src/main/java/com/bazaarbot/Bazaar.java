@@ -1,7 +1,8 @@
 package com.bazaarbot;
 
-import com.bazaarbot.agent.AgentSimulation;
 import com.bazaarbot.agent.IAgent;
+import com.bazaarbot.contract.DefaultContractResolver;
+import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.economy.DefaultEconomy;
 import com.bazaarbot.economy.IEconomy;
 import com.bazaarbot.history.Statistics;
@@ -50,6 +51,19 @@ public class Bazaar {
             return this;
         }
 
+        public BazaarBuilder withDefaultContractResolver() {
+            IContractResolver resolver = new DefaultContractResolver();
+            resolver.setStatistics(economy.getStatistics());
+            Bazaar.this.economy.setContractResolver(resolver);
+            return this;
+        }
+
+        public BazaarBuilder setContractResolver(IContractResolver resolver) {
+            resolver.setStatistics(economy.getStatistics());
+            Bazaar.this.economy.setContractResolver(resolver);
+            return this;
+        }
+
         public BazaarBuilder setRunner(IRunner runner) {
             Bazaar.this.runner = runner;
             return this;
@@ -78,12 +92,8 @@ public class Bazaar {
             Bazaar.this.economy.addMarket(new DefaultMarket(name));
             return this;
         }
-        public BazaarBuilder addAgent(IAgent agent, AgentSimulation agentSimulation) {
-            Bazaar.this.economy.addAgent(agent, agentSimulation);
-            return this;
-        }
-        public BazaarBuilder addAgent(IMarket market, IAgent agent, AgentSimulation agentSimulation) {
-            Bazaar.this.economy.addAgent(market, agent, agentSimulation);
+        public BazaarBuilder addAgent(IAgent agent) {
+            Bazaar.this.economy.addAgent(agent);
             return this;
         }
 

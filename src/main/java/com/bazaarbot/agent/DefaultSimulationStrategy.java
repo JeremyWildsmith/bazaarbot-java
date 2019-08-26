@@ -2,7 +2,6 @@ package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
 import com.bazaarbot.history.Statistics;
-import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.IMarket;
 
 import java.util.Random;
@@ -10,13 +9,8 @@ import java.util.Random;
 /**
  * @author Nick Gritsenko
  */
-public abstract class AgentSimulation {
-    private final Random randomGenerator;
-
-    public AgentSimulation(Random randomGenerator) {
-        this.randomGenerator = randomGenerator;
-    }
-
+public abstract class DefaultSimulationStrategy implements ISimulationStrategy {
+    private final Random randomGenerator = new Random();
 
     protected final void produce(IAgent agent, ICommodity commodity, double amount, double chance) {
         if (chance >= 1.0 || randomGenerator.nextDouble() < chance) {

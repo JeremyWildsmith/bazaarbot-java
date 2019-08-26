@@ -11,17 +11,17 @@ import java.math.BigDecimal;
 public class DefaultContractNegotiator implements IContractNegotiator {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultContractNegotiator.class);
-    private final Statistics statistics;
 
     private final Offer bidOffer;
     private final Offer askOffer;
     private final DefaultMarket market;
+    private final Statistics statistics;
 
-    DefaultContractNegotiator(DefaultMarket market, Statistics statistics, Offer bidOffer, Offer askOffer) {
+    DefaultContractNegotiator(DefaultMarket market, Offer bidOffer, Offer askOffer, Statistics statistics) {
         this.market = market;
-        this.statistics = statistics;
         this.bidOffer = bidOffer;
         this.askOffer = askOffer;
+        this.statistics = statistics;
     }
 
     @Override

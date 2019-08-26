@@ -1,10 +1,9 @@
 package com.bazaarbot.performance;
 
 import com.bazaarbot.ICommodity;
-import com.bazaarbot.agent.AgentSimulation;
+import com.bazaarbot.agent.DefaultSimulationStrategy;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.history.Statistics;
-import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.IMarket;
 import com.bazaarbot.market.Offer;
 
@@ -15,19 +14,17 @@ import java.util.Random;
 /**
  * @author Nick Gritsenko
  */
-public class ExampleAgentSimulation extends AgentSimulation {
+public class ExampleAgentSimulation extends DefaultSimulationStrategy {
     private final Random randomGenerator;
     private final List<ICommodity> commodityList;
 
     public ExampleAgentSimulation(List<ICommodity> commodityList, Random randomGenerator) {
-        super(randomGenerator);
         this.randomGenerator = randomGenerator;
         this.commodityList = commodityList;
     }
 
     @Override
     public void simulateActivity(IAgent agent, IMarket market, Statistics statistics) {
-        Double d;
         int randomNumber = randomGenerator.nextInt(10) + 1;
         ICommodity commodity1 = commodityList.get(0);
         ICommodity commodity2 = commodityList.get(1);
@@ -37,7 +34,7 @@ public class ExampleAgentSimulation extends AgentSimulation {
         BigDecimal averagePriceCommodity3 = statistics.getAverageHistoricalPrice(market, commodity3);
         if (randomNumber <= 3) {
             produce(agent, commodity1, randomNumber);
-            if(agent.getCommodityAmount(commodity1) > 0) {
+            if (agent.getCommodityAmount(commodity1) > 0) {
                 market.putBid(new Offer(agent, commodity1, agent.getCommodityAmount(commodity1) / randomNumber + 1, new BigDecimal(10)));
             }
             if (agent.getCommodityAmount(commodity3) > 0) {
@@ -58,7 +55,7 @@ public class ExampleAgentSimulation extends AgentSimulation {
             consume(agent, commodity1, randomNumber);
             produce(agent, commodity1, randomNumber + 50, 0.4);
             market.putAsk(new Offer(agent, commodity1,
-                    (averagePriceCommodity1.doubleValue() + 1) /  randomNumber + randomGenerator.nextInt(2),
+                    (averagePriceCommodity1.doubleValue() + 1) / randomNumber + randomGenerator.nextInt(2),
                     new BigDecimal(randomNumber - 3)));
             if (agent.getCommodityAmount(commodity1) > 0) {
                 market.putBid(new Offer(agent, commodity1, agent.getCommodityAmount(commodity1) / randomNumber + 2,
@@ -79,7 +76,7 @@ public class ExampleAgentSimulation extends AgentSimulation {
                         new BigDecimal(3)));
             }
             market.putAsk(new Offer(agent, commodity3,
-                    (averagePriceCommodity3.doubleValue() + 1)/ randomNumber + randomGenerator.nextInt(2),
+                    (averagePriceCommodity3.doubleValue() + 1) / randomNumber + randomGenerator.nextInt(2),
                     new BigDecimal(randomNumber + 3)));
         }
 
