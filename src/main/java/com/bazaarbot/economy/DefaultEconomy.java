@@ -5,6 +5,7 @@ import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.history.HistoryRegistry;
 import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.IMarket;
+import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +19,7 @@ public class DefaultEconomy implements IEconomy {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultEconomy.class);
 
     private IContractResolver contractResolver;
+    private EventBus userEventBus;
     private final Statistics statistics = new Statistics();
 
     private List<IMarket> markets = new ArrayList<>();
@@ -41,8 +43,8 @@ public class DefaultEconomy implements IEconomy {
             for (IAgent agent : agents) {
                 agent.simulateActivity(market, statistics);
             }
-            market.step(contractResolver, registry);
-            LOG.info("Market {} statistics. Bid offers left {}, ask offers left {}",
+            market.step(contractResolver, registry, userEventBus);
+            LOG.debug("Market {} statistics. Bid offers left {}, ask offers left {}",
                     market, market.getBidOffersSize(), market.getAskOffersSize());
             // outputs what is left from session
             // e.g. unmet offers
@@ -70,6 +72,11 @@ public class DefaultEconomy implements IEconomy {
     @Override
     public Statistics getStatistics() {
         return statistics;
+    }
+
+    @Override
+    public void setUserEventBus(EventBus eventBus) {
+        this.userEventBus = eventBus;
     }
 
     @Override

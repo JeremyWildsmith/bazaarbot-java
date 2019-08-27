@@ -2,6 +2,7 @@ package com.bazaarbot.market;
 
 import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.history.IHistoryRegistryWrite;
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * @author Nick Gritsenko
@@ -15,5 +16,5 @@ public interface IMarket {
 
     int getAskOffersSize();
 
-    void step(IContractResolver contractResolver, IHistoryRegistryWrite registry);
+    void step(IContractResolver contractResolver, IHistoryRegistryWrite registry, EventBus userEventBus);
 }
