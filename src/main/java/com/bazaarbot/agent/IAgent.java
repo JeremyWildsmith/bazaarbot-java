@@ -14,6 +14,7 @@ import java.util.List;
 public interface IAgent {
 
     void addCommodity(ICommodity good, double amount);
+    void removeCommodity(ICommodity good, double amount);
 
     double getCommodityAmount(ICommodity commodity);
 

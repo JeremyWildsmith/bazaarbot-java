@@ -5,4 +5,5 @@ package com.bazaarbot.runner;
  */
 public interface IRunner {
     void run();
+    void runAsync();
 }

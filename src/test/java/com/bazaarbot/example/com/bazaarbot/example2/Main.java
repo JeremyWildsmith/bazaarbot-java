@@ -26,7 +26,7 @@ public class Main {
 
         @Override
         public void handle(IContract contract) {
-            LOG.info("!!!!!!!!!!!!!!!!!!!! Contract signed!!!!");
+            LOG.info("Contract signed!");
             LOG.info("{}", contract);
         }
     }
@@ -57,27 +57,8 @@ public class Main {
                 .addAgent(agent1)
                 .addAgent(agent2)
                 .addAgent(agent3)
-                .withTimeBasedRunner(Duration.ofSeconds(5))
+                .withDurationBasedRunner(Duration.ofSeconds(5))
                 .build();
-        bazaar.run();
-
-//        Statistics statistics = bazaar.getStatistics();
-//        for (ICommodity commodity : commodities) {
-//            LOG.info("Average historical price for {} is {}", commodity,
-//                    statistics.getAverageHistoricalPrice(market, commodity));
-//        }
-//        IHistoryRegistryRead registry = statistics.getHistoryRegistryByMarket(market);
-//        LOG.info("Cheapest commodity: {}", statistics.getCheapestCommodity(market));
-//        LOG.info("Dearest commodity: {}", statistics.getDearestGood(market));
-//        LOG.info("Hottest commodity: {}", statistics.getHottestCommodity(market));
-//        LOG.info("Most profitable agent: {}", statistics.getMostProfitableAgent(market));
-//
-//        CsvMarketReporter reporter = new CsvMarketReporter(market, statistics);
-//        try {
-//            reporter.makeBidsReport();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
+        bazaar.runAsync();
     }
 }

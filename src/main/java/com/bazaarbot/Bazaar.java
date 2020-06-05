@@ -1,5 +1,6 @@
 package com.bazaarbot;
 
+import ch.qos.logback.classic.Level;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.DefaultContractResolver;
 import com.bazaarbot.contract.IContract;
@@ -11,9 +12,10 @@ import com.bazaarbot.events.IEventHandler;
 import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.IMarket;
+import com.bazaarbot.runner.FixedRateBasedRunner;
 import com.bazaarbot.runner.IRunner;
-import com.bazaarbot.runner.StepBasedRunner;
-import com.bazaarbot.runner.TimeBasedRunner;
+import com.bazaarbot.runner.RoundBasedRunner;
+import com.bazaarbot.runner.DurationBasedRunner;
 import org.greenrobot.eventbus.EventBus;
 
 import java.time.Duration;
@@ -38,6 +40,8 @@ public class Bazaar {
     });
 
     private Bazaar() {
+//        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+//        root.setLevel(Level.DEBUG);
     }
 
     public void run() {
@@ -46,6 +50,14 @@ public class Bazaar {
         }
         runner.run();
         executorService.shutdownNow();
+    }
+
+    public void runAsync() {
+        if (economy == null) {
+            throw new RuntimeException("Economy is null, initiate Economy object first!");
+        }
+        runner.runAsync();
+        //executorService.shutdownNow();
     }
 
     public Statistics getStatistics() {
@@ -109,27 +121,27 @@ public class Bazaar {
             return this;
         }
 
-        public BazaarBuilder withStepBasedRunner(int steps) {
+        public BazaarBuilder withRoundBasedRunner(int rounds) {
             if (economy == null) {
                 throw new RuntimeException("Economy is null, initiate Economy object first!");
             }
-            Bazaar.this.runner = new StepBasedRunner(economy, steps);
+            Bazaar.this.runner = new RoundBasedRunner(economy, rounds);
             return this;
         }
 
-        public BazaarBuilder withTimerBasedRunner(Duration duration, long ticks) {
+        public BazaarBuilder withDurationBasedRunner(Duration duration) {
             if (economy == null) {
                 throw new RuntimeException("Economy is null, initiate Economy object first!");
             }
-            Bazaar.this.runner = new TimeBasedRunner(economy, duration, ticks);
+            Bazaar.this.runner = new DurationBasedRunner(economy, duration);
             return this;
         }
 
-        public BazaarBuilder withTimeBasedRunner(Duration duration) {
+        public BazaarBuilder withFixedRateBasedRunner(Duration fixedRate) {
             if (economy == null) {
                 throw new RuntimeException("Economy is null, initiate Economy object first!");
             }
-            Bazaar.this.runner = new TimeBasedRunner(economy, duration, 0);
+            Bazaar.this.runner = new FixedRateBasedRunner(economy, fixedRate);
             return this;
         }
 

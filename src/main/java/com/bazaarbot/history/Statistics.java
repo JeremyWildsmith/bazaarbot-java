@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ForkJoinPool;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -22,9 +22,21 @@ import java.util.stream.Collectors;
  */
 public class Statistics {
     private static final Logger LOG = LoggerFactory.getLogger(Statistics.class);
-    private final Map<IMarket, IHistoryRegistryRead> statisticsRegistry = new HashMap<>();
+    private final Map<IMarket, IHistoryRegistryRead> statisticsRegistry = new ConcurrentHashMap<>();
 
-    private final ForkJoinPool threadPool = new ForkJoinPool(10);
+    public int getSignedContracts(IMarket market) {
+        IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
+        return registry.getContractAgreements().size();
+    }
+
+    public int getAskOffers(IMarket market) {
+        IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
+        return registry.getAskOffers().size();
+    }
+
+    public Set<IMarket> getAvailableMarkets() {
+        return statisticsRegistry.keySet();
+    }
 
     private class PricingTuple {
         private final ICommodity commodity;
@@ -72,7 +84,7 @@ public class Statistics {
         if (registry == null) {
             throw new RuntimeException("Registry is null");
         }
-        LOG.debug("Sizes - bids: {} asks: {} contracts: {}", registry.getBidOffers().size(),
+        LOG.trace("Sizes - bids: {} asks: {} contracts: {}", registry.getBidOffers().size(),
                 registry.getAskOffers().size(), registry.getContractAgreements().size());
         return registry;
     }
@@ -83,13 +95,12 @@ public class Statistics {
 
     public double getCommodityCount(IMarket market, ICommodity commodity, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
-        return threadPool.submit(() -> registry.getBidOffers().parallelStream()
+        return registry.getBidOffers().stream()
                 .map(HistoryRecord::getHistoryObject)
                 .filter(offerTimeCreatedPredicate(start, end))
                 .filter(offer -> offer.getCommodity().equals(commodity))
                 .mapToDouble(Offer::getUnits)
-                .sum()
-        ).join();
+                .sum();
     }
 
     public BigDecimal getAverageHistoricalPrice(IMarket market, ICommodity commodity) {
@@ -126,17 +137,16 @@ public class Statistics {
 
     public ICommodity getHottestCommodity(IMarket market, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
-        return threadPool.submit(() -> registry.getAskOffers().parallelStream()
+        return registry.getAskOffers().stream()
                 .map(HistoryRecord::getHistoryObject)
                 .filter(offerTimeCreatedPredicate(start, end))
                 .map(offer -> new PricingTuple(offer.getCommodity(), offer.getUnitPrice()))
                 .collect(Collectors.groupingBy(PricingTuple::getCommodity,
                         Collectors.reducing(BigDecimal.ZERO, PricingTuple::getPrice, BigDecimal::add)))
-                .entrySet().parallelStream()
+                .entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
-                .orElse(null)
-        ).join();
+                .orElse(null);
     }
 
     public ICommodity getCheapestCommodity(IMarket market) {
@@ -145,14 +155,13 @@ public class Statistics {
 
     public ICommodity getCheapestCommodity(IMarket market, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
-        return threadPool.submit(() -> registry.getBidOffers().parallelStream()
+        return registry.getBidOffers().stream()
                 .map(HistoryRecord::getHistoryObject)
                 .filter(offerTimeCreatedPredicate(start, end))
                 .map(offer -> new PricingTuple(offer.getCommodity(), offer.getUnitPrice()))
                 .min(Comparator.comparing(PricingTuple::getPrice))
                 .map(PricingTuple::getCommodity)
-                .orElse(null)
-        ).join();
+                .orElse(null);
     }
 
     public ICommodity getDearestGood(IMarket market) {
@@ -161,14 +170,13 @@ public class Statistics {
 
     public ICommodity getDearestGood(IMarket market, long start, long end) {
         IHistoryRegistryRead registry = getHistoryRegistryByMarket(market);
-        return threadPool.submit(() -> registry.getBidOffers().parallelStream()
+        return registry.getBidOffers().stream()
                 .map(HistoryRecord::getHistoryObject)
                 .filter(offerTimeCreatedPredicate(start, end))
                 .map(offer -> new PricingTuple(offer.getCommodity(), offer.getUnitPrice()))
                 .max(Comparator.comparing(PricingTuple::getPrice))
                 .map(PricingTuple::getCommodity)
-                .orElse(null)
-        ).join();
+                .orElse(null);
     }
 
     public IAgent getMostProfitableAgent(IMarket market) {

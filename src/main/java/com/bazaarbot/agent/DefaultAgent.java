@@ -15,9 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An agent that performs the basic agentSimulation from the Doran & Parberry article
  *
- * @author
+ * @author Nick Gritsenko
  */
 public class DefaultAgent implements IAgent {
     private final ISimulationStrategy simulationStrategy;
@@ -42,7 +41,24 @@ public class DefaultAgent implements IAgent {
         if (!checkInventorySpace(amount)) {
             return;
         }
-        inventory.put(commodity, amount);
+        if (inventory.containsKey(commodity)) {
+            inventory.put(commodity, inventory.get(commodity) + amount);
+        } else {
+            inventory.put(commodity, amount);
+        }
+    }
+
+    @Override
+    public void removeCommodity(ICommodity commodity, double amount) {
+        if (!inventory.containsKey(commodity)) {
+            return;
+        }
+        double currentAmount = inventory.get(commodity);
+        if (currentAmount - amount <= 0) {
+            inventory.put(commodity, 0.0);
+        } else {
+            inventory.put(commodity, currentAmount - amount);
+        }
     }
 
     @Override
@@ -60,7 +76,7 @@ public class DefaultAgent implements IAgent {
         if (amount > inventoryMaxSize) {
             return false;
         } else {
-            double totalInventorySize = inventory.entrySet().stream().mapToDouble(Map.Entry::getValue).sum();
+            double totalInventorySize = inventory.values().stream().mapToDouble(v -> v).sum();
             return !(amount + totalInventorySize > inventoryMaxSize);
         }
     }

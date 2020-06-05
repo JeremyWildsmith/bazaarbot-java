@@ -16,7 +16,7 @@ public class DefaultContractResolver implements IContractResolver {
 
     @Override
     public IContract signContract(IAgent seller, IAgent buyer, ICommodity good, double units, BigDecimal clearingPrice) {
-        seller.addCommodity(good, -units);
+        seller.removeCommodity(good, units);
         buyer.addCommodity(good, units);
         Map<ICommodity, Double> contractGoods = new HashMap<>();
         contractGoods.put(good, units);

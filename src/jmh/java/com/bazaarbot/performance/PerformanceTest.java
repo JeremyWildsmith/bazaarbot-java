@@ -22,8 +22,7 @@ import java.util.Random;
 @State(Scope.Benchmark)
 public class PerformanceTest {
 
-    private Bazaar.BazaarBuilder bazaarBuilder;
-
+    private DefaultSimulationStrategy simulation;
 
     @Setup(Level.Iteration)
     public void setup() {
@@ -34,27 +33,24 @@ public class PerformanceTest {
 
         List<ICommodity> commodities = List.of(exampleCommodity1, exampleCommodity2, exampleCommodity3);
 
-        DefaultSimulationStrategy simulation = new ExampleAgentSimulation(commodities, new Random());
+        simulation = new ExampleAgentSimulation(commodities, new Random());
+    }
 
+    @Benchmark
+    public void testDuration5s() {
         IAgent agent1 = new DefaultAgent("TestAgent1", new BigDecimal(20), 10, simulation);
         IAgent agent2 = new DefaultAgent("TestAgent2", new BigDecimal(40), 5, simulation);
         IAgent agent3 = new DefaultAgent("TestAgent3", new BigDecimal(60), 20, simulation);
-
-        bazaarBuilder = Bazaar.newBuilder()
+        Bazaar bazaar = Bazaar.newBuilder()
                 .withDefaultEconomy()
                 .withDefaultMarket()
                 .withDefaultContractResolver()
                 .addAgent(agent1)
                 .addAgent(agent2)
-                .addAgent(agent3);
-    }
-
-    @Benchmark
-    public void test10() {
-        Bazaar bazaar = bazaarBuilder.withTimeBasedRunner(Duration.ofSeconds(5))
+                .addAgent(agent3)
+                .withDurationBasedRunner(Duration.ofSeconds(5))
                 .build();
         bazaar.run();
-
     }
 
 //    @Benchmark

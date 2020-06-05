@@ -21,6 +21,7 @@ public class DefaultEconomy implements IEconomy {
     private IContractResolver contractResolver;
     private EventBus userEventBus;
     private final Statistics statistics = new Statistics();
+    private final HistoryRegistry registry = new HistoryRegistry();
 
     private List<IMarket> markets = new ArrayList<>();
     private List<IAgent> agents = new ArrayList<>();
@@ -37,15 +38,14 @@ public class DefaultEconomy implements IEconomy {
 
     @Override
     public void startSimulation() {
-        HistoryRegistry registry = new HistoryRegistry();
         for (IMarket market : markets) {
             statistics.addHistoryRegistry(market, registry);
             for (IAgent agent : agents) {
                 agent.simulateActivity(market, statistics);
             }
             market.step(contractResolver, registry, userEventBus);
-            LOG.debug("Market {} statistics. Bid offers left {}, ask offers left {}",
-                    market, market.getBidOffersSize(), market.getAskOffersSize());
+            LOG.debug("Market {} statistics. Bid offers left {}, ask offers left {}, contracts signed {}",
+                    market, market.getBidOffersSize(), market.getAskOffersSize(), statistics.getSignedContracts(market));
             // outputs what is left from session
             // e.g. unmet offers
             // next round they will be served in priority, because they were created earlier

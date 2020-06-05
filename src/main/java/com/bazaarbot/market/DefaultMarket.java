@@ -86,6 +86,7 @@ public class DefaultMarket implements IMarket {
             LOG.debug("Trying bid: {}", bidOffer);
             List<Offer> interestedAsks = askOffers.stream()
                     .filter(offer -> offer.getCommodity().equals(bidOffer.getCommodity()))
+                    .filter(offer -> !offer.getAgent().equals(bidOffer.getAgent()))
                     .sorted((offer1, offer2) -> offer1.getCreatedTimeOffer() > offer2.getCreatedTimeOffer() ? 1 : 0)
                     .collect(Collectors.toList());
             // 4. Iterate and try to make a deal
@@ -121,8 +122,11 @@ public class DefaultMarket implements IMarket {
         // 4.1 Find if anyway seller can provide the quantity
         double bidQuantity = bidOffer.getUnits();
         double askAmount = askOffer.getUnits();
-        if (bidQuantity < askAmount) {
-            LOG.debug("---- Not enough amount in bid offer. Leaving.");
+        BigDecimal moneyAvailable = askOffer.getAgent().getMoneyAvailable();
+        if (bidQuantity < askAmount || moneyAvailable.compareTo(BigDecimal.ZERO) < 0) {
+            LOG.debug("---- Ask quantity {}, bid quantity {}, buyer money {}.",
+                    askAmount, bidQuantity, moneyAvailable);
+            LOG.debug("---- Not enough quantity in bid offer or money from agent. Leaving.");
             // nothing to get from seller, no items
             return null;
         }
@@ -143,8 +147,9 @@ public class DefaultMarket implements IMarket {
         registry.addContract(contract);
 
         // 4.4 Do transfer the money
-        seller.setMoneyAvailable(seller.getMoneyAvailable().add(negotiatedPrice));
-        buyer.setMoneyAvailable(buyer.getMoneyAvailable().subtract(negotiatedPrice));
+        BigDecimal moneyToTransfer = negotiatedPrice.multiply(new BigDecimal(askAmount));
+        seller.setMoneyAvailable(seller.getMoneyAvailable().add(moneyToTransfer));
+        buyer.setMoneyAvailable(buyer.getMoneyAvailable().subtract(moneyToTransfer));
 
         return contract;
     }

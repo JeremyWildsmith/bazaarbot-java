@@ -31,6 +31,11 @@ public final class ImmutableAgent implements IAgent {
     }
 
     @Override
+    public void removeCommodity(ICommodity good, double amount) {
+        throw new RuntimeException("Not implemented!");
+    }
+
+    @Override
     public double getCommodityAmount(ICommodity commodity) {
         return stuff.get(commodity);
     }

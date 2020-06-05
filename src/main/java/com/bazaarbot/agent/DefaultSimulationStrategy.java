@@ -24,7 +24,7 @@ public abstract class DefaultSimulationStrategy implements ISimulationStrategy {
 
     protected final void consume(IAgent agent, ICommodity commodity, double amount, double chance) {
         if (chance >= 1.0 || randomGenerator.nextDouble() < chance) {
-            agent.addCommodity(commodity, -amount);
+            agent.removeCommodity(commodity, amount);
         }
     }
 
