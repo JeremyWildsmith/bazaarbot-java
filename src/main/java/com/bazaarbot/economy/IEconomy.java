@@ -2,9 +2,9 @@ package com.bazaarbot.economy;
 
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.IContractResolver;
+import com.bazaarbot.events.ListenerRegistry;
 import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.IMarket;
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * @author Nick Gritsenko
@@ -20,6 +20,6 @@ public interface IEconomy {
 
     Statistics getStatistics();
 
-    void setUserEventBus(EventBus eventBus);
+    ListenerRegistry getListenerRegistry();
 
 }

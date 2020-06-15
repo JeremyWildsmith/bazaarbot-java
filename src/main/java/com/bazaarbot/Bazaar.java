@@ -1,14 +1,12 @@
 package com.bazaarbot;
 
-import ch.qos.logback.classic.Level;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.DefaultContractResolver;
 import com.bazaarbot.contract.IContract;
 import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.economy.DefaultEconomy;
 import com.bazaarbot.economy.IEconomy;
-import com.bazaarbot.events.contracts.ContractSignedEventHandlerProxy;
-import com.bazaarbot.events.IEventHandler;
+import com.bazaarbot.events.ContractSignedEvent;
 import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.IMarket;
@@ -16,12 +14,12 @@ import com.bazaarbot.runner.FixedRateBasedRunner;
 import com.bazaarbot.runner.IRunner;
 import com.bazaarbot.runner.RoundBasedRunner;
 import com.bazaarbot.runner.DurationBasedRunner;
-import org.greenrobot.eventbus.EventBus;
 
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
 /**
  * @author Nick Gritsenko
@@ -29,7 +27,6 @@ import java.util.concurrent.ThreadFactory;
 public class Bazaar {
     private IRunner runner;
     private IEconomy economy;
-    private EventBus userEventBus;
 
     private final ExecutorService executorService = Executors.newFixedThreadPool(2, new ThreadFactory() {
         private int threadCounter = 0;
@@ -77,13 +74,14 @@ public class Bazaar {
             // private constructor
         }
 
-        public BazaarBuilder withContractEvents(IEventHandler<IContract> userEvent) {
+        public BazaarBuilder withContractSignedEvent(Consumer<ContractSignedEvent> handler) {
             if (economy == null) {
                 throw new RuntimeException("Economy is null, initiate Economy object first!");
             }
-            Bazaar.this.userEventBus = EventBus.builder().executorService(executorService).build();
-            Bazaar.this.economy.setUserEventBus(userEventBus);
-            Bazaar.this.userEventBus.register(new ContractSignedEventHandlerProxy(userEvent));
+            Bazaar.this.economy.getListenerRegistry().addListener(handler);
+//            Bazaar.this.userEventBus = EventBus.builder().executorService(executorService).build();
+//            Bazaar.this.economy.setUserEventBus(userEventBus);
+//            Bazaar.this.userEventBus.register(new ContractSignedEventHandlerProxy(userEvent));
             return this;
         }
 

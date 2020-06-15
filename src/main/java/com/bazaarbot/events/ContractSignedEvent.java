@@ -1,13 +1,10 @@
-package com.bazaarbot.events.contracts;
+package com.bazaarbot.events;
 
 import com.bazaarbot.contract.IContract;
 
-/**
- * @author Nick Gritsenko
- */
-public final class ContractSignedEvent {
+public class ContractSignedEvent implements IEvent {
 
-    private final IContract contract;
+    private IContract contract;
 
     public ContractSignedEvent(IContract contract) {
         this.contract = contract;

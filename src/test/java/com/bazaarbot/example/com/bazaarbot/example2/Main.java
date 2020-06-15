@@ -7,7 +7,6 @@ import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.DefaultSimulationStrategy;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.IContract;
-import com.bazaarbot.events.IEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,14 +21,14 @@ import java.util.Random;
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
-    private static class ContractSignedEventHandler implements IEventHandler<IContract> {
-
-        @Override
-        public void handle(IContract contract) {
-            LOG.info("Contract signed!");
-            LOG.info("{}", contract);
-        }
-    }
+//    private static class ContractSignedEventHandler implements IEventHandler<IContract> {
+//
+//        @Override
+//        public void handle(IContract contract) {
+//            LOG.info("Contract signed!");
+//            LOG.info("{}", contract);
+//        }
+//    }
 
     public static void main(String[] args) {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
@@ -53,7 +52,7 @@ public class Main {
                 .withDefaultEconomy()
                 .withDefaultMarket()
                 .withDefaultContractResolver()
-                .withContractEvents(new ContractSignedEventHandler())
+                //.withContractEvents(new ContractSignedEventHandler())
                 .addAgent(agent1)
                 .addAgent(agent2)
                 .addAgent(agent3)
