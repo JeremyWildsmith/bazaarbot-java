@@ -6,33 +6,37 @@ package com.bazaarbot.market;
 
 
 import com.bazaarbot.ICommodity;
+import com.bazaarbot.agent.ImmutableAgent;
 import com.bazaarbot.agent.IAgent;
+import com.bazaarbot.history.ICloneable;
 
-public class Offer {
-    private ICommodity good;
+import java.math.BigDecimal;
+
+public class Offer implements ICloneable<Offer> {
+    private ICommodity commodity;
     //the thing offered
     private double units;
     //how many units
-    private double unitPrice;
+    private BigDecimal unitPrice;
     //price per unit
     private IAgent agent;
 
-    private final long timePut = 0;
+    private final long createdTimeOffer = System.nanoTime();
 
     //who offered this
-    public Offer(IAgent agent, ICommodity commodity, double units, double unitPrice) {
+    public Offer(IAgent agent, ICommodity commodity, double units, BigDecimal unitPrice) {
         this.agent = agent;
-        this.good = commodity;
+        this.commodity = commodity;
         this.units = units;
         this.unitPrice = unitPrice;
     }
 
-    public ICommodity getGood() {
-        return good;
+    public ICommodity getCommodity() {
+        return commodity;
     }
 
-    public void setGood(ICommodity good) {
-        this.good = good;
+    public void setCommodity(ICommodity commodity) {
+        this.commodity = commodity;
     }
 
     public double getUnits() {
@@ -43,11 +47,11 @@ public class Offer {
         this.units = units;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 
@@ -59,14 +63,25 @@ public class Offer {
         this.agent = agent;
     }
 
-    public long getTimePut() {
-        return timePut;
+    public long getCreatedTimeOffer() {
+        return createdTimeOffer;
     }
 
     public String toString() {
-        return "(" + agent + "): " + good + "x " + units + " @ " + unitPrice;
+        return "(" + agent + "): " + commodity + " x " + units + " @ " + unitPrice;
     }
 
+    @Override
+    public Offer clone() {
+        Offer offer;
+        try {
+            offer = (Offer) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Cannot clone Offer!", e);
+        }
+        offer.setAgent(new ImmutableAgent(agent));
+        return offer;
+    }
 }
 
 

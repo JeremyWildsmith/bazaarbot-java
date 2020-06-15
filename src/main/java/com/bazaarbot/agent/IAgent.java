@@ -5,42 +5,32 @@
 package com.bazaarbot.agent;
 
 import com.bazaarbot.ICommodity;
-import com.bazaarbot.market.Market;
-import com.bazaarbot.market.Offer;
+import com.bazaarbot.history.Statistics;
+import com.bazaarbot.market.IMarket;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface IAgent {
 
-    void simulate(Market market);
+    void addCommodity(ICommodity good, double amount);
+    void removeCommodity(ICommodity good, double amount);
 
-    Offer createBid(Market market, ICommodity commodity, double limit);
+    double getCommodityAmount(ICommodity commodity);
 
-    Offer createAsk(Market market, ICommodity commodity, double limit);
-
-    void generateOffers(Market market, ICommodity commodity);
-
-    void updatePriceModel(String act, ICommodity commodity, boolean success, double unitPrice);
-
-    void addInventoryItem(ICommodity good, double amount);
-
-    double queryInventory(ICommodity commodity);
-
-    void produceInventory(ICommodity good, double delta);
-
-    void consumeInventoryItem(ICommodity commodity, double amount);
-
-    void changeInventory(ICommodity commodity, double amount, double unitCost);
-
-    AgentSnapshot getSnapshot();
+    List<ICommodity> getAvailableCommodities();
 
     boolean isInventoryFull();
 
-    double getLastSimulateProfit();
+    boolean checkInventorySpace(double amount);
 
     String getAgentName();
 
-    double getMoneyAvailable();
+    BigDecimal getMoneyAvailable();
 
-    void setMoneyAvailable(double value);
+    void setMoneyAvailable(BigDecimal moneyAvailable);
+
+    void simulateActivity(IMarket market, Statistics statistics);
 }
 
 
