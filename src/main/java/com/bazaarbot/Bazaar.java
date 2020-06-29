@@ -2,24 +2,20 @@ package com.bazaarbot;
 
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.DefaultContractResolver;
-import com.bazaarbot.contract.IContract;
 import com.bazaarbot.contract.IContractResolver;
 import com.bazaarbot.economy.DefaultEconomy;
 import com.bazaarbot.economy.IEconomy;
-import com.bazaarbot.events.ContractSignedEvent;
-import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.IMarket;
+import com.bazaarbot.runner.DurationBasedRunner;
 import com.bazaarbot.runner.FixedRateBasedRunner;
 import com.bazaarbot.runner.IRunner;
 import com.bazaarbot.runner.RoundBasedRunner;
-import com.bazaarbot.runner.DurationBasedRunner;
 
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.function.Consumer;
 
 /**
  * @author Nick Gritsenko
@@ -57,11 +53,11 @@ public class Bazaar {
         //executorService.shutdownNow();
     }
 
-    public Statistics getStatistics() {
+    public IEconomy getEconomy() {
         if (economy == null) {
             throw new RuntimeException("Economy is null, initiate Economy object first!");
         }
-        return economy.getStatistics();
+        return economy;
     }
 
     public static BazaarBuilder newBuilder() {
@@ -72,17 +68,6 @@ public class Bazaar {
 
         private BazaarBuilder() {
             // private constructor
-        }
-
-        public BazaarBuilder withContractSignedEvent(Consumer<ContractSignedEvent> handler) {
-            if (economy == null) {
-                throw new RuntimeException("Economy is null, initiate Economy object first!");
-            }
-            Bazaar.this.economy.getListenerRegistry().addListener(handler);
-//            Bazaar.this.userEventBus = EventBus.builder().executorService(executorService).build();
-//            Bazaar.this.economy.setUserEventBus(userEventBus);
-//            Bazaar.this.userEventBus.register(new ContractSignedEventHandlerProxy(userEvent));
-            return this;
         }
 
         public BazaarBuilder setEconomy(IEconomy economy) {
@@ -100,7 +85,6 @@ public class Bazaar {
                 throw new RuntimeException("Economy is null, initiate Economy object first!");
             }
             IContractResolver resolver = new DefaultContractResolver();
-            resolver.setStatistics(economy.getStatistics());
             Bazaar.this.economy.setContractResolver(resolver);
             return this;
         }
@@ -109,7 +93,6 @@ public class Bazaar {
             if (economy == null) {
                 throw new RuntimeException("Economy is null, initiate Economy object first!");
             }
-            resolver.setStatistics(economy.getStatistics());
             Bazaar.this.economy.setContractResolver(resolver);
             return this;
         }

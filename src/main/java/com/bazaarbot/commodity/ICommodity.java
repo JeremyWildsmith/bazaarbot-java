@@ -1,4 +1,4 @@
-package com.bazaarbot;
+package com.bazaarbot.commodity;
 
 public interface ICommodity extends Cloneable {
     String getName();

@@ -1,8 +1,7 @@
 package com.bazaarbot.market;
 
 import com.bazaarbot.contract.IContractResolver;
-import com.bazaarbot.events.ListenerRegistry;
-import com.bazaarbot.history.IHistoryRegistryWrite;
+import com.bazaarbot.statistics.registry.IRegistryRead;
 
 /**
  * @author Nick Gritsenko
@@ -16,5 +15,7 @@ public interface IMarket {
 
     int getAskOffersSize();
 
-    void step(IContractResolver contractResolver, IHistoryRegistryWrite registry, ListenerRegistry listenerRegistry);
+    void step(IContractResolver contractResolver);
+
+    IRegistryRead getRegistry();
 }

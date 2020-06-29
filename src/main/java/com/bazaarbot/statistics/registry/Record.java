@@ -1,14 +1,16 @@
-package com.bazaarbot.history;
+package com.bazaarbot.statistics.registry;
+
+import com.bazaarbot.statistics.ICloneable;
 
 /**
  * @author Nick Gritsenko
  */
-class HistoryRecord<T extends ICloneable<T>> {
+class Record<T extends ICloneable<T>> {
 
     private final T historyObject;
     private final long timeCreated = System.nanoTime();
 
-    HistoryRecord(T historyObject) {
+    Record(T historyObject) {
         this.historyObject = historyObject.clone();
     }
 
