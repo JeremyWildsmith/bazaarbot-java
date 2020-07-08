@@ -4,8 +4,7 @@
 
 package com.bazaarbot.agent;
 
-import com.bazaarbot.ICommodity;
-import com.bazaarbot.history.Statistics;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.market.IMarket;
 
 import java.math.BigDecimal;
@@ -102,8 +101,8 @@ public class DefaultAgent implements IAgent {
     }
 
     @Override
-    public void simulateActivity(IMarket market, Statistics statistics) {
-        this.simulationStrategy.simulateActivity(this, market, statistics);
+    public void simulateActivity(IMarket market) {
+        this.simulationStrategy.simulateActivity(this, market);
     }
 
     @Override

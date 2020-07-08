@@ -2,9 +2,9 @@ package com.bazaarbot.economy;
 
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.IContractResolver;
-import com.bazaarbot.history.Statistics;
 import com.bazaarbot.market.IMarket;
-import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * @author Nick Gritsenko
@@ -18,8 +18,6 @@ public interface IEconomy {
 
     void setContractResolver(IContractResolver resolver);
 
-    Statistics getStatistics();
-
-    void setUserEventBus(EventBus eventBus);
+    List<IMarket> getMarketList();
 
 }

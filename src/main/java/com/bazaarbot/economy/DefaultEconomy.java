@@ -2,10 +2,8 @@ package com.bazaarbot.economy;
 
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.IContractResolver;
-import com.bazaarbot.history.HistoryRegistry;
-import com.bazaarbot.history.Statistics;
+import com.bazaarbot.statistics.StatisticsHelper;
 import com.bazaarbot.market.IMarket;
-import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,13 +17,8 @@ public class DefaultEconomy implements IEconomy {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultEconomy.class);
 
     private IContractResolver contractResolver;
-    private EventBus userEventBus;
-    private final Statistics statistics = new Statistics();
-    private final HistoryRegistry registry = new HistoryRegistry();
-
     private List<IMarket> markets = new ArrayList<>();
     private List<IAgent> agents = new ArrayList<>();
-
     private final String name;
 
     public DefaultEconomy() {
@@ -39,13 +32,12 @@ public class DefaultEconomy implements IEconomy {
     @Override
     public void startSimulation() {
         for (IMarket market : markets) {
-            statistics.addHistoryRegistry(market, registry);
             for (IAgent agent : agents) {
-                agent.simulateActivity(market, statistics);
+                agent.simulateActivity(market);
             }
-            market.step(contractResolver, registry, userEventBus);
+            market.step(contractResolver);
             LOG.debug("Market {} statistics. Bid offers left {}, ask offers left {}, contracts signed {}",
-                    market, market.getBidOffersSize(), market.getAskOffersSize(), statistics.getSignedContracts(market));
+                    market, market.getBidOffersSize(), market.getAskOffersSize(), StatisticsHelper.getSignedContractsCount(market));
             // outputs what is left from session
             // e.g. unmet offers
             // next round they will be served in priority, because they were created earlier
@@ -70,13 +62,8 @@ public class DefaultEconomy implements IEconomy {
     }
 
     @Override
-    public Statistics getStatistics() {
-        return statistics;
-    }
-
-    @Override
-    public void setUserEventBus(EventBus eventBus) {
-        this.userEventBus = eventBus;
+    public List<IMarket> getMarketList() {
+        return markets;
     }
 
     @Override

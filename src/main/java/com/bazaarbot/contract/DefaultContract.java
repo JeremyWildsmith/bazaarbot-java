@@ -1,6 +1,6 @@
 package com.bazaarbot.contract;
 
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.agent.ImmutableAgent;
 

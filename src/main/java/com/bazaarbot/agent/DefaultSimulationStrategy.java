@@ -1,7 +1,6 @@
 package com.bazaarbot.agent;
 
-import com.bazaarbot.ICommodity;
-import com.bazaarbot.history.Statistics;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.market.IMarket;
 
 import java.util.Random;
@@ -32,5 +31,5 @@ public abstract class DefaultSimulationStrategy implements ISimulationStrategy {
         consume(agent, commodity, amount, 1.0);
     }
 
-    public abstract void simulateActivity(IAgent agent, IMarket market, Statistics statistics);
+    public abstract void simulateActivity(IAgent agent, IMarket market);
 }

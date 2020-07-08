@@ -5,10 +5,10 @@
 package com.bazaarbot.market;
 
 
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.agent.ImmutableAgent;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.history.ICloneable;
+import com.bazaarbot.statistics.ICloneable;
 
 import java.math.BigDecimal;
 

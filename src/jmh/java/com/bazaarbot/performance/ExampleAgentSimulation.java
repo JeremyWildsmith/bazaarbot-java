@@ -1,9 +1,9 @@
 package com.bazaarbot.performance;
 
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.agent.DefaultSimulationStrategy;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.history.Statistics;
+import com.bazaarbot.statistics.StatisticsHelper;
 import com.bazaarbot.market.IMarket;
 import com.bazaarbot.market.Offer;
 
@@ -24,14 +24,14 @@ public class ExampleAgentSimulation extends DefaultSimulationStrategy {
     }
 
     @Override
-    public void simulateActivity(IAgent agent, IMarket market, Statistics statistics) {
+    public void simulateActivity(IAgent agent, IMarket market) {
         int randomNumber = randomGenerator.nextInt(10) + 1;
         ICommodity commodity1 = commodityList.get(0);
         ICommodity commodity2 = commodityList.get(1);
         ICommodity commodity3 = commodityList.get(2);
-        BigDecimal averagePriceCommodity1 = statistics.getAverageHistoricalPrice(market, commodity1);
-        BigDecimal averagePriceCommodity2 = statistics.getAverageHistoricalPrice(market, commodity2);
-        BigDecimal averagePriceCommodity3 = statistics.getAverageHistoricalPrice(market, commodity3);
+        BigDecimal averagePriceCommodity1 = StatisticsHelper.getAverageHistoricalPrice(market, commodity1);
+        BigDecimal averagePriceCommodity2 = StatisticsHelper.getAverageHistoricalPrice(market, commodity2);
+        BigDecimal averagePriceCommodity3 = StatisticsHelper.getAverageHistoricalPrice(market, commodity3);
         if (randomNumber <= 3) {
             produce(agent, commodity1, randomNumber);
             if (agent.getCommodityAmount(commodity1) > 0) {

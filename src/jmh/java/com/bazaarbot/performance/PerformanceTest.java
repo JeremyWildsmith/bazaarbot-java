@@ -1,7 +1,7 @@
 package com.bazaarbot.performance;
 
 import com.bazaarbot.Bazaar;
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.agent.DefaultAgent;
 import com.bazaarbot.agent.DefaultSimulationStrategy;
 import com.bazaarbot.agent.IAgent;

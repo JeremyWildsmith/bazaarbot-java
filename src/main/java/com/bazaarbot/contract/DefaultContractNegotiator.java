@@ -1,8 +1,8 @@
 package com.bazaarbot.contract;
 
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.agent.IAgent;
-import com.bazaarbot.history.Statistics;
+import com.bazaarbot.statistics.StatisticsHelper;
 import com.bazaarbot.market.DefaultMarket;
 import com.bazaarbot.market.Offer;
 import org.slf4j.Logger;
@@ -17,13 +17,11 @@ public class DefaultContractNegotiator implements IContractNegotiator {
     private final Offer bidOffer;
     private final Offer askOffer;
     private final DefaultMarket market;
-    private final Statistics statistics;
 
-    DefaultContractNegotiator(DefaultMarket market, Offer bidOffer, Offer askOffer, Statistics statistics) {
+    DefaultContractNegotiator(DefaultMarket market, Offer bidOffer, Offer askOffer) {
         this.market = market;
         this.bidOffer = bidOffer;
         this.askOffer = askOffer;
-        this.statistics = statistics;
     }
 
     private boolean hasMoney(double quantity, BigDecimal unitPrice, IAgent agent) {
@@ -45,7 +43,7 @@ public class DefaultContractNegotiator implements IContractNegotiator {
         LOG.debug("Trying to make a deal. SellerPrice: {} BuyerPrice: {}", sellerPrice, buyerPrice);
         if (sellerPrice.compareTo(buyerPrice) > 0) {
             // 1.1 Get total commodity count and see if desired quantity is more or equal then half of market size
-            double totalCountOfCommodity = statistics.getCommodityCount(market, commodity);
+            double totalCountOfCommodity = StatisticsHelper.getCommodityCount(market, commodity);
             LOG.debug("May be buyer is a bulk trader? Total market count for commodity {}: {}. Desired amount: {}",
                     askOffer.getCommodity(), totalCountOfCommodity, desiredQuantity);
             if (desiredQuantity >= totalCountOfCommodity / 2 && hasMoney(desiredQuantity, sellerPrice, askOffer.getAgent())) {
@@ -54,10 +52,10 @@ public class DefaultContractNegotiator implements IContractNegotiator {
                 bidOffer.setUnitPrice(sellerPrice);
                 return sellerPrice;
             } else {
-                BigDecimal averageCommodityPrice = statistics.getAverageHistoricalPrice(market, commodity);
+                BigDecimal averageCommodityPrice = StatisticsHelper.getAverageHistoricalPrice(market, commodity);
                 if (averageCommodityPrice.compareTo(BigDecimal.ZERO) == 0) {
                     LOG.debug("There is no history for the commodity {}. Try to see if the commodity is hot on the market.", commodity);
-                    ICommodity hotCommodity = statistics.getHottestCommodity(market);
+                    ICommodity hotCommodity = StatisticsHelper.getHottestCommodity(market);
                     LOG.debug("Hottest commodity is {}", hotCommodity);
                     if (hotCommodity != null && hotCommodity.equals(commodity)
                             && hasMoney(desiredQuantity, sellerPrice, askOffer.getAgent())) {

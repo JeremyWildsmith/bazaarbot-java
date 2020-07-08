@@ -1,7 +1,6 @@
 package com.bazaarbot.agent;
 
-import com.bazaarbot.ICommodity;
-import com.bazaarbot.history.Statistics;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.market.IMarket;
 
 import java.math.BigDecimal;
@@ -66,7 +65,7 @@ public final class ImmutableAgent implements IAgent {
     }
 
     @Override
-    public void simulateActivity(IMarket market, Statistics statistics) {
+    public void simulateActivity(IMarket market) {
         throw new RuntimeException("Not implemented!");
     }
 

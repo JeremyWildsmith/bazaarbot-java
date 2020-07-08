@@ -1,7 +1,6 @@
 package com.bazaarbot.market;
 
-import com.bazaarbot.history.IHistoryRegistryRead;
-import com.bazaarbot.history.Statistics;
+import com.bazaarbot.statistics.StatisticsHelper;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -10,18 +9,14 @@ import java.util.List;
 
 public class CsvMarketReporter {
 
-    private final DefaultMarket market;
-    private final Statistics statistics;
+    private final IMarket market;
 
-    public CsvMarketReporter(DefaultMarket market, Statistics statistics) {
+    public CsvMarketReporter(IMarket market) {
         this.market = market;
-        this.statistics = statistics;
     }
 
     public void makeBidsReport() throws IOException {
-        IHistoryRegistryRead registry = statistics.getHistoryRegistryByMarket(market);
-
-        List<Offer> bidOffers = statistics.getBidOffers(market);
+        List<Offer> bidOffers = StatisticsHelper.getBidOffers(market);
         List<String> header = List.of("Time Created",
                 "Commodity",
                 "Agent",

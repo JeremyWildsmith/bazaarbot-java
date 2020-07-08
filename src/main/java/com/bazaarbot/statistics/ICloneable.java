@@ -1,4 +1,4 @@
-package com.bazaarbot.history;
+package com.bazaarbot.statistics;
 
 /**
  * @author Nick Gritsenko

@@ -1,6 +1,6 @@
 package com.bazaarbot.example.com.bazaarbot.example2;
 
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.commodity.ICommodity;
 
 /**
  * @author Nick Gritsenko

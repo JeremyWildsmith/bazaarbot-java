@@ -1,14 +1,13 @@
 package com.bazaarbot.market;
 
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.commodity.ICommodity;
 import com.bazaarbot.TimerHelper;
 import com.bazaarbot.agent.IAgent;
 import com.bazaarbot.contract.IContract;
 import com.bazaarbot.contract.IContractNegotiator;
 import com.bazaarbot.contract.IContractResolver;
-import com.bazaarbot.events.contracts.ContractSignedEvent;
-import com.bazaarbot.history.IHistoryRegistryWrite;
-import org.greenrobot.eventbus.EventBus;
+import com.bazaarbot.statistics.registry.IRegistryRead;
+import com.bazaarbot.statistics.registry.Registry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +23,7 @@ public class DefaultMarket implements IMarket {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultMarket.class);
     private final TimerHelper timerHelper = new TimerHelper();
     private final String name;
+    private final Registry registry = new Registry();
 
     private final List<Offer> bidOffers = new ArrayList<>();
     private final List<Offer> askOffers = new ArrayList<>();
@@ -60,7 +60,7 @@ public class DefaultMarket implements IMarket {
     }
 
     @Override
-    public void step(IContractResolver contractResolver, IHistoryRegistryWrite registry, EventBus userEventBus) {
+    public void step(IContractResolver contractResolver) {
         timerHelper.start();
         // 0. Fill up the registry with current items, before proceed
         registry.addAskOffers(newAskOffers);
@@ -92,10 +92,9 @@ public class DefaultMarket implements IMarket {
             // 4. Iterate and try to make a deal
             for (Offer askOffer : interestedAsks) {
                 LOG.debug("---- with ask: {}", askOffer);
-                IContract contract = tryDeal(bidOffer, askOffer, contractResolver, registry);
+                IContract contract = tryDeal(bidOffer, askOffer, contractResolver);
                 // 5. If the deal was done make record in transactions and remove corresponding offers for next round
                 if (contract != null) {
-                    userEventBus.post(new ContractSignedEvent(contract));
                     double quantityTraded = contract.getQuantityTraded();
                     double leftGoodsInBid = bidOffer.getUnits() - quantityTraded;
                     LOG.debug("---- Signed contract for {} x {} @ {}", askOffer.getCommodity(), quantityTraded, contract.getContractPrice());
@@ -117,8 +116,13 @@ public class DefaultMarket implements IMarket {
         LOG.debug("Step took {}ns", timerHelper.getTimeNanos());
     }
 
+    @Override
+    public IRegistryRead getRegistry() {
+        return registry;
+    }
+
     private IContract tryDeal(Offer bidOffer, Offer askOffer,
-                              IContractResolver contractResolver, IHistoryRegistryWrite registry) {
+                              IContractResolver contractResolver) {
         // 4.1 Find if anyway seller can provide the quantity
         double bidQuantity = bidOffer.getUnits();
         double askAmount = askOffer.getUnits();

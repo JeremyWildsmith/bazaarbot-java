@@ -1,6 +1,6 @@
 package com.bazaarbot.performance;
 
-import com.bazaarbot.ICommodity;
+import com.bazaarbot.commodity.ICommodity;
 
 /**
  * @author Nick Gritsenko

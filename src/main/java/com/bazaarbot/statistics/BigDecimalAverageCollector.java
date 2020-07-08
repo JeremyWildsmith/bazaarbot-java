@@ -1,4 +1,4 @@
-package com.bazaarbot.history;
+package com.bazaarbot.statistics;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
