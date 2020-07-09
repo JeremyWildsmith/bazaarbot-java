@@ -44,10 +44,10 @@ test {
 }
 
 jmh {
-    iterations = 10
+    iterations = 5
     fork = 1
     jvmArgsAppend = ["-Xms2048m", "-Xmx2048m", "-XX:+UseG1GC"]
     timeUnit = 'ms'
-    benchmarkMode = ['all']
+    benchmarkMode = ['thrpt']
 
 }
